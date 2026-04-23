@@ -16,12 +16,15 @@ export interface SkillModelParams {
 // Note : depuis Opus 4.7, temperature/top_p/top_k ne sont plus acceptés
 // par l'API Anthropic. Le YAML (docs/specs/skills-prompts-v1.yaml) liste
 // encore des temperatures historiques, mais elles sont ignorées ici.
+//
+// max_tokens : valeurs YAML d'origine majorées de ~30 % pour absorber le
+// tokenizer plus dense d'Opus 4.7 (Skill 3 a déjà été tronqué en prod).
 export const SKILL_MODEL_CONFIG: Record<1 | 2 | 3 | 4 | 5, SkillModelParams> = {
-  1: { model: ANTHROPIC_MODEL_DEFAULT, maxTokens: 4000 },
-  2: { model: ANTHROPIC_MODEL_DEFAULT, maxTokens: 8000 },
-  3: { model: ANTHROPIC_MODEL_DEFAULT, maxTokens: 5000 },
-  4: { model: ANTHROPIC_MODEL_DEFAULT, maxTokens: 5000 },
-  5: { model: ANTHROPIC_MODEL_DEFAULT, maxTokens: 10000 },
+  1: { model: ANTHROPIC_MODEL_DEFAULT, maxTokens: 6000 },
+  2: { model: ANTHROPIC_MODEL_DEFAULT, maxTokens: 12000 },
+  3: { model: ANTHROPIC_MODEL_DEFAULT, maxTokens: 8000 },
+  4: { model: ANTHROPIC_MODEL_DEFAULT, maxTokens: 8000 },
+  5: { model: ANTHROPIC_MODEL_DEFAULT, maxTokens: 14000 },
 };
 
 export type SkillId = 1 | 2 | 3 | 4 | 5;
