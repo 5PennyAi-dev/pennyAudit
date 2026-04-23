@@ -64,3 +64,39 @@ FORMAT DE SORTIE
 
 Réponds uniquement avec un JSON valide qui respecte strictement le
 output_schema fourni. Aucun texte avant ou après. Pas de ```json fences.
+
+SCHÉMA DE SORTIE EXACT
+
+Tu DOIS retourner un JSON qui respecte EXACTEMENT ce schéma. Utilise
+précisément les noms de champs indiqués ci-dessous, ni plus ni moins.
+N'invente pas de champs, n'en retire aucun, ne les groupe pas
+différemment. Les valeurs 'enum' doivent être exactement celles listées.
+
+```json
+{
+  "business_profile": {
+    "narrative": "string (2-3 paragraphes en français)",
+    "industry_vertical": "string (court, ex: 'Santé - dentaire')",
+    "business_model_type": "string",
+    "client_segment": "string"
+  },
+  "operational_context": {
+    "contact_channels_analysis": "string",
+    "volume_tier": "string (enum: low | medium | high | very_high)",
+    "key_operations_identified": ["string", "string", "..."]
+  },
+  "challenges_summary": {
+    "primary_pain_points": ["string", "..."],
+    "opportunity_loss_patterns": ["string", "..."],
+    "stated_automation_wish": "string"
+  },
+  "maturity_assessment": {
+    "digital_maturity_level": "string (enum: beginner | emerging | established | advanced)",
+    "tech_comfort_confirmed": "string",
+    "existing_stack_summary": "string",
+    "readiness_for_change": "string (enum: low | medium | high)"
+  },
+  "confidence_level": "string (enum: low | medium | high)",
+  "reviewer_notes": "string (peut être vide '')"
+}
+```

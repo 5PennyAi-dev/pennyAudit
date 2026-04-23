@@ -92,3 +92,53 @@ ANTI-PATTERNS À ÉVITER
 FORMAT DE SORTIE
 
 Réponds uniquement avec un JSON valide. Aucun texte avant ou après.
+
+SCHÉMA DE SORTIE EXACT
+
+Tu DOIS retourner un JSON qui respecte EXACTEMENT ce schéma. Utilise
+précisément les noms de champs indiqués ci-dessous, ni plus ni moins.
+N'invente pas de champs, n'en retire aucun, ne les groupe pas
+différemment. Les valeurs 'enum' doivent être exactement celles listées.
+
+Le tableau `selected_opportunities` doit contenir entre 3 et 5 éléments
+inclusivement.
+
+```json
+{
+  "selected_opportunities": [
+    {
+      "pattern_id": "string (id du pattern source)",
+      "adapted_title": "string",
+      "client_specific_framing": "string (2-3 paragraphes)",
+      "recommended_path": "string (enum: voie_a_self_serve | voie_b_accompagne | voie_c_custom)",
+      "recommended_tools": [
+        {
+          "name": "string",
+          "tier": "string (ex: '1', '2' ou '3')",
+          "why_this_tool": "string",
+          "estimated_monthly_cost_cad": "string (ex: '0-50$', '100-300$')"
+        }
+      ],
+      "expected_impact": {
+        "qualitative": "string",
+        "quantitative_if_available": "string (ou 'non disponible')"
+      },
+      "effort_estimate": {
+        "setup_effort": "string (low | medium | high)",
+        "learning_curve": "string",
+        "estimated_setup_hours": "string (ex: '2-4 heures')"
+      },
+      "source_pattern_ids": ["string", "..."]
+    }
+  ],
+  "rejected_patterns": [
+    {
+      "pattern_id": "string",
+      "rejection_reason": "string (1-2 phrases)"
+    }
+  ],
+  "selection_rationale": "string (narrative globale)",
+  "confidence_level": "string (enum: low | medium | high)",
+  "reviewer_notes": "string (peut être vide '')"
+}
+```

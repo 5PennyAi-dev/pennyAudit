@@ -85,3 +85,42 @@ ANTI-PATTERNS À ÉVITER
 FORMAT DE SORTIE
 
 Réponds uniquement avec un JSON valide.
+
+SCHÉMA DE SORTIE EXACT
+
+Tu DOIS retourner un JSON qui respecte EXACTEMENT ce schéma. Utilise
+précisément les noms de champs indiqués ci-dessous, ni plus ni moins.
+N'invente pas de champs, n'en retire aucun, ne les groupe pas
+différemment. Les valeurs 'enum' doivent être exactement celles listées.
+
+Le bloc `loi_25_applicability` est TOUJOURS requis. Si le client n'opère
+pas au Québec, mettre `"applies": false` et expliquer dans `reason`.
+
+```json
+{
+  "risks_identified": [
+    {
+      "risk_id": "string (identifiant unique, ex: 'risk-001')",
+      "category": "string (enum: technique | conformite_reglementaire | humain_organisationnel | donnees_confidentialite | financier_roi)",
+      "description": "string",
+      "severity": "string (enum: faible | moyenne | elevee | critique)",
+      "affected_opportunities": ["string (pattern_id)", "..."],
+      "likelihood": "string (enum: peu_probable | possible | probable | tres_probable)",
+      "mitigation": {
+        "immediate_actions": ["string", "..."],
+        "ongoing_practices": ["string", "..."]
+      },
+      "source_pattern_ids": ["string", "..."]
+    }
+  ],
+  "loi_25_applicability": {
+    "applies": true,
+    "reason": "string (en français)",
+    "key_obligations": ["string", "..."],
+    "recommended_actions": ["string", "..."]
+  },
+  "overall_risk_level": "string (enum: faible | modere | eleve)",
+  "confidence_level": "string (enum: low | medium | high)",
+  "reviewer_notes": "string (peut être vide '')"
+}
+```

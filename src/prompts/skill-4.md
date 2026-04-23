@@ -77,3 +77,47 @@ ANTI-PATTERNS À ÉVITER
 FORMAT DE SORTIE
 
 Réponds uniquement avec un JSON valide.
+
+SCHÉMA DE SORTIE EXACT
+
+Tu DOIS retourner un JSON qui respecte EXACTEMENT ce schéma. Utilise
+précisément les noms de champs indiqués ci-dessous, ni plus ni moins.
+N'invente pas de champs, n'en retire aucun, ne les groupe pas
+différemment. Les valeurs 'enum' doivent être exactement celles listées.
+
+```json
+{
+  "stack_assessment": {
+    "current_stack_summary": "string",
+    "strengths": ["string", "..."],
+    "gaps": ["string", "..."]
+  },
+  "integration_map": [
+    {
+      "opportunity_id": "string (pattern_id de l'opportunité)",
+      "integration_difficulty": "string (enum: facile | moderee | complexe | non_realisable_sans_prerequis)",
+      "integration_approach": "string",
+      "blockers_if_any": ["string", "..."]
+    }
+  ],
+  "dependencies_to_resolve": [
+    {
+      "dependency": "string",
+      "impacts_opportunities": ["string", "..."],
+      "resolution_path": "string",
+      "estimated_effort": "string"
+    }
+  ],
+  "modernizations_required": [
+    {
+      "current_state": "string",
+      "recommended_state": "string",
+      "justification": "string",
+      "priority": "string (enum: prerequis | fortement_recommande | optionnel)"
+    }
+  ],
+  "overall_readiness": "string (enum: pret | presque_pret | prerequis_a_resoudre | ecart_important)",
+  "confidence_level": "string (enum: low | medium | high)",
+  "reviewer_notes": "string (peut être vide '')"
+}
+```

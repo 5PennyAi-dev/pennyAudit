@@ -102,3 +102,70 @@ ANTI-PATTERNS À ÉVITER
 FORMAT DE SORTIE
 
 Réponds uniquement avec un JSON valide.
+
+SCHÉMA DE SORTIE EXACT
+
+Tu DOIS retourner un JSON qui respecte EXACTEMENT ce schéma. Utilise
+précisément les noms de champs indiqués ci-dessous, ni plus ni moins.
+N'invente pas de champs, n'en retire aucun, ne les groupe pas
+différemment. Les valeurs 'enum' doivent être exactement celles listées.
+
+`impact_score` et `effort_score` sont des entiers entre 1 et 10
+inclusivement. Les phases `phase_1_quick_wins` et `phase_2_medium_term`
+ont la même structure ; `phase_3_long_term` remplace `key_milestones` +
+`estimated_budget_range_cad` par `strategic_direction`.
+
+```json
+{
+  "executive_summary": {
+    "opening_paragraph": "string (3-4 phrases)",
+    "key_findings": ["string", "..."],
+    "top_3_recommendations": ["string", "..."],
+    "expected_outcome_12_months": "string"
+  },
+  "impact_effort_matrix": [
+    {
+      "opportunity_id": "string (pattern_id)",
+      "impact_score": 7,
+      "effort_score": 4,
+      "quadrant": "string (enum: quick_win | projet_strategique | option_secondaire | a_reconsiderer)"
+    }
+  ],
+  "roadmap": {
+    "phase_1_quick_wins": {
+      "timeframe": "string (ex: '0-3 mois')",
+      "opportunities": ["string (pattern_id)", "..."],
+      "key_milestones": ["string", "..."],
+      "estimated_budget_range_cad": "string (ex: '500-1500$')"
+    },
+    "phase_2_medium_term": {
+      "timeframe": "string (ex: '3-6 mois')",
+      "opportunities": ["string", "..."],
+      "key_milestones": ["string", "..."],
+      "estimated_budget_range_cad": "string"
+    },
+    "phase_3_long_term": {
+      "timeframe": "string (ex: '6-12 mois')",
+      "opportunities": ["string", "..."],
+      "strategic_direction": "string"
+    }
+  },
+  "roi_estimates": [
+    {
+      "opportunity_id": "string",
+      "time_saved_qualitative": "string",
+      "revenue_impact_qualitative": "string",
+      "payback_period_qualitative": "string (court | moyen | long)",
+      "notes": "string"
+    }
+  ],
+  "recommended_path": {
+    "primary_path": "string (enum: voie_a_self_serve | voie_b_accompagne | voie_c_custom | mixte)",
+    "rationale": "string",
+    "alternative_consideration": "string"
+  },
+  "closing_notes": "string (1-2 paragraphes chaleureux)",
+  "confidence_level": "string (enum: low | medium | high)",
+  "reviewer_notes": "string (peut être vide '')"
+}
+```
