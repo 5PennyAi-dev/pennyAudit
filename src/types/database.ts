@@ -85,6 +85,7 @@ export interface AuditRow {
   exported_at: string | null;
   error_message: string | null;
   error_at_skill: number | null;
+  resume_email_sent_at: string | null;
 }
 
 export interface AuditInsert {
@@ -113,6 +114,7 @@ export interface AuditInsert {
   exported_at?: string | null;
   error_message?: string | null;
   error_at_skill?: number | null;
+  resume_email_sent_at?: string | null;
 }
 
 // ─────────────── PATTERNS ───────────────

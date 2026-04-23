@@ -120,7 +120,10 @@ CREATE TABLE IF NOT EXISTS audits (
 
   -- Erreurs éventuelles
   error_message TEXT,
-  error_at_skill INTEGER
+  error_at_skill INTEGER,
+
+  -- Reprise d'intake : horodatage du courriel de reprise envoyé par le cron
+  resume_email_sent_at TIMESTAMPTZ
 );
 
 COMMENT ON TABLE audits IS 'Audits générés par l''outil';
