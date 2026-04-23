@@ -369,6 +369,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     sendEvent(res, 'skill_5_started', {
       skillName: 'Rédaction du rapport final',
     });
+
+    // [DEBUG] traces autour du skill 5 — voir commit "trace skill 5".
+    console.log('[run] skill 5 about to start, context skills present:', {
+      s1: !!skill1,
+      s2: !!skill2,
+      s3: !!skill3,
+      s4: !!skill4,
+    });
+
     const skill5 = await runSkill({
       skillId: 5,
       input: {
@@ -380,20 +389,37 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       inputSchema: skill5InputSchema,
       outputSchema: skill5OutputSchema,
     });
+
+    console.log('[run] skill 5 completed, output type:', typeof skill5.output);
+    console.log(
+      '[run] skill 5 output preview:',
+      JSON.stringify(skill5.output).slice(0, 300),
+    );
+
     tokensTotals.total_input += skill5.tokensUsed.input;
     tokensTotals.total_output += skill5.tokensUsed.output;
     tokensTotals.by_skill.skill_5 = skill5.tokensUsed.total;
 
     const now = new Date().toISOString();
-    await supabase
-      .from('audits')
-      .update({
-        skill_5_output: skill5.output,
-        status: 'pending_review',
-        pipeline_completed_at: now,
-        updated_at: now,
-      })
-      .eq('id', auditId);
+    try {
+      const { error: updateError } = await supabase
+        .from('audits')
+        .update({
+          skill_5_output: skill5.output,
+          status: 'pending_review',
+          pipeline_completed_at: now,
+          updated_at: now,
+        })
+        .eq('id', auditId);
+      if (updateError) {
+        console.error('[run] failed to persist skill 5:', updateError);
+        throw updateError;
+      }
+      console.log('[run] skill 5 persisted successfully');
+    } catch (err) {
+      console.error('[run] skill 5 persistence exception:', err);
+      throw err;
+    }
     await logSkillRun(supabase, auditId, 5, skill5);
     sendEvent(res, 'skill_5_completed', {
       skillId: 5,

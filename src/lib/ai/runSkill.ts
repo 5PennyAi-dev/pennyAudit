@@ -30,6 +30,8 @@ export async function runSkill<TInput, TOutput>(
 ): Promise<RunSkillResult<TOutput>> {
   const { skillId, input, inputSchema, outputSchema } = options;
 
+  console.log('[runSkill] START skill', skillId);
+
   // Validation de l'input — protège contre un upstream corrompu.
   const parsedInput = inputSchema.safeParse(input);
   if (!parsedInput.success) {
@@ -70,8 +72,18 @@ export async function runSkill<TInput, TOutput>(
     );
   }
 
+  const output = parsedOutput.data;
+  console.log(
+    '[runSkill] END skill',
+    skillId,
+    'output keys:',
+    output && typeof output === 'object'
+      ? Object.keys(output as Record<string, unknown>)
+      : typeof output,
+  );
+
   return {
-    output: parsedOutput.data,
+    output,
     tokensUsed: claudeResult.tokensUsed,
     durationMs,
     attempts: claudeResult.attempts,
