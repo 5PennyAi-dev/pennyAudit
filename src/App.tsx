@@ -9,6 +9,7 @@ import { Landing } from './pages/Landing';
 import { Login } from './pages/Login';
 import { Signup } from './pages/Signup';
 import { Dashboard } from './pages/Dashboard';
+import { IntakeForm, IntakeSubmitted, ResumeFromToken } from './pages/intake';
 
 function App() {
   return (
@@ -16,7 +17,10 @@ function App() {
       <Route element={<PublicLayout />}>
         {/* Pages publiques */}
         <Route path="/" element={<Landing />} />
-        <Route path="/audit/new" element={<Placeholder title="Intake Form" />} />
+        <Route path="/audit/new" element={<IntakeForm />} />
+        <Route path="/intake" element={<IntakeForm />} />
+        <Route path="/intake/submitted" element={<IntakeSubmitted />} />
+        <Route path="/intake/resume/:token" element={<ResumeFromToken />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
 
