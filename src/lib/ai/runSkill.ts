@@ -52,6 +52,10 @@ export async function runSkill<TInput, TOutput>(
   });
   const durationMs = Date.now() - started;
 
+  // [DEBUG] Log temporaire — à retirer une fois le bug de schéma résolu.
+  console.log(`[DEBUG] Raw Claude response for skill ${skillId}`);
+  console.log(claudeResult.rawResponse);
+
   // Validation de l'output — sécurité anti-hallucination de schéma.
   const parsedOutput = outputSchema.safeParse(claudeResult.parsedJson);
   if (!parsedOutput.success) {
