@@ -33,6 +33,38 @@ import type {
   PatternRiskData,
   SSEEventName,
 } from '../../src/types/skills';
+import { computeCostUsd } from '../../src/lib/ai/pricing';
+import type { SupabaseClient } from '@supabase/supabase-js';
+import type { RunSkillResult } from '../../src/lib/ai/runSkill';
+
+async function logSkillRun(
+  supabase: SupabaseClient,
+  auditId: string,
+  skillNumber: number,
+  result: RunSkillResult<unknown>,
+): Promise<void> {
+  const cost = computeCostUsd(
+    result.model,
+    result.tokensUsed.input,
+    result.tokensUsed.output,
+  );
+  const { error } = await supabase.from('audit_logs').insert({
+    audit_id: auditId,
+    event_type: 'skill_completed',
+    skill_number: skillNumber,
+    model_used: result.model,
+    input_tokens: result.tokensUsed.input,
+    output_tokens: result.tokensUsed.output,
+    tokens_used: result.tokensUsed.total,
+    duration_ms: result.durationMs,
+    cost_usd: cost,
+    metadata: { attempts: result.attempts },
+  });
+  if (error) {
+    // Ne pas faire échouer le pipeline pour un log raté — juste warn.
+    console.warn(`[run] audit_logs insert skill ${skillNumber} failed:`, error.message);
+  }
+}
 
 export const config = {
   maxDuration: 300, // secondes — Vercel Pro requis
@@ -197,6 +229,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       .from('audits')
       .update({ skill_1_output: skill1.output, current_skill: 2 })
       .eq('id', auditId);
+    await logSkillRun(supabase, auditId, 1, skill1);
     sendEvent(res, 'skill_1_completed', {
       skillId: 1,
       tokensUsed: skill1.tokensUsed.total,
@@ -252,6 +285,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         ),
       })
       .eq('id', auditId);
+    await logSkillRun(supabase, auditId, 2, skill2);
     sendEvent(res, 'skill_2_completed', {
       skillId: 2,
       tokensUsed: skill2.tokensUsed.total,
@@ -317,6 +351,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         current_skill: 5,
       })
       .eq('id', auditId);
+    await logSkillRun(supabase, auditId, 3, skill3);
+    await logSkillRun(supabase, auditId, 4, skill4);
     sendEvent(res, 'skill_3_completed', {
       skillId: 3,
       tokensUsed: skill3.tokensUsed.total,
@@ -358,6 +394,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         updated_at: now,
       })
       .eq('id', auditId);
+    await logSkillRun(supabase, auditId, 5, skill5);
     sendEvent(res, 'skill_5_completed', {
       skillId: 5,
       tokensUsed: skill5.tokensUsed.total,

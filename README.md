@@ -64,6 +64,8 @@ Supabase SQL Editor par ordre chronologique.
   `audits.status` (valeurs autorisées : `draft`, `running`, `pending_review`,
   `approved`, `delivered`, `error`). Nettoyer les rows avec des statuts legacy
   avant d'appliquer.
+- `2026-04-23_audit_logs_tokens.sql` — colonnes `model_used`, `input_tokens`,
+  `output_tokens` + index composite pour l'endpoint `/api/admin/costs`.
 
 ## Cron : relance des formulaires abandonnés
 
@@ -157,8 +159,24 @@ Retour : `{ output, tokensUsed, durationMs, model, attempts }`.
 
 ### Coût par audit
 
-Pipeline Opus 4.7 partout : ~2,25 $ CAD/audit. Les `tokensUsed` sont loggés
-par `sendEvent` côté backend — à intégrer à une table `audit_logs` plus tard.
+Pipeline Opus 4.7 partout : ~2,25 $ CAD/audit. Chaque skill persiste une
+row `audit_logs` avec `event_type='skill_completed'`, `model_used`,
+`input_tokens`, `output_tokens`, `tokens_used`, `duration_ms` et `cost_usd`
+(calculé via `src/lib/ai/pricing.ts` en USD).
+
+Pour consulter les coûts agrégés sur les 30 derniers jours :
+
+```bash
+curl -s "http://localhost:3000/api/admin/costs?days=30" \
+  -H "Authorization: Bearer $ADMIN_API_SECRET" | jq
+```
+
+Retourne : `summary` (audits, tokens totaux, coût total, coût moyen/audit),
+`by_skill` (1 ligne par skill avec runs, tokens, coût, durée moyenne),
+`by_audit` (top 50 par coût décroissant).
+
+Quand Anthropic révise ses prix ou qu'un modèle est ajouté, mettre à jour
+`MODEL_PRICING_USD` dans `src/lib/ai/pricing.ts`.
 
 ---
 

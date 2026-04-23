@@ -198,6 +198,9 @@ export interface AuditLogRow {
   tokens_used: number | null;
   cost_usd: number | null;
   created_at: string;
+  model_used: string | null;
+  input_tokens: number | null;
+  output_tokens: number | null;
 }
 
 export interface AuditLogInsert {
@@ -210,4 +213,7 @@ export interface AuditLogInsert {
   tokens_used?: number | null;
   cost_usd?: number | null;
   created_at?: string;
+  model_used?: string | null;
+  input_tokens?: number | null;
+  output_tokens?: number | null;
 }
