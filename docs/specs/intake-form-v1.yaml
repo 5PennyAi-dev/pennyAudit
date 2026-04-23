@@ -1,0 +1,534 @@
+# Formulaire d'intake — Outil d'audit IA 5PennyAi
+# Version 1.0 — 23 avril 2026
+#
+# Ce fichier est la source unique pour:
+# - Le prototype Claude Design (7 écrans)
+# - L'implémentation React/Vite (composant multi-étapes)
+# - Le mapping vers les 5 skills du pipeline d'audit
+#
+# Conventions:
+# - Champs YAML en anglais, valeurs/labels en français (cohérent avec patterns)
+# - field_id en snake_case, utilisés comme clés dans audits.intake_data JSONB
+# - skills_used indique quels skills consomment le champ (1-5)
+
+meta:
+  id: intake-form
+  version: "1.0"
+  language: fr
+  estimated_duration_minutes: "5-7"
+  total_content_questions: 19
+  total_screens: 7
+  persistence: progressive_save_on_screen_change
+  resume_token: email_based_magic_link  # pour reprendre un formulaire abandonné
+
+# ============================================================
+# ÉCRAN 1 — Bienvenue + capture email
+# ============================================================
+screens:
+  - id: welcome
+    position: 1
+    title: "Commençons votre audit IA"
+    description: |
+      Répondez à 19 questions (5-7 minutes) pour recevoir un rapport
+      d'audit personnalisé avec 3-5 opportunités concrètes d'IA adaptées
+      à votre entreprise.
+    fields:
+      - id: first_name
+        type: text
+        label: "Votre prénom"
+        placeholder: "Marie"
+        required: true
+        max_length: 50
+        skills_used: [1, 5]
+        purpose: "Personnalisation du rapport"
+
+      - id: email
+        type: email
+        label: "Votre courriel"
+        placeholder: "marie@exemple.com"
+        helper_text: "On vous enverra votre rapport ici. Pas de pourriel, promis."
+        required: true
+        skills_used: []
+        purpose: "Livraison du rapport + reprise du formulaire si abandonné"
+
+# ============================================================
+# ÉCRAN 2 — Bloc 1 : L'entreprise (5 questions)
+# ============================================================
+  - id: bloc_1_entreprise
+    position: 2
+    title: "Parlons de votre entreprise"
+    description: "Quelques infos de base pour contextualiser l'audit."
+    fields:
+      - id: business_name
+        type: text
+        label: "Nom de votre entreprise"
+        placeholder: "Ex : Clinique dentaire Tremblay"
+        required: true
+        max_length: 100
+        skills_used: [1, 5]
+
+      - id: industry
+        type: select
+        label: "Secteur d'activité principal"
+        required: true
+        skills_used: [1, 2, 3]
+        options:
+          - value: services_professionnels
+            label: "Services professionnels (avocats, notaires, comptables, consultants)"
+          - value: sante_bien_etre
+            label: "Santé et bien-être (cliniques, dentistes, physio, psychologues)"
+          - value: services_domicile
+            label: "Services à domicile (plomberie, électricité, rénovation, paysagement)"
+          - value: beaute_soins
+            label: "Beauté et soins personnels (salons, spas, barbiers)"
+          - value: commerce_detail
+            label: "Commerce de détail (boutiques, commerces spécialisés)"
+          - value: restauration
+            label: "Restauration et alimentation"
+          - value: education_formation
+            label: "Éducation et formation (coachs, formateurs, écoles privées)"
+          - value: immobilier
+            label: "Immobilier et courtage"
+          - value: commerce_ligne
+            label: "Commerce en ligne (e-commerce)"
+          - value: arts_culture
+            label: "Arts, culture et événementiel"
+          - value: autre
+            label: "Autre (préciser)"
+        conditional_field:
+          when_value: autre
+          field:
+            id: industry_other
+            type: text
+            label: "Précisez votre secteur"
+            required: true
+            max_length: 100
+
+      - id: company_size
+        type: radio
+        label: "Taille de votre équipe"
+        required: true
+        skills_used: [1, 2, 5]
+        options:
+          - value: solo
+            label: "Je travaille seul(e)"
+          - value: micro_2_5
+            label: "2 à 5 personnes"
+          - value: small_6_20
+            label: "6 à 20 personnes"
+          - value: medium_21_50
+            label: "21 à 50 personnes"
+          - value: large_50_plus
+            label: "Plus de 50 personnes"
+
+      - id: primary_location
+        type: radio
+        label: "Où votre entreprise opère-t-elle principalement ?"
+        required: true
+        skills_used: [3]
+        purpose: "Détermine l'application de la Loi 25 (Québec)"
+        options:
+          - value: quebec
+            label: "Québec"
+          - value: canada_hors_qc
+            label: "Canada (hors Québec)"
+          - value: international
+            label: "International ou multi-juridictions"
+
+      - id: website_url
+        type: url
+        label: "Site web actuel (si vous en avez un)"
+        placeholder: "https://votreentreprise.com"
+        helper_text: "Facultatif. Nous permet de mieux comprendre votre présence en ligne."
+        required: false
+        skills_used: [1]
+
+# ============================================================
+# ÉCRAN 3 — Bloc 2 : Vos opérations (4 questions)
+# ============================================================
+  - id: bloc_2_operations
+    position: 3
+    title: "Comment vous opérez"
+    description: "Pour comprendre votre modèle et votre relation client."
+    fields:
+      - id: revenue_model
+        type: radio
+        label: "Votre modèle de revenus principal"
+        required: true
+        skills_used: [1, 2, 5]
+        options:
+          - value: services
+            label: "Services (facturation à l'heure, au projet ou au forfait)"
+          - value: produits
+            label: "Produits (vente physique ou numérique)"
+          - value: abonnement
+            label: "Abonnement récurrent"
+          - value: mixte
+            label: "Mixte (plusieurs sources)"
+
+      - id: client_type
+        type: radio
+        label: "Vos clients sont principalement…"
+        required: true
+        skills_used: [1, 2]
+        options:
+          - value: b2c
+            label: "Des particuliers (B2C)"
+          - value: b2b
+            label: "D'autres entreprises (B2B)"
+          - value: mixte
+            label: "Les deux"
+
+      - id: contact_channels
+        type: multi_select
+        label: "Comment vos clients vous contactent-ils ?"
+        helper_text: "Cochez tous les canaux applicables."
+        required: true
+        min_selected: 1
+        skills_used: [2]
+        purpose: "Détermine la pertinence des patterns vocal, chat, messagerie"
+        options:
+          - value: telephone
+            label: "Téléphone"
+          - value: courriel
+            label: "Courriel"
+          - value: chat_web
+            label: "Chat sur le site web"
+          - value: sms
+            label: "Texto (SMS)"
+          - value: formulaire_web
+            label: "Formulaire sur le site web"
+          - value: reseaux_sociaux
+            label: "Réseaux sociaux (Messenger, Instagram, etc.)"
+          - value: en_personne
+            label: "En personne / sur place"
+
+      - id: client_volume
+        type: radio
+        label: "Environ combien de clients traitez-vous par mois ?"
+        required: true
+        skills_used: [2, 5]
+        purpose: "Dimensionnement des solutions + calcul ROI"
+        options:
+          - value: less_10
+            label: "Moins de 10"
+          - value: v_10_50
+            label: "10 à 50"
+          - value: v_50_200
+            label: "50 à 200"
+          - value: more_200
+            label: "Plus de 200"
+
+# ============================================================
+# ÉCRAN 4 — Bloc 3 : Vos défis (3 questions, coeur qualitatif)
+# ============================================================
+  - id: bloc_3_defis
+    position: 4
+    title: "Vos défis au quotidien"
+    description: |
+      C'est la section la plus importante. Vos réponses ici orientent
+      directement les opportunités que nous allons identifier.
+    fields:
+      - id: time_consuming_tasks
+        type: textarea
+        label: "Quelles tâches prennent le plus de temps à vous ou à votre équipe ?"
+        placeholder: |
+          Exemple : Je passe environ 2 heures par jour à répondre aux mêmes
+          questions de clients au téléphone et par courriel, surtout pour
+          les prises de rendez-vous et les questions sur les tarifs.
+        helper_text: |
+          ⚡ Astuce : plus votre réponse est précise et détaillée (exemples
+          concrets, temps passé, fréquence), plus votre audit sera pertinent.
+        required: true
+        min_length: 50
+        max_length: 2000
+        skills_used: [2]
+        purpose: "Champ principal pour le matching sémantique via embeddings pgvector"
+
+      - id: lost_opportunities
+        type: multi_select_with_other
+        label: "Où perdez-vous des clients ou des occasions d'affaires ?"
+        helper_text: "Cochez ce qui s'applique. Vous pourrez préciser ensuite."
+        required: true
+        min_selected: 1
+        skills_used: [2, 3, 5]
+        options:
+          - value: appels_manques
+            label: "Appels manqués hors des heures d'ouverture"
+          - value: reponses_lentes
+            label: "Réponses trop lentes aux demandes"
+          - value: suivi_oublie
+            label: "Manque de suivi avec les prospects"
+          - value: prise_rdv
+            label: "Difficulté à prendre des rendez-vous"
+          - value: visibilite_ligne
+            label: "Manque de visibilité en ligne"
+          - value: contenu_marketing
+            label: "Pas assez de contenu marketing produit"
+          - value: admin_chronophage
+            label: "Tâches administratives qui grugent le temps de vente"
+          - value: autre
+            label: "Autre situation"
+        other_field:
+          id: lost_opportunities_detail
+          type: textarea
+          label: "Précisez (facultatif)"
+          placeholder: "Décrivez une situation récente où vous avez perdu une occasion."
+          required: false
+          max_length: 1000
+
+      - id: automation_wish
+        type: textarea
+        label: "Si vous pouviez automatiser UNE seule chose demain, ce serait quoi ?"
+        placeholder: |
+          Exemple : Les confirmations et rappels de rendez-vous par texto,
+          parce que j'ai trop de no-shows.
+        helper_text: "Votre réponse devient la priorité #1 de votre feuille de route."
+        required: true
+        min_length: 30
+        max_length: 500
+        skills_used: [5]
+
+# ============================================================
+# ÉCRAN 5 — Bloc 4 : Stack et données (3 questions)
+# ============================================================
+  - id: bloc_4_stack
+    position: 5
+    title: "Vos outils et vos données"
+    description: "Pour évaluer la compatibilité technique des solutions."
+    fields:
+      - id: current_tools
+        type: multi_select
+        label: "Quels outils utilisez-vous déjà ?"
+        helper_text: "Cochez tout ce qui s'applique, même partiellement."
+        required: false
+        skills_used: [4]
+        options:
+          - value: crm
+            label: "CRM (HubSpot, Salesforce, Pipedrive, Zoho…)"
+          - value: email_marketing
+            label: "Email marketing (Mailchimp, Brevo, Constant Contact…)"
+          - value: scheduling
+            label: "Prise de rendez-vous (Calendly, Cal.com, GOrendezvous…)"
+          - value: chat_client
+            label: "Chat client (Crisp, Tidio, Intercom…)"
+          - value: comptabilite
+            label: "Comptabilité (QuickBooks, Xero, Sage…)"
+          - value: facturation
+            label: "Facturation (FreshBooks, Wave, Square…)"
+          - value: reseaux_sociaux_mgmt
+            label: "Gestion de réseaux sociaux (Hootsuite, Buffer, Meta Business…)"
+          - value: bureautique
+            label: "Suite bureautique (Microsoft 365, Google Workspace)"
+          - value: telephonie_voip
+            label: "Téléphonie VoIP ou service virtuel"
+          - value: cms_site
+            label: "Site web / CMS (WordPress, Shopify, Wix, Webflow…)"
+          - value: automatisation
+            label: "Automatisation (Zapier, Make, n8n…)"
+          - value: aucun
+            label: "Aucun outil numérique formalisé"
+
+      - id: data_sensitivity
+        type: radio
+        label: "Quel est le type de données le plus sensible que vous manipulez ?"
+        required: true
+        skills_used: [3]
+        purpose: "Détermine la sévérité des risques conformité (Loi 25, RGPD, etc.)"
+        options:
+          - value: basique
+            label: "Informations de base (nom, courriel, téléphone)"
+          - value: financier
+            label: "Informations financières ou de paiement"
+          - value: sante
+            label: "Données de santé ou médicales"
+          - value: juridique
+            label: "Données juridiques ou légales confidentielles"
+          - value: aucune_sensible
+            label: "Aucune donnée sensible traitée"
+
+      - id: tech_comfort
+        type: radio
+        label: "Votre niveau de confort avec la technologie"
+        required: true
+        skills_used: [5]
+        purpose: "Calibration du langage et de la profondeur technique du rapport"
+        options:
+          - value: debutant
+            label: "Débutant — je préfère qu'on me guide pas à pas"
+          - value: a_laise
+            label: "À l'aise — je me débrouille avec la plupart des outils"
+          - value: avance
+            label: "Avancé — je n'ai pas peur d'installer, configurer, scripter"
+
+# ============================================================
+# ÉCRAN 6 — Bloc 5 : Ressources et ambitions (4 questions)
+# ============================================================
+  - id: bloc_5_ressources
+    position: 6
+    title: "Vos ressources et votre horizon"
+    description: "Pour calibrer des recommandations réalistes pour vous."
+    fields:
+      - id: budget_range
+        type: radio
+        label: "Budget envisagé pour l'implémentation initiale"
+        helper_text: "Une estimation approximative suffit. Ce budget peut inclure abonnements, paramétrage et/ou développement."
+        required: true
+        skills_used: [5]
+        options:
+          - value: under_500
+            label: "Moins de 500 $"
+          - value: r_500_2k
+            label: "500 $ à 2 000 $"
+          - value: r_2k_5k
+            label: "2 000 $ à 5 000 $"
+          - value: r_5k_15k
+            label: "5 000 $ à 15 000 $"
+          - value: more_15k
+            label: "Plus de 15 000 $"
+
+      - id: implementation_horizon
+        type: radio
+        label: "Dans quel horizon souhaitez-vous voir des résultats ?"
+        required: true
+        skills_used: [5]
+        options:
+          - value: under_1_month
+            label: "Moins d'un mois (urgent)"
+          - value: h_1_3_months
+            label: "1 à 3 mois"
+          - value: h_3_6_months
+            label: "3 à 6 mois"
+          - value: h_6_12_months
+            label: "6 à 12 mois"
+
+      - id: preferred_approach
+        type: radio
+        label: "Comment préférez-vous implémenter les solutions ?"
+        required: true
+        skills_used: [5]
+        purpose: "Mappe directement sur les 3 voies 5PennyAi (A/B/C)"
+        options:
+          - value: voie_a_self
+            label: "Je veux faire ça moi-même avec des outils prêts à l'emploi"
+          - value: voie_b_accompagne
+            label: "J'aimerais un accompagnement léger pour la configuration"
+          - value: voie_c_delegue
+            label: "Je préfère déléguer complètement à un partenaire expert"
+
+      - id: additional_context
+        type: textarea
+        label: "Autre chose qu'on devrait savoir ?"
+        placeholder: "Contexte, contraintes particulières, projets en cours, préférences..."
+        helper_text: "Facultatif. Toute information utile pour personnaliser votre audit."
+        required: false
+        max_length: 1000
+        skills_used: [1, 5]
+
+# ============================================================
+# ÉCRAN 7 — Confirmation et lancement
+# ============================================================
+  - id: confirmation
+    position: 7
+    title: "Prêt(e) à recevoir votre audit ?"
+    description: |
+      En cliquant "Lancer mon audit", vous lancez la génération
+      personnalisée de votre rapport. Le processus prend environ
+      5 à 10 minutes — vous pouvez suivre le progrès en temps réel
+      ou quitter la page et recevoir le rapport par courriel.
+    fields:
+      - id: terms_acceptance
+        type: checkbox
+        label: "J'accepte les conditions d'utilisation et la politique de confidentialité."
+        required: true
+        skills_used: []
+
+      - id: marketing_consent
+        type: checkbox
+        label: "J'accepte de recevoir occasionnellement des communications de 5PennyAi."
+        required: false
+        skills_used: []
+        helper_text: "Facultatif. Vous pouvez vous désabonner à tout moment."
+
+    cta:
+      label: "Lancer mon audit"
+      action: "POST /api/audit/run"
+
+# ============================================================
+# Règles de validation globales et UX
+# ============================================================
+validation_rules:
+  - required_fields_must_be_completed_before_next_screen: true
+  - email_format_validated_via_regex_and_mx: true
+  - url_format_validated_if_provided: true
+  - textarea_min_length_enforced_with_character_counter: true
+  - progressive_save_on_each_screen_transition: true
+  - abandoned_forms_resumable_via_magic_link_7_days: true
+
+ux_rules:
+  - progress_bar_showing_current_screen_over_7: true
+  - back_button_always_visible_except_on_welcome: true
+  - estimated_time_remaining_displayed: true
+  - inline_validation_errors_not_blocking_typing: true
+  - autofocus_on_first_field_of_each_screen: true
+  - keyboard_navigation_tab_and_enter_supported: true
+  - mobile_responsive_single_column_below_768px: true
+
+# ============================================================
+# Mapping skills → champs (vue inversée pour debug)
+# ============================================================
+skills_input_mapping:
+  skill_1_context_builder:
+    primary_fields:
+      - business_name
+      - industry
+      - company_size
+      - revenue_model
+      - client_type
+    supporting_fields:
+      - website_url
+      - additional_context
+
+  skill_2_opportunity_finder:
+    primary_fields:
+      - time_consuming_tasks  # génère l'embedding principal
+      - lost_opportunities
+      - contact_channels
+    supporting_fields:
+      - industry
+      - client_volume
+      - revenue_model
+
+  skill_3_risk_analyzer:
+    primary_fields:
+      - primary_location  # Loi 25
+      - data_sensitivity
+    supporting_fields:
+      - industry  # croise avec professions réglementées
+
+  skill_4_tech_stack_auditor:
+    primary_fields:
+      - current_tools
+    supporting_fields:
+      - tech_comfort
+
+  skill_5_synthesis_roi_roadmap:
+    primary_fields:
+      - automation_wish  # priorité #1 de la roadmap
+      - budget_range
+      - implementation_horizon
+      - preferred_approach  # mappe sur voie A/B/C
+    supporting_fields:
+      - tech_comfort
+      - client_volume
+      - additional_context
+
+# ============================================================
+# Pour plus tard (Phase 2)
+# ============================================================
+future_enhancements:
+  - branching_logic_based_on_industry_or_sensitivity: "Ex: si santé + QC, question additionnelle sur dossiers patients"
+  - conditional_questions_based_on_company_size
+  - multilingual_support_english_version
+  - save_and_resume_without_email_via_localStorage
+  - file_upload_optional_for_org_chart_or_process_doc
