@@ -24,9 +24,9 @@ npx vercel dev              # équivalent + endpoints api/*
      réponse JSON (au lieu d'être envoyé par courriel).
    - Ouvrir `/intake/resume/<token>` → redirige vers l'écran où l'utilisateur
      en était, données intactes.
-5. À l'écran 7, le clic sur « Lancer mon audit » redirige vers
-   `/intake/submitted` (page d'attente temporaire — en Session 2B, déclenchera
-   le pipeline des 5 skills).
+5. À l'écran 7, le clic sur « Lancer mon audit » appelle
+   `POST /api/audit/run` et redirige vers `/audit/progress/:auditId` où
+   les 4 étapes de production s'animent en temps réel (voir Session 2B).
 
 ## Variables d'environnement
 
@@ -37,12 +37,29 @@ Voir `.env.example`. Nouvelles en Session 2A :
 - `PUBLIC_BASE_URL` — base URL utilisée dans les liens de reprise
 - `CRON_SECRET` — bearer token exigé par les endpoints `/api/cron/*`
 
+Nouvelles en Session 2B :
+- `ADMIN_EMAIL`, `ADMIN_NAME` — destinataire des courriels admin
+- `RESEND_FROM_CLIENT` — expéditeur personnel (Christian) pour le courriel
+  client de fin de pipeline ; fallback sur `RESEND_FROM` (no-reply)
+- `INTERNAL_HOOK_SECRET` — bearer des appels internes orchestrateur →
+  `/api/audit/send-completion-emails` ; fallback sur `CRON_SECRET`
+
 ## Migrations SQL
 
 Les migrations versionnées vivent dans `sql/migrations/`. À exécuter dans
-Supabase SQL Editor par ordre chronologique. Session 2A :
-- `sql/migrations/2026-04-23_add_resume_email_sent_at.sql` — ajoute la
-  colonne `audits.resume_email_sent_at` pour le cron de relance.
+Supabase SQL Editor par ordre chronologique.
+
+**Session 2A** :
+- `2026-04-23_add_resume_email_sent_at.sql` — colonne `audits.resume_email_sent_at`.
+
+**Session 2B** :
+- `2026-04-23_audits_pipeline_status.sql` — colonne `audits.pipeline_completed_at`
+  + statuts `pending_review` et `error` (documentés, pas de check constraint).
+- `2026-04-23_patterns_embedding_voyage3.sql` — redimensionne
+  `patterns.embedding` à `VECTOR(1024)` pour Voyage-3, recrée l'index ivfflat,
+  et crée la RPC `match_patterns_voyage3`. **Après l'avoir appliquée, relancer
+  `npm run embeddings:generate`** (les anciens embeddings 1536 dims sont
+  supprimés par la migration).
 
 ## Cron : relance des formulaires abandonnés
 
@@ -70,6 +87,74 @@ Sans `Authorization` valide, l'endpoint retourne `401 Unauthorized`.
 En mode dev (sans `RESEND_API_KEY`), les courriels ne sont pas envoyés
 mais `resume_email_sent_at` est quand même mis à jour — regarde la console
 pour voir le `resumeUrl` de chaque draft.
+
+## Pipeline d'audit (Session 2B)
+
+Le pipeline complet enchaîne 5 skills Claude (Opus 4.7) + matching
+sémantique pgvector, et stream la progression au client via SSE.
+
+Architecture :
+- `api/skills/skill-{1..5}-*.ts` — 1 endpoint par skill (appelable en isolation)
+- `api/audit/run.ts` — orchestrateur SSE qui appelle les skills via le
+  helper `runSkill()` (pas d'aller-retour HTTP entre fonctions)
+- `api/audit/send-completion-emails.ts` — déclenché en fire-and-forget
+  après `pipeline_completed` (client + admin) ou `pipeline_error`
+- Front : `/audit/progress/:auditId` consomme le stream SSE via
+  `useAuditProgress()` et affiche 4 étapes visuelles
+
+**Runtime** : Node serverless avec `maxDuration: 300` (Vercel Pro requis —
+durée observée 3-8 min). Un heartbeat SSE toutes les 15 s garde le client
+vivant.
+
+### Prérequis avant le premier run
+
+1. **Appliquer les migrations** Session 2B (voir section précédente).
+2. **Générer les embeddings des patterns** :
+   ```bash
+   npm run embeddings:generate
+   ```
+   Vérifier ensuite dans Supabase SQL Editor :
+   ```sql
+   SELECT id, embedding IS NOT NULL AS has_embedding FROM patterns;
+   ```
+3. Configurer `ADMIN_EMAIL` dans `.env` pour recevoir les notifications de
+   révision.
+
+### Tester le pipeline en local
+
+```bash
+# 1. Remplir un intake jusqu'à l'écran 7 (ou créer un audit draft directement)
+# 2. Déclencher le pipeline manuellement et regarder le flux SSE :
+curl -N -X POST http://localhost:3000/api/audit/run \
+  -H "Content-Type: application/json" \
+  -d '{"auditId":"<UUID_DU_DRAFT>"}'
+```
+
+Événements attendus dans l'ordre :
+`pipeline_started` → `skill_1_started/completed` → `matching_started/completed`
+→ `skill_2_started/completed` → `skills_3_4_started` →
+`skill_3_completed` + `skill_4_completed` → `skills_3_4_completed` →
+`skill_5_started/completed` → `pipeline_completed`.
+
+Après succès, vérifier dans Supabase que `audits.status = 'pending_review'`,
+que les 5 `skill_N_output` sont remplis et que `pipeline_completed_at` est
+horodaté. Les 2 courriels partent en fire-and-forget (loggés si
+`RESEND_API_KEY` absent).
+
+### Tester un skill en isolation
+
+```bash
+curl -X POST http://localhost:3000/api/skills/skill-1-context-builder \
+  -H "Content-Type: application/json" \
+  -d '{"intakeData": { "first_name":"Marie", "business_name":"Test", ... }}'
+```
+
+Retour : `{ output, tokensUsed, durationMs, model, attempts }`.
+
+### Coût par audit
+
+Pipeline Opus 4.7 partout : ~2,25 $ CAD/audit. Les `tokensUsed` sont loggés
+par `sendEvent` côté backend — à intégrer à une table `audit_logs` plus tard.
 
 ---
 
