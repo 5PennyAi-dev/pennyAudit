@@ -53,7 +53,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const fromAddress = process.env.RESEND_FROM ?? '5PennyAi <no-reply@5pennyai.com>';
 
   if (!resendKey) {
-    // Mode dev : on log au lieu d'envoyer.
+    // Mode dev : on log et on retourne resumeUrl au lieu d'envoyer.
+    // ⚠️ PRODUCTION : RESEND_API_KEY DOIT être configurée sur Vercel avant
+    // le lancement, sinon aucun courriel de reprise ne sera envoyé et les
+    // utilisateurs qui abandonnent le formulaire ne pourront pas le reprendre.
     console.warn('[send-resume-link] RESEND_API_KEY absent — email non envoyé.');
     console.log('[send-resume-link] resumeUrl:', resumeUrl);
     return res.status(200).json({
