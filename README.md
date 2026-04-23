@@ -60,6 +60,10 @@ Supabase SQL Editor par ordre chronologique.
   et crée la RPC `match_patterns_voyage3`. **Après l'avoir appliquée, relancer
   `npm run embeddings:generate`** (les anciens embeddings 1536 dims sont
   supprimés par la migration).
+- `2026-04-23_audits_status_check.sql` — CHECK constraint strict sur
+  `audits.status` (valeurs autorisées : `draft`, `running`, `pending_review`,
+  `approved`, `delivered`, `error`). Nettoyer les rows avec des statuts legacy
+  avant d'appliquer.
 
 ## Cron : relance des formulaires abandonnés
 

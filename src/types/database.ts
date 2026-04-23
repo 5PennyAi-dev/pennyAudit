@@ -47,15 +47,16 @@ export interface ClientInsert {
 
 // ─────────────── AUDITS ───────────────
 
+// Liste définitive alignée avec le CHECK constraint SQL
+// (sql/migrations/2026-04-23_audits_status_check.sql).
+// 'approved' et 'delivered' sont prévus pour la Session 2C.
 export type AuditStatus =
   | 'draft'
-  | 'paid'
   | 'running'
   | 'pending_review'
-  | 'error'
-  | 'completed'
-  | 'failed'
-  | 'exported';
+  | 'approved'
+  | 'delivered'
+  | 'error';
 
 export type PaymentStatus = 'pending' | 'paid' | 'refunded';
 
