@@ -1,0 +1,283 @@
+// Schémas Zod pour valider input/output de chaque skill.
+// Alignés sur docs/specs/skills-prompts-v1.yaml et src/types/skills.ts.
+
+import { z } from 'zod';
+
+const confidenceLevel = z.enum(['low', 'medium', 'high']);
+const reviewerNotes = z.string().nullable();
+
+// ─────────── Skill 1 ───────────
+
+export const skill1InputSchema = z.object({
+  intake_data: z.record(z.string(), z.unknown()),
+});
+
+export const skill1OutputSchema = z.object({
+  business_profile: z.object({
+    narrative: z.string(),
+    industry_vertical: z.string(),
+    business_model_type: z.string(),
+    client_segment: z.string(),
+  }),
+  operational_context: z.object({
+    contact_channels_analysis: z.string(),
+    volume_tier: z.string(),
+    key_operations_identified: z.array(z.string()),
+  }),
+  challenges_summary: z.object({
+    primary_pain_points: z.array(z.string()),
+    opportunity_loss_patterns: z.array(z.string()),
+    stated_automation_wish: z.string(),
+  }),
+  maturity_assessment: z.object({
+    digital_maturity_level: z.string(),
+    tech_comfort_confirmed: z.string(),
+    existing_stack_summary: z.string(),
+    readiness_for_change: z.string(),
+  }),
+  confidence_level: confidenceLevel,
+  reviewer_notes: reviewerNotes,
+});
+
+// ─────────── Skill 2 ───────────
+
+const recommendedPath = z.enum([
+  'voie_a_self_serve',
+  'voie_b_accompagne',
+  'voie_c_custom',
+]);
+
+export const skill2InputSchema = z.object({
+  context: skill1OutputSchema,
+  candidate_patterns: z.array(
+    z.object({
+      pattern_id: z.string(),
+      content: z.unknown(),
+      similarity_score: z.number(),
+    }),
+  ),
+});
+
+export const skill2OutputSchema = z.object({
+  selected_opportunities: z
+    .array(
+      z.object({
+        pattern_id: z.string(),
+        adapted_title: z.string(),
+        client_specific_framing: z.string(),
+        recommended_path: recommendedPath,
+        recommended_tools: z.array(
+          z.object({
+            name: z.string(),
+            tier: z.string(),
+            why_this_tool: z.string(),
+            estimated_monthly_cost_cad: z.string(),
+          }),
+        ),
+        expected_impact: z.object({
+          qualitative: z.string(),
+          quantitative_if_available: z.string(),
+        }),
+        effort_estimate: z.object({
+          setup_effort: z.string(),
+          learning_curve: z.string(),
+          estimated_setup_hours: z.string(),
+        }),
+        source_pattern_ids: z.array(z.string()),
+      }),
+    )
+    .min(3)
+    .max(5),
+  rejected_patterns: z.array(
+    z.object({
+      pattern_id: z.string(),
+      rejection_reason: z.string(),
+    }),
+  ),
+  selection_rationale: z.string(),
+  confidence_level: confidenceLevel,
+  reviewer_notes: reviewerNotes,
+});
+
+// ─────────── Skill 3 ───────────
+
+export const skill3InputSchema = z.object({
+  context: skill1OutputSchema,
+  selected_opportunities: skill2OutputSchema.shape.selected_opportunities,
+  patterns_risk_data: z.array(
+    z.object({
+      pattern_id: z.string(),
+      risks: z.unknown(),
+    }),
+  ),
+});
+
+export const skill3OutputSchema = z.object({
+  risks_identified: z.array(
+    z.object({
+      risk_id: z.string(),
+      category: z.enum([
+        'technique',
+        'conformite_reglementaire',
+        'humain_organisationnel',
+        'donnees_confidentialite',
+        'financier_roi',
+      ]),
+      description: z.string(),
+      severity: z.enum(['faible', 'moyenne', 'elevee', 'critique']),
+      affected_opportunities: z.array(z.string()),
+      likelihood: z.enum([
+        'peu_probable',
+        'possible',
+        'probable',
+        'tres_probable',
+      ]),
+      mitigation: z.object({
+        immediate_actions: z.array(z.string()),
+        ongoing_practices: z.array(z.string()),
+      }),
+      source_pattern_ids: z.array(z.string()),
+    }),
+  ),
+  loi_25_applicability: z.object({
+    applies: z.boolean(),
+    reason: z.string(),
+    key_obligations: z.array(z.string()),
+    recommended_actions: z.array(z.string()),
+  }),
+  overall_risk_level: z.enum(['faible', 'modere', 'eleve']),
+  confidence_level: confidenceLevel,
+  reviewer_notes: reviewerNotes,
+});
+
+// ─────────── Skill 4 ───────────
+
+export const skill4InputSchema = z.object({
+  context: skill1OutputSchema,
+  selected_opportunities: skill2OutputSchema.shape.selected_opportunities,
+  patterns_prereq_data: z.array(
+    z.object({
+      pattern_id: z.string(),
+      prerequisites: z.unknown(),
+    }),
+  ),
+});
+
+export const skill4OutputSchema = z.object({
+  stack_assessment: z.object({
+    current_stack_summary: z.string(),
+    strengths: z.array(z.string()),
+    gaps: z.array(z.string()),
+  }),
+  integration_map: z.array(
+    z.object({
+      opportunity_id: z.string(),
+      integration_difficulty: z.enum([
+        'facile',
+        'moderee',
+        'complexe',
+        'non_realisable_sans_prerequis',
+      ]),
+      integration_approach: z.string(),
+      blockers_if_any: z.array(z.string()),
+    }),
+  ),
+  dependencies_to_resolve: z.array(
+    z.object({
+      dependency: z.string(),
+      impacts_opportunities: z.array(z.string()),
+      resolution_path: z.string(),
+      estimated_effort: z.string(),
+    }),
+  ),
+  modernizations_required: z.array(
+    z.object({
+      current_state: z.string(),
+      recommended_state: z.string(),
+      justification: z.string(),
+      priority: z.enum(['prerequis', 'fortement_recommande', 'optionnel']),
+    }),
+  ),
+  overall_readiness: z.enum([
+    'pret',
+    'presque_pret',
+    'prerequis_a_resoudre',
+    'ecart_important',
+  ]),
+  confidence_level: confidenceLevel,
+  reviewer_notes: reviewerNotes,
+});
+
+// ─────────── Skill 5 ───────────
+
+const recommendedPathWithMixte = z.enum([
+  'voie_a_self_serve',
+  'voie_b_accompagne',
+  'voie_c_custom',
+  'mixte',
+]);
+
+export const skill5InputSchema = z.object({
+  context: skill1OutputSchema,
+  selected_opportunities: skill2OutputSchema.shape.selected_opportunities,
+  risks_analysis: skill3OutputSchema,
+  stack_audit: skill4OutputSchema,
+});
+
+export const skill5OutputSchema = z.object({
+  executive_summary: z.object({
+    opening_paragraph: z.string(),
+    key_findings: z.array(z.string()),
+    top_3_recommendations: z.array(z.string()),
+    expected_outcome_12_months: z.string(),
+  }),
+  impact_effort_matrix: z.array(
+    z.object({
+      opportunity_id: z.string(),
+      impact_score: z.number().int().min(1).max(10),
+      effort_score: z.number().int().min(1).max(10),
+      quadrant: z.enum([
+        'quick_win',
+        'projet_strategique',
+        'option_secondaire',
+        'a_reconsiderer',
+      ]),
+    }),
+  ),
+  roadmap: z.object({
+    phase_1_quick_wins: z.object({
+      timeframe: z.string(),
+      opportunities: z.array(z.string()),
+      key_milestones: z.array(z.string()),
+      estimated_budget_range_cad: z.string(),
+    }),
+    phase_2_medium_term: z.object({
+      timeframe: z.string(),
+      opportunities: z.array(z.string()),
+      key_milestones: z.array(z.string()),
+      estimated_budget_range_cad: z.string(),
+    }),
+    phase_3_long_term: z.object({
+      timeframe: z.string(),
+      opportunities: z.array(z.string()),
+      strategic_direction: z.string(),
+    }),
+  }),
+  roi_estimates: z.array(
+    z.object({
+      opportunity_id: z.string(),
+      time_saved_qualitative: z.string(),
+      revenue_impact_qualitative: z.string(),
+      payback_period_qualitative: z.string(),
+      notes: z.string(),
+    }),
+  ),
+  recommended_path: z.object({
+    primary_path: recommendedPathWithMixte,
+    rationale: z.string(),
+    alternative_consideration: z.string(),
+  }),
+  closing_notes: z.string(),
+  confidence_level: confidenceLevel,
+  reviewer_notes: reviewerNotes,
+});
