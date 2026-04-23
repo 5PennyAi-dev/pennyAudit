@@ -52,9 +52,12 @@ export async function runSkill<TInput, TOutput>(
   });
   const durationMs = Date.now() - started;
 
-  // [DEBUG] Log temporaire — à retirer une fois le bug de schéma résolu.
-  console.log(`[DEBUG] Raw Claude response for skill ${skillId}`);
-  console.log(claudeResult.rawResponse);
+  // Activable via DEBUG_CLAUDE_RESPONSES=true pour diagnostiquer les
+  // dérives de schéma. Off par défaut pour ne pas polluer les logs prod.
+  if (process.env.DEBUG_CLAUDE_RESPONSES === 'true') {
+    console.log(`[DEBUG] Raw Claude response for skill ${skillId}`);
+    console.log(claudeResult.rawResponse);
+  }
 
   // Validation de l'output — sécurité anti-hallucination de schéma.
   const parsedOutput = outputSchema.safeParse(claudeResult.parsedJson);
