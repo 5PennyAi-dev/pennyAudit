@@ -20,7 +20,9 @@ export interface CallClaudeJsonParams {
   userInput: string;
   model?: string;
   maxTokens: number;
-  temperature: number;
+  // Note : Claude Opus 4.7+ n'accepte plus temperature/top_p/top_k.
+  // Toute valeur non-défaut renvoie 400. On ne les passe donc plus du tout.
+  // Voir : https://platform.claude.com/docs/en/about-claude/models/whats-new-claude-4-7
 }
 
 export interface CallClaudeJsonResult<T = unknown> {
@@ -75,16 +77,11 @@ export async function callClaudeJSON<T = unknown>(
   let lastError: unknown = null;
 
   for (attempt = 1; attempt <= 2; attempt++) {
-    // 2e tentative : baisser la température pour plus de déterminisme.
-    const temperature =
-      attempt === 1
-        ? params.temperature
-        : Math.max(0, params.temperature - 0.1);
-
+    // Pas de paramètre temperature : Opus 4.7 le refuse (400). On se contente
+    // de retenter une fois avec exactement les mêmes paramètres.
     const response = await client.messages.create({
       model,
       max_tokens: params.maxTokens,
-      temperature,
       system: params.systemPrompt,
       messages: [{ role: 'user', content: params.userInput }],
     });
@@ -110,7 +107,7 @@ export async function callClaudeJSON<T = unknown>(
       lastError = err;
       console.warn(
         `[callClaudeJSON] attempt ${attempt} failed to parse JSON (${(err as Error).message}). ` +
-          (attempt === 1 ? 'Retrying with lower temperature.' : 'Giving up.'),
+          (attempt === 1 ? 'Retrying once.' : 'Giving up.'),
       );
     }
   }

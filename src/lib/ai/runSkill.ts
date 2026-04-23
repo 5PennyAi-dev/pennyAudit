@@ -41,14 +41,13 @@ export async function runSkill<TInput, TOutput>(
   }
 
   const systemPrompt = loadSkillPrompt(skillId);
-  const { model, temperature, maxTokens } = SKILL_MODEL_CONFIG[skillId];
+  const { model, maxTokens } = SKILL_MODEL_CONFIG[skillId];
 
   const started = Date.now();
   const claudeResult = await callClaudeJSON({
     systemPrompt,
     userInput: JSON.stringify(parsedInput.data),
     model,
-    temperature,
     maxTokens,
   });
   const durationMs = Date.now() - started;
