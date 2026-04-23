@@ -51,6 +51,8 @@ export type AuditStatus =
   | 'draft'
   | 'paid'
   | 'running'
+  | 'pending_review'
+  | 'error'
   | 'completed'
   | 'failed'
   | 'exported';
@@ -86,6 +88,7 @@ export interface AuditRow {
   error_message: string | null;
   error_at_skill: number | null;
   resume_email_sent_at: string | null;
+  pipeline_completed_at: string | null;
 }
 
 export interface AuditInsert {
@@ -115,6 +118,7 @@ export interface AuditInsert {
   error_message?: string | null;
   error_at_skill?: number | null;
   resume_email_sent_at?: string | null;
+  pipeline_completed_at?: string | null;
 }
 
 // ─────────────── PATTERNS ───────────────
