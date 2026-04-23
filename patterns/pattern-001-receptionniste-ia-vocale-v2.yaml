@@ -1,0 +1,691 @@
+# ═══════════════════════════════════════════════════════════════
+# Pattern 001 — Réceptionniste IA vocale 24/7
+# Version 2.0 : Trois voies d'implémentation (self-serve, accompagné, custom)
+# ═══════════════════════════════════════════════════════════════
+
+id: ai-voice-receptionist
+title_fr: Réceptionniste IA vocale 24/7
+category: service-client-appels
+version: 2.0
+last_updated: 2026-04-21
+language: fr
+
+# ───── RÉSUMÉS (prose narrative pour livrable client) ─────
+
+summary_short_fr: >
+  Agent IA qui répond aux appels téléphoniques 24 h/24, qualifie les
+  demandes, prend des rendez-vous et transfère aux humains au besoin.
+
+summary_long_fr: |
+  Un agent IA vocal qui répond automatiquement aux appels téléphoniques
+  24 h/24, 7 j/7. Il qualifie les demandes entrantes, prend des rendez-vous
+  dans le calendrier de l'entreprise, et transfère les appels complexes à
+  un humain quand c'est nécessaire. Idéal pour les entreprises de service
+  où chaque appel manqué représente une vente perdue à la compétition.
+
+# ───── CIBLAGE (tags structurés pour recherche vectorielle) ─────
+
+target_industries:
+  - plomberie
+  - electricite
+  - hvac
+  - renovation
+  - serrurerie
+  - paysagement
+  - demenagement
+  - mecanique-auto
+  - dentaire
+  - veterinaire
+  - chiropratique
+  - therapie
+  - salon-coiffure
+  - spa-beaute
+  - immobilier
+  - droit-avocats
+  - comptabilite
+  - inspection-batiment
+
+target_business_sizes:
+  - solopreneur
+  - micro-2-9
+  - petite-10-49
+
+tech_comfort_required: faible
+requires_existing_phone_line: true
+
+# ───── PROBLÈME (voix du client pour narratif) ─────
+
+pain_point_fr: |
+  Je rate des appels constamment. Mes clients me joignent pendant que je
+  suis sur un chantier, et quand je rappelle deux heures plus tard, ils ont
+  déjà appelé le concurrent. Les soirs et fins de semaine, c'est pire :
+  personne ne répond, et le client ne revient jamais.
+
+problem_facts:
+  - claim_fr: "40 % à 50 % des appels dans les services à domicile se produisent hors heures ouvrables"
+    source_id: avoca-top-flight-electric
+  - claim_fr: "Un client qui attend plus de 30 secondes raccroche souvent pour appeler le prochain"
+    source_id: avoca-my-plumber-plus
+  - claim_fr: "Coût typique d'une réceptionniste humaine temps plein : environ 48 000 $ US/an"
+    source_id: agentzap-pricing
+  - claim_fr: "Selon FloatAI, les PME québécoises gagnent environ 15 h/semaine en gestion administrative et réduisent de 40 % les appels manqués avec l'IA"
+    source_id: floatai-pme-quebec
+
+# ───── SOLUTION (prose + structure) ─────
+
+solution_summary_fr: |
+  Un agent IA vocal est configuré sur la ligne téléphonique existante ou
+  via un nouveau numéro dédié. L'IA répond en moins de 3 secondes, comprend
+  la demande en langage naturel, qualifie l'urgence, prend le rendez-vous
+  dans le calendrier de l'entreprise et transfère à un humain au besoin.
+  Elle gère plusieurs appels simultanément et envoie un résumé par courriel
+  ou Slack après chaque appel. Trois voies d'implémentation sont possibles
+  selon le budget et le confort technique du client.
+
+deployment_modes:
+  - id: overflow
+    name_fr: Débordement
+    description_fr: L'IA prend les appels quand la ligne principale est occupée
+  - id: after-hours
+    name_fr: Après-heures
+    description_fr: L'IA prend tous les appels en dehors des heures ouvrables
+  - id: replacement
+    name_fr: Remplacement complet
+    description_fr: L'IA devient la réceptionniste principale (typique pour solopreneurs)
+
+typical_capabilities:
+  - Transcription et enregistrement automatique des appels
+  - Intégrations CRM (HubSpot, Salesforce, Zoho, Zapier et 5000+ apps)
+  - Qualification de leads avec questions personnalisées
+  - Jusqu'à 50 paires question-réponse personnalisées
+  - Numéro local ou sans frais dédié
+  - Transfert intelligent multi-destinataires
+  - Résumés d'appels envoyés par email, Slack ou Teams
+
+# ───── VOIES D'IMPLÉMENTATION (core du pattern) ─────
+
+implementation_paths:
+
+  - id: self-serve
+    name_fr: Voie A — Self-serve (autonomie)
+    ideal_profile_fr: |
+      Solopreneur qui veut tester avec engagement minimal. À l'aise avec la
+      techno, accepte d'y passer une demi-journée, volume d'appels modéré.
+      Budget limité (100-200 $/mois).
+    description_fr: |
+      Le client s'inscrit lui-même sur un service SaaS d'AI receptionist
+      (AgentZap ou My AI Front Desk), fournit ses informations (services,
+      tarifs, horaires, FAQ), teste et active. 5PennyAi intervient pour
+      l'audit et la recommandation du bon outil et plan.
+    setup_duration: quelques-heures
+    client_time_required_hours:
+      min: 4
+      max: 8
+    total_cost_cad:
+      setup_range:
+        min: 0
+        max: 1500
+      monthly_min: 150
+      monthly_max: 300
+      first_year: "1 800 à 5 100 $"
+    recommended_tools_priority:
+      - tool_id: my-ai-front-desk
+        reason_fr: Positionnement solopreneur, no-code, pages sectorielles dédiées
+      - tool_id: agentzap
+        reason_fr: Plan Starter accessible, 72+ industries couvertes, setup guidé
+    fivepennyai_service_fr: |
+      Audit payant (99-299 $) qui identifie le bon outil et le bon plan
+      pour le contexte client. Inclut liste de questions à paramétrer.
+    fivepennyai_revenue_potential: faible-par-client-mais-volume
+    honest_note_fr: |
+      La voie self-serve est plus difficile pour le vocal que pour le chat.
+      Il n'existe pas d'équivalent "Crisp gratuit" côté vocal. Les tarifs
+      démarrent typiquement à 100 $/mois. La voie A est réaliste mais
+      suppose que le client veut vraiment investir ce montant.
+
+  - id: accompanied
+    name_fr: Voie B — Accompagnement hybride (prêt-à-l'emploi)
+    ideal_profile_fr: |
+      PME de 5 à 20 employés (service à domicile, clinique, salon avec équipe)
+      qui veut un résultat professionnel sans y perdre des soirées.
+      Budget modéré (1 500-3 000 $ setup), préfère déléguer la configuration.
+    description_fr: |
+      5PennyAi configure l'outil SaaS choisi : setup complet sur AgentZap
+      ou Avoca, rédaction des scripts d'accueil, configuration des FAQ,
+      intégration au calendrier et au CRM, tests avec différents scénarios,
+      formation du client (1 h) et support ponctuel 30 jours.
+    setup_duration: 1-3-jours
+    client_time_required_hours:
+      min: 4
+      max: 8
+    total_cost_cad:
+      setup_range:
+        min: 1500
+        max: 3500
+      monthly_tool_range:
+        min: 200
+        max: 500
+      first_year: "3 900 à 9 500 $"
+    recommended_tools_priority:
+      - tool_id: agentzap
+        reason_fr: Meilleure documentation, tarifs transparents, 30 jours garantie
+      - tool_id: avoca-ai
+        reason_fr: Pour HVAC/plomberie établies, intégration ServiceTitan, cas documentés
+    fivepennyai_service_fr: |
+      Forfait "Réceptionniste IA clé en main" : audit + configuration complète
+      + rédaction des scripts + tests + formation + 30 jours support.
+    fivepennyai_revenue_potential: moyen-par-client
+
+  - id: custom
+    name_fr: Voie C — Développement sur mesure
+    ideal_profile_fr: |
+      PME de 20+ employés avec besoins très spécifiques : multi-locations,
+      logique de dispatch complexe, intégration avec système legacy,
+      branding strict, volume élevé. Budget 8 000 $+.
+    description_fr: |
+      5PennyAi développe un agent vocal custom en utilisant une plateforme
+      comme Vapi, Retell AI, ou construction directe sur LiveKit + Anthropic.
+      L'agent est entraîné sur le contexte exact du client, intégré à ses
+      systèmes (CRM, ERP, calendrier métier), avec flux d'appel complexes.
+    setup_duration: 3-6-semaines
+    client_time_required_hours:
+      min: 15
+      max: 40
+    total_cost_cad:
+      setup_range:
+        min: 8000
+        max: 20000
+      monthly_hosting_range:
+        min: 100
+        max: 800
+      first_year: "9 200 à 29 600 $"
+    recommended_tools_priority:
+      - tool_id: vapi
+        reason_fr: Plateforme de développement vocal IA, flexible, bon pour custom
+      - tool_id: retell-ai
+        reason_fr: Alternative à Vapi, approche API-first
+      - tool_id: anthropic-api
+        reason_fr: Moteur IA (Claude Sonnet 4) combiné à LiveKit pour voice
+    fivepennyai_service_fr: |
+      AI Sprint 3-6 semaines : développement, déploiement, formation,
+      option maintenance mensuelle continue.
+    fivepennyai_revenue_potential: eleve-par-client-mais-volume-faible
+    honest_note_fr: |
+      La voie custom vocale est techniquement plus complexe que le chat.
+      Réserver aux clients qui ont un vrai besoin non couvert par AgentZap
+      ou Avoca. Dans beaucoup de cas, la voie B est suffisante et plus rentable
+      pour le client.
+
+# ───── OUTILS DU MARCHÉ (HIÉRARCHISÉS) ─────
+
+tools:
+
+  # ── TIER 1 : Outils SaaS accessibles pour voies A et B ──
+
+  - id: agentzap
+    tier: 1
+    name: AgentZap
+    origin: USA
+    url: https://agentzap.ai
+    interface_fr: partielle-anglais-primary
+    starting_price_usd_monthly: 109
+    currency: USD
+    target_segment_fr: PME de service, 72+ industries couvertes
+    strength_fr: |
+      Documentation exhaustive de cas clients dans ton marché cible
+      (plomberie, dentaire, salons, thérapie, immobilier, etc.).
+      Tarification publique transparente, garantie 30 jours, sans engagement.
+    plans:
+      - name: Starter
+        price_usd: 109
+        included_minutes: 150
+        overage_per_min_usd: 0.85
+      - name: Professional
+        price_usd: 295
+        included_minutes: 450
+        overage_per_min_usd: 0.75
+      - name: Business
+        price_usd: 899
+        included_minutes: 1500
+        overage_per_min_usd: 0.70
+    setup_fee_usd: 1000
+    add_ons:
+      - name_fr: Conformité HIPAA (santé)
+        price_usd_monthly: 200
+      - name_fr: Langue additionnelle
+        price_usd_monthly: 25
+      - name_fr: Numéro téléphonique additionnel
+        price_usd_monthly: 10
+    guarantee_fr: 30 jours satisfait ou remboursé, sans engagement
+    affiliate_potential: a-verifier
+    affiliate_link: null
+    source_id: agentzap-pricing
+    used_in_paths: [self-serve, accompanied]
+    recommended_priority: 1
+
+  - id: my-ai-front-desk
+    tier: 1
+    name: My AI Front Desk
+    origin: USA
+    url: https://www.myaifrontdesk.com
+    interface_fr: non
+    starting_price_usd_monthly: null
+    currency: USD
+    target_segment_fr: Solopreneurs et très petites entreprises, salons, cliniques solo
+    strength_fr: Positionnement accessible, no-code, pages sectorielles dédiées (plomberie, salons, immobilier). Souvent la première option pour un solopreneur.
+    pricing_note_fr: Tarifs à vérifier directement sur le site
+    affiliate_potential: a-verifier
+    affiliate_link: null
+    source_id: null
+    used_in_paths: [self-serve]
+    recommended_priority: 2
+
+  - id: avoca-ai
+    tier: 1
+    name: Avoca AI
+    origin: USA
+    url: https://www.avoca.ai
+    interface_fr: non
+    starting_price_usd_monthly: null
+    currency: USD
+    target_segment_fr: Entreprises home services établies (HVAC, plomberie, électricité)
+    strength_fr: |
+      Spécialisation sectorielle forte, intégration ServiceTitan,
+      cas documentés de 3 M$ à 129 M$ de revenus. Idéal pour clients qui
+      utilisent déjà ServiceTitan.
+    pricing_note_fr: Tarification sur demande, orientation entreprise
+    affiliate_potential: non-probable
+    source_id: avoca-customers
+    used_in_paths: [accompanied]
+    recommended_priority: 3
+
+  # ── TIER 3 : Plateformes de développement pour voie custom ──
+
+  - id: vapi
+    tier: 3
+    name: Vapi
+    origin: USA
+    url: https://vapi.ai
+    interface_fr: non
+    starting_price_monthly: 0
+    currency: USD
+    target_segment_fr: Développeurs et consultants qui construisent des agents vocaux sur mesure
+    strength_fr: |
+      Plateforme de développement d'agents vocaux IA, approche API.
+      Facturation à la minute, plus flexible qu'AgentZap mais plus technique.
+      Bon pour cas custom de 5PennyAi.
+    pricing_note_fr: Facturation à l'usage, environ 0.05-0.15 $/minute selon configuration
+    affiliate_potential: a-verifier
+    source_id: null
+    used_in_paths: [custom]
+    recommended_priority: 1
+
+  - id: retell-ai
+    tier: 3
+    name: Retell AI
+    origin: USA
+    url: https://www.retellai.com
+    interface_fr: non
+    starting_price_monthly: null
+    currency: USD
+    target_segment_fr: Développement custom d'agents vocaux
+    strength_fr: Alternative à Vapi, approche développeur-friendly
+    pricing_note_fr: Tarifs à vérifier
+    affiliate_potential: a-verifier
+    source_id: null
+    used_in_paths: [custom]
+    recommended_priority: 2
+
+  - id: anthropic-api
+    tier: 3
+    name: Anthropic API (Claude)
+    origin: USA
+    url: https://docs.anthropic.com
+    interface_fr: documentation-en
+    starting_price_monthly: 0
+    currency: USD
+    target_segment_fr: Combiné avec LiveKit ou service voice pour le moteur IA de l'agent
+    strength_fr: |
+      Claude Sonnet 4 comme moteur; combiné avec un service voice (LiveKit,
+      Daily.co) permet un agent vocal 100 % custom. Stack que 5PennyAi maîtrise.
+    pricing_note_fr: Facturation à l'usage tokens; coûts additionnels pour la voix
+    affiliate_potential: non-applicable
+    source_id: null
+    used_in_paths: [custom]
+    recommended_priority: 3
+
+# ───── INTÉGRATEURS IA QUÉBÉCOIS (CONCURRENCE DIRECTE) ─────
+
+quebec_competitors:
+  - name: FloatAI
+    url: https://www.floatai.ca
+    positioning_fr: IA pour PME montréalaises, focus services à domicile, conformité Loi 25
+    note_fr: Concurrent direct le plus pertinent; explicitement positionné sur services à domicile (plomberie, électricité, peinture)
+
+  - name: IT Cares
+    url: https://itcares.ca
+    positioning_fr: Chatbot personnalisé et automatisation pour PME québécoises
+    note_fr: Concurrent sur la partie PME 5-50 employés
+
+  - name: EvoluAI
+    url: https://evoluai.ca
+    positioning_fr: Chatbots, gestion de rendez-vous, support client IA pour PME québécoises
+    note_fr: Concurrent direct sur les solopreneurs et petites PME
+
+  - name: CyberPerformance
+    url: https://cyberperformance.ca
+    positioning_fr: Chatbot sur mesure, intégration Teams/Outlook
+    note_fr: Concurrent pour la voie C custom
+
+strategic_note_fr: |
+  Le marché québécois pour l'IA vocale en service à domicile est moins
+  saturé que le chat. FloatAI est le concurrent le plus direct. Différenciation
+  possible pour 5PennyAi : (1) audit automatisé permettant de qualifier les
+  clients avant leur engagement, (2) positionnement transparent sur les
+  trois voies (self-serve/accompagné/custom) plutôt que tout-ou-rien,
+  (3) expertise technique démontrable via PennySEO.
+
+# ───── COÛTS (RÉSUMÉ TROIS VOIES) ─────
+
+cost_summary_cad:
+  voie_a_self_serve:
+    first_year: "1 800 à 5 100 $"
+    recurring_monthly: "150 à 300 $"
+  voie_b_accompanied:
+    first_year: "3 900 à 9 500 $"
+    recurring_monthly: "200 à 500 $"
+  voie_c_custom:
+    first_year: "9 200 à 29 600 $"
+    recurring_monthly: "100 à 800 $"
+
+# ───── VALEUR DOCUMENTÉE ─────
+
+documented_benefits:
+  time_saved_hours_weekly:
+    min: 15
+    max: 25
+  call_capture_improvement_percentage_points:
+    min: 30
+    max: 70
+  monthly_new_revenue_cad_range:
+    min: 8000
+    max: 32000
+  typical_payback_months:
+    min: 1
+    max: 3
+
+customer_cases:
+  - company: My Plumber Plus
+    industry: plomberie
+    segment_fr: Entreprise établie (129 M$ de revenus)
+    result_fr: Taux de réservation passé de 55 % à 90 %, croissance de 13 %
+    source_id: avoca-my-plumber-plus
+    relevance_for_micro: faible-grosse-entreprise
+
+  - company: Top Flight Electric
+    industry: electricite
+    segment_fr: Petit/moyen service business en Floride
+    result_fr: Taux de réservation de 10 % à 70 %, 170 000 $ de nouveaux revenus, 4 embauches
+    source_id: avoca-top-flight-electric
+    relevance_for_micro: elevee-pme-comparable
+
+  - company: AireServ
+    industry: hvac
+    segment_fr: Franchise service HVAC
+    result_fr: Réservations après-heures passées de 58 à 208 par période
+    source_id: avoca-customers
+    relevance_for_micro: moyenne
+
+  - company: ProFlow Plumbing
+    industry: plomberie
+    segment_fr: PME service plomberie
+    result_fr: "+200 % d'appels d'urgence capturés, +15 000 $/mois de revenus"
+    source_id: agentzap-case-studies
+    relevance_for_micro: elevee-tres-pertinent
+
+  - company: Premier Dental Care
+    industry: dentaire
+    segment_fr: Clinique dentaire
+    result_fr: "-87 % de rendez-vous manqués, 52 000 $ récupérés/an, 4,9★ satisfaction"
+    source_id: agentzap-case-studies
+    relevance_for_micro: elevee-tres-pertinent
+
+  - company: Glow Beauty Studio
+    industry: salon-coiffure
+    segment_fr: Salon
+    result_fr: Réservations doublées, 15 h/semaine économisées
+    source_id: agentzap-case-studies
+    relevance_for_micro: elevee-tres-pertinent
+
+  - company: Summit HVAC Services
+    industry: hvac
+    segment_fr: PME HVAC
+    result_fr: "+156 % d'interventions après-heures, +8 400 $/mois"
+    source_id: agentzap-case-studies
+    relevance_for_micro: elevee-pme-comparable
+
+  - company: Harmony Wellness Center
+    industry: therapie
+    segment_fr: Cabinet de thérapie
+    result_fr: "+68 % de rendez-vous, 94 % satisfaction client, 100 % HIPAA"
+    source_id: agentzap-case-studies
+    relevance_for_micro: elevee-tres-pertinent
+
+  - company: Pawsome Pet Clinic
+    industry: veterinaire
+    segment_fr: Clinique vétérinaire
+    result_fr: "+52 % de rendez-vous, 20 h/semaine économisées"
+    source_id: agentzap-case-studies
+    relevance_for_micro: elevee-tres-pertinent
+
+  - company: Rapid Response Locksmith
+    industry: serrurerie
+    segment_fr: Service de serrurerie d'urgence
+    result_fr: "+150 % d'appels d'urgence, +18 000 $/mois"
+    source_id: agentzap-case-studies
+    relevance_for_micro: elevee-tres-pertinent
+
+  - company: Apex Realty Group
+    industry: immobilier
+    segment_fr: Agence immobilière
+    result_fr: 3× plus de leads d'inscription, 18 closings supplémentaires/an
+    source_id: agentzap-case-studies
+    relevance_for_micro: elevee-pme-comparable
+
+  - company: FloatAI (cas agrégés)
+    industry: services-a-domicile-pme
+    segment_fr: PME québécoises (plomberie, électricité, peinture)
+    result_fr: "-40 % d'appels manqués, +15 h/semaine en gestion administrative"
+    source_id: floatai-pme-quebec
+    relevance_for_micro: tres-elevee-contexte-local
+    confidence: medium
+
+# ───── RISQUES ─────
+
+risks:
+  - type: technique
+    title_fr: Hallucinations possibles
+    severity: moyen
+    description_fr: L'IA peut donner une information erronée sur un service ou un tarif si mal configurée
+    mitigation_fr: Limiter à un set de FAQ vérifiées, tester en production avec écoute des premiers enregistrements
+
+  - type: technique
+    title_fr: Performance en français québécois
+    severity: moyen
+    description_fr: |
+      La plupart des outils (AgentZap, Avoca) sont entraînés sur corpus
+      anglophone nord-américain; accents régionaux et anglicismes
+      peuvent poser problème. Pas d'équivalent Crisp côté vocal.
+    mitigation_fr: |
+      Tester spécifiquement en français québécois avant déploiement.
+      Prévoir ajustements. Pour cas sensibles au français parfait,
+      envisager voie C avec Anthropic API (Claude performe très bien en FR).
+
+  - type: technique
+    title_fr: Dépendance à l'infrastructure
+    severity: faible
+    description_fr: Coupure Internet ou téléphonique = coupure du service
+    mitigation_fr: Avoir un plan B (transfert vers mobile personnel en cas de panne)
+
+  - type: business
+    title_fr: Réaction négative de certains clients
+    severity: moyen
+    description_fr: Clientèle âgée ou particulière peut préférer un humain et raccrocher
+    mitigation_fr: Offrir explicitement une option "tapez 0 pour un humain" en début d'appel
+
+  - type: business
+    title_fr: Image de marque
+    severity: moyen
+    description_fr: Un agent IA mal configuré peut nuire à la réputation
+    mitigation_fr: Choisir un outil avec voix de qualité, ajuster le script, monitorer les premiers appels
+
+  - type: business
+    title_fr: Coûts variables
+    severity: faible
+    description_fr: Dépassement des minutes incluses peut faire grimper la facture
+    mitigation_fr: Monitorer le volume le premier mois et ajuster le plan si nécessaire
+
+  - type: business
+    title_fr: Dépendance fournisseur
+    severity: faible
+    description_fr: Changer d'outil implique une reconfiguration complète
+    mitigation_fr: Documenter la configuration, garder les données d'appel exportables
+
+  - type: reglementaire-qc
+    title_fr: Loi 25 (protection des renseignements personnels)
+    severity: important
+    description_fr: Données personnelles captées par l'IA doivent respecter les obligations de consentement, conservation et sécurité
+    mitigation_fr: Politique de confidentialité à jour, vérification de la localisation des données, signaler l'enregistrement
+
+  - type: reglementaire-qc
+    title_fr: Enregistrement des appels
+    severity: important
+    description_fr: L'enregistrement des appels doit être annoncé en début d'appel
+    mitigation_fr: Script d'accueil qui mentionne l'enregistrement explicitement
+
+  - type: reglementaire-qc
+    title_fr: Renseignements de santé (cliniques)
+    severity: important
+    description_fr: Données de santé particulièrement sensibles, obligations provinciales spécifiques
+    mitigation_fr: Vérifier conformité HIPAA/BAA et obligations provinciales canadiennes applicables
+
+# ───── PRÉREQUIS ─────
+
+prerequisites:
+  - Ligne téléphonique d'entreprise active
+  - Calendrier numérique utilisé activement (Google Calendar, Outlook, Calendly, Jobber, ServiceTitan, Acuity)
+  - Liste claire et à jour des services, tarifs, horaires et FAQ
+  - Connexion Internet stable au bureau
+  - Consentement à l'enregistrement des appels
+  - Pour cliniques : vérification de la conformité santé
+
+# ───── SOURCES ─────
+
+sources:
+  - id: agentzap-pricing
+    type: vendor-pricing-page
+    title: AgentZap — Page de tarification
+    url: https://agentzap.ai/pricing
+    accessed: 2026-04-21
+    reliability: high
+
+  - id: agentzap-case-studies
+    type: vendor-case-studies
+    title: AgentZap — Success Stories (15+ cas dans secteurs cibles)
+    url: https://agentzap.ai/case-studies
+    accessed: 2026-04-21
+    reliability: medium
+
+  - id: avoca-my-plumber-plus
+    type: vendor-case-study
+    title: Avoca AI — My Plumber Plus case study
+    url: https://www.avoca.ai/customers/my-plumber-plus
+    accessed: 2026-04-21
+    reliability: medium
+
+  - id: avoca-top-flight-electric
+    type: vendor-case-study
+    title: Avoca AI — Top Flight Electric case study
+    url: https://www.avoca.ai/customers/top-flight-electric
+    accessed: 2026-04-21
+    reliability: medium
+
+  - id: avoca-sila-services
+    type: vendor-case-study
+    title: Avoca AI — Sila Services case study
+    url: https://www.avoca.ai/customers/sila-services
+    accessed: 2026-04-21
+    reliability: medium
+
+  - id: avoca-customers
+    type: vendor-case-studies
+    title: Avoca AI — Customer Stories overview
+    url: https://www.avoca.ai/customers
+    accessed: 2026-04-21
+    reliability: medium
+
+  - id: floatai-pme-quebec
+    type: integrator-article
+    title: FloatAI — Intelligence Artificielle pour PME Québécoises en 2025
+    url: https://www.floatai.ca/intelligence-artificielle-pme-quebec
+    accessed: 2026-04-21
+    reliability: medium
+    note_fr: "Source québécoise. Métriques agrégées : -40 % appels manqués, +15 h/semaine"
+
+  - id: sba-ai-adoption-2025
+    type: government-research
+    title: SBA Office of Advocacy — AI in Business Small Firms Closing In
+    url: https://advocacy.sba.gov/wp-content/uploads/2025/09/Research-Spotlight-AI-in-Business-Small-Firms-Closing-In_-092425.pdf
+    published: 2025-09
+    reliability: high
+
+# ───── MÉTADONNÉES INTERNES ─────
+
+confidence_level: high
+source_diversity: vendor-cases + vendor-pricing + quebec-integrators + government-research
+
+adaptation_needed_for_qc:
+  - Test obligatoire en français québécois avant déploiement
+  - Conformité Loi 25 (pas HIPAA mais parfois équivalent)
+  - Conversion de devises (USD → CAD × ~1,40)
+  - Pour cas qui exigent français impeccable, privilégier voie C custom
+
+# ───── NOTES HONNÊTES (usage interne uniquement) ─────
+
+internal_notes_fr: |
+  CHANGEMENTS v1 → v2 :
+  - Trois voies d'implémentation explicites (self-serve / accompagné / custom)
+  - Ajout d'outils pour la voie custom (Vapi, Retell AI, Anthropic+LiveKit)
+  - Intégrateurs québécois listés (FloatAI est le principal concurrent direct)
+  - Champ `relevance_for_micro` ajouté aux cas clients pour filtrer les
+    cas d'entreprises trop grosses
+  - Champ `affiliate_potential` ajouté à chaque outil
+
+  RÉALITÉ DU MARCHÉ VOCAL FRANÇAIS :
+  Contrairement au chat où Crisp offre une solution française native gratuite,
+  il n'existe PAS d'équivalent côté vocal. Tous les outils majeurs (AgentZap,
+  Avoca, My AI Front Desk) sont anglophones et entraînés sur du français
+  européen au mieux. Pour un client qui exige un français québécois impeccable,
+  la voie B (accompagnée) ou C (custom) devient pratiquement obligatoire.
+
+  VOIE A DIFFICILE EN VOCAL :
+  La voie self-serve est moins accessible pour le vocal que pour le chat.
+  Tarif minimum réaliste 109 $/mois + setup 1000 $. Pour un plombier qui
+  gagne 60 000 $/an, c'est un engagement notable. Dans l'audit, présenter
+  honnêtement ce coût et montrer le ROI basé sur les cas documentés.
+
+  POSITIONNEMENT 5PENNYAI :
+  - Voie A : audit + pointage vers AgentZap (vérifier programme partenaires)
+  - Voie B : sweet spot, forfait 1500-3500 $ + mensuel outil
+  - Voie C : AI Sprints 8000-20000 $, réserver aux vrais besoins custom
+    (français exigeant, multi-locations, logique dispatch complexe)
+
+  CAS CLIENTS À PRIVILÉGIER POUR MICRO-ENTREPRISE :
+  ProFlow Plumbing, Premier Dental, Glow Beauty, Pawsome Pet Clinic,
+  Rapid Response Locksmith, Harmony Wellness sont le plus transposables.
+  My Plumber Plus (129M$) est impressionnant mais pas représentatif.
+  FloatAI pour le benchmark local québécois.
+
+# ───── EMBEDDING (généré automatiquement au seed Supabase) ─────
+
+embedding: null

@@ -1,0 +1,1044 @@
+# ═══════════════════════════════════════════════════════════════
+# Pattern 005 — Gestion intelligente des courriels par IA
+# Format hybride : structure machine + prose humaine
+# Trois voies d'implémentation (self-serve, accompagné, custom)
+# ═══════════════════════════════════════════════════════════════
+
+id: ai-email-management
+title_fr: Gestion intelligente des courriels par IA (tri, rédaction, résumés)
+category: productivite-communication
+version: 1.0
+last_updated: 2026-04-22
+language: fr
+
+# ───── RÉSUMÉS (prose narrative pour livrable client) ─────
+
+summary_short_fr: >
+  Utilisation d'outils IA pour trier automatiquement les courriels,
+  résumer les longs fils de discussion, rédiger des réponses rapides
+  et gagner plusieurs heures par semaine sur la gestion de l'inbox.
+
+summary_long_fr: |
+  La gestion intelligente des courriels par IA couvre trois fonctions
+  principales : (1) trier automatiquement les courriels entrants selon
+  leur importance, (2) résumer les longs fils de discussion pour capter
+  l'essentiel en quelques secondes, (3) rédiger ou compléter des réponses
+  en conservant le ton et le contexte. Les outils modernes peuvent
+  réduire de 40 à 60 % le temps de rédaction et atteindre plus de 90 %
+  de précision de tri après une à deux semaines d'apprentissage. Ce
+  pattern est particulièrement précieux pour les consultants solos,
+  avocats, comptables, coachs et dirigeants de PME submergés par leur
+  inbox. Un enjeu majeur à considérer : la conformité à la Loi 25 au
+  Québec, car la plupart des outils majeurs hébergent les données sur
+  des serveurs américains.
+
+# ───── COMPLÉMENTARITÉ AVEC AUTRES PATTERNS ─────
+
+complementary_patterns:
+  - pattern_id: ai-text-chatbot-multichannel
+    relation_fr: |
+      Le chatbot gère les messages entrants côté site web et réseaux
+      sociaux; ce pattern gère le courriel. Les deux peuvent coexister
+      pour couvrir tous les canaux de messagerie d'une entreprise.
+
+  - pattern_id: ai-marketing-content-creation
+    relation_fr: |
+      Le pattern rédaction marketing gère le contenu sortant planifié
+      (infolettres, campagnes); ce pattern gère la correspondance
+      transactionnelle quotidienne (réponses clients, suivis, négociations).
+
+# ───── CIBLAGE (tags structurés pour recherche vectorielle) ─────
+
+target_industries:
+  - consultant-solo
+  - coach-business
+  - coach-vie
+  - agence-marketing
+  - agence-evenementielle
+  - freelance-designer
+  - redacteur
+  - traducteur
+  - photographe
+  - videaste
+  - developpeur-freelance
+  - comptabilite
+  - droit-avocats
+  - notaire
+  - courtier-immobilier
+  - courtier-assurance
+  - therapie
+  - nutritionniste
+  - architecte
+  - ingenieur-conseil
+  - immobilier
+  - commerce-en-ligne
+  - restaurant
+  - traiteur
+
+target_business_sizes:
+  - solopreneur
+  - micro-2-9
+  - petite-10-49
+
+tech_comfort_required: faible-a-moyen
+requires_existing_email: true
+high_priority_segments:
+  - solopreneurs-recevant-30-plus-courriels-jour
+  - pme-avec-service-client-par-courriel
+  - professions-reglementees-submergees-mais-loi-25-sensible
+
+# ───── PROBLÈME (voix du client pour narratif) ─────
+
+pain_point_fr: |
+  Je me lève le matin avec 47 courriels non lus. Je commence la journée
+  en triant, en répondant aux urgences, en traduisant les messages des
+  clients anglophones. Trois heures plus tard, je n'ai pas encore
+  commencé mon vrai travail. Le soir, je reviens sur mes courriels
+  pendant que mes enfants regardent la télé. Ce n'est pas une question
+  de paresse : c'est juste mathématiquement impossible de tenir le
+  rythme en plus de tout le reste.
+
+problem_facts:
+  - claim_fr: "Les utilisateurs de Superhuman et Shortwave rapportent une réduction de 40 à 60 % du temps de rédaction"
+    source_id: assistance-email-inbox-zero
+  - claim_fr: "La plupart des outils IA de tri atteignent une précision supérieure à 90 % après 1-2 semaines d'apprentissage"
+    source_id: assistance-email-inbox-zero
+  - claim_fr: "OPTIMUM IA rapporte 2 heures par jour récupérées pour les cabinets d'avocats utilisant SECRETAIR IA"
+    source_id: optimum-ia-tri-mails
+  - claim_fr: "82 % des micro-entreprises (<5 employés) croient que l'IA ne s'applique pas à leur business, alors que la gestion des courriels en bénéficie directement"
+    source_id: sba-ai-adoption-2025
+
+# ───── SOLUTION (prose + structure) ─────
+
+solution_summary_fr: |
+  On déploie un outil IA qui se connecte à la boîte courriel existante
+  (Gmail, Outlook) et automatise trois fonctions principales : tri par
+  importance (règles IA qui apprennent des actions de l'utilisateur),
+  résumé des longs fils (extrait le point clé en quelques secondes),
+  et assistance à la rédaction (brouillons, reformulation, adaptation
+  du ton). Pour les micro-entreprises et solopreneurs, souvent la
+  combinaison gratuite Claude + Copilot gratuit (si Microsoft 365) ou
+  Gemini (si Gmail) suffit. Pour les PME avec équipes, un outil dédié
+  comme Missive ou Superhuman apporte une vraie valeur ajoutée. Pour
+  les professions réglementées au Québec, la conformité Loi 25 impose
+  des choix spécifiques (Proton Mail + Proton Scribe, ou solution
+  custom hébergée au Canada).
+
+deployment_modes:
+  - id: ai-assistant-standalone
+    name_fr: Assistant IA séparé (Claude, ChatGPT)
+    description_fr: |
+      Ouvrir Claude ou ChatGPT dans un onglet pour rédiger ou reformuler
+      les courriels sensibles. Pas d'intégration mais pas de coût additionnel
+      si on a déjà un abonnement. Très efficace pour courriels importants.
+
+  - id: native-integration
+    name_fr: IA intégrée dans le client courriel
+    description_fr: |
+      Copilot dans Outlook (avec Microsoft 365) ou Gemini dans Gmail.
+      L'IA est directement dans l'interface courriel. Pas d'outil à changer.
+
+  - id: premium-email-client
+    name_fr: Client courriel premium avec IA
+    description_fr: |
+      Superhuman, Shortwave, Missive. Remplace l'interface courriel par
+      une expérience optimisée avec IA, raccourcis clavier, tri avancé.
+
+  - id: ai-layer-on-top
+    name_fr: Couche IA sur courriel existant
+    description_fr: |
+      SaneBox, Inbox Zero, Compose AI. Ajoute des fonctions IA par-dessus
+      Gmail/Outlook sans changer le client. Simple à tester.
+
+  - id: custom-agent
+    name_fr: Agent IA custom
+    description_fr: |
+      Agent développé avec Anthropic API ou OpenAI API qui traite les
+      courriels selon des règles métier spécifiques. Pour cas avancés :
+      extraction automatique de données, routage vers CRM, réponses
+      multi-étapes.
+
+typical_capabilities:
+  - Tri automatique des courriels par priorité
+  - Résumé en 2-3 phrases de longs fils de discussion
+  - Génération de brouillons de réponse basés sur le contexte
+  - Reformulation du ton (plus formel, plus chaleureux, plus concis)
+  - Traduction entre français et anglais (utile au Québec)
+  - Extraction d'informations clés (dates, montants, décisions)
+  - Recherche en langage naturel dans la boîte courriel
+  - Règles d'automatisation personnalisées (archivage, assignation, réponses)
+  - Suggestions de suivis et rappels automatiques
+  - Analyse du ton et coaching (Microsoft Copilot spécifiquement)
+
+# ───── VOIES D'IMPLÉMENTATION (core du pattern) ─────
+
+implementation_paths:
+
+  - id: self-serve
+    name_fr: Voie A — Self-serve (autonomie)
+    ideal_profile_fr: |
+      Solopreneur ou micro-entreprise, budget minimal, confort tech moyen.
+      Volume courriel modéré (20-50 par jour). Veut essayer avant d'investir.
+      Déjà abonné à Microsoft 365 ou Google Workspace idéalement.
+    description_fr: |
+      Le client utilise Claude ou ChatGPT (plans gratuits ou 20 $/mois)
+      pour les courriels importants, combiné avec Copilot intégré à
+      Outlook (si Microsoft 365) ou Gemini intégré à Gmail (si Google
+      Workspace). 5PennyAi fournit un audit qui documente les 10-15
+      prompts les plus utiles, une routine quotidienne recommandée, et
+      des règles de tri à configurer manuellement.
+    setup_duration: 2-4-heures
+    client_time_required_hours:
+      min: 2
+      max: 4
+    total_cost_cad:
+      setup_range:
+        min: 0
+        max: 200
+      monthly_min: 0
+      monthly_max: 30
+      first_year: "0 à 560 $"
+    recommended_tools_priority:
+      - tool_id: claude-ai
+        reason_fr: Excellente qualité française, empathie dans les réponses sensibles
+      - tool_id: copilot-outlook
+        reason_fr: Gratuit avec Microsoft 365, intégré nativement
+      - tool_id: gemini-gmail
+        reason_fr: Gratuit avec Google Workspace, intégré nativement
+      - tool_id: chatgpt
+        reason_fr: Alternative ou complément à Claude pour cas polyvalents
+    fivepennyai_service_fr: |
+      Audit payant (99-299 $) : analyse du volume/types de courriels,
+      recommandation du bon combo d'outils, guide de 10-15 prompts
+      personnalisés, routine quotidienne et règles de tri à configurer.
+    fivepennyai_revenue_potential: faible-par-client-mais-volume-eleve
+
+  - id: accompanied
+    name_fr: Voie B — Accompagnement hybride (setup + formation)
+    ideal_profile_fr: |
+      PME 5-20 employés, ou solopreneur recevant 50+ courriels par jour.
+      Équipe qui collabore sur des boîtes partagées (support client,
+      ventes, recrutement). Besoin d'automatisations réelles, pas juste
+      de l'assistance IA ponctuelle.
+    description_fr: |
+      5PennyAi configure un client courriel premium (Missive ou Superhuman
+      selon le profil) : création des comptes, connexion aux boîtes
+      existantes, configuration des règles IA (tri, assignations,
+      réponses templates), création de 15-20 snippets personnalisés,
+      intégration CRM (HubSpot, Zapier, etc.), formation 2-3 heures,
+      support 30 jours. Pour équipes : configuration des boîtes partagées
+      et des workflows de collaboration.
+    setup_duration: 1-3-jours
+    client_time_required_hours:
+      min: 4
+      max: 8
+    total_cost_cad:
+      setup_range:
+        min: 1000
+        max: 2500
+      monthly_tool_range:
+        min: 25
+        max: 150
+      first_year: "1 300 à 4 300 $"
+    recommended_tools_priority:
+      - tool_id: missive
+        reason_fr: Meilleur pour équipes, règles IA personnalisées, plan gratuit jusqu'à 3 users
+      - tool_id: superhuman
+        reason_fr: Pour professionnels individuels exigeants, ultra-rapide
+      - tool_id: shortwave
+        reason_fr: Si le client utilise Gmail exclusivement
+      - tool_id: front
+        reason_fr: Pour équipes service client avec SMS + courriel + social
+    fivepennyai_service_fr: |
+      Forfait "Gestion Inbox IA Clé en Main" : audit + configuration
+      complète outil premium + règles IA + snippets + intégrations +
+      formation 2-3h + 30 jours support. Option rétention mensuelle.
+    fivepennyai_revenue_potential: moyen-par-client
+
+  - id: custom
+    name_fr: Voie C — Développement sur mesure avec agent IA
+    ideal_profile_fr: |
+      PME avec logique métier complexe qu'aucun SaaS ne couvre : tri
+      basé sur des règles d'affaires spécifiques, extraction automatique
+      de données vers un ERP custom, routage multi-critères vers
+      différents départements, ou exigence de conformité Loi 25 stricte
+      nécessitant un hébergement canadien.
+    description_fr: |
+      5PennyAi développe un agent IA custom avec Anthropic API + Gmail API
+      ou Microsoft Graph API. L'agent peut : analyser chaque courriel
+      entrant, extraire les données importantes (contact, demande,
+      urgence), créer automatiquement des entrées dans le CRM, composer
+      des brouillons de réponse personnalisés, router vers le bon
+      membre de l'équipe, déclencher des workflows multi-étapes.
+      Hébergement sur infrastructure contrôlée (Vercel, Supabase, AWS
+      Canada) pour conformité Loi 25.
+    setup_duration: 3-6-semaines
+    client_time_required_hours:
+      min: 15
+      max: 40
+    total_cost_cad:
+      setup_range:
+        min: 8000
+        max: 20000
+      monthly_hosting_range:
+        min: 100
+        max: 500
+      first_year: "9 200 à 26 000 $"
+    recommended_tools_priority:
+      - tool_id: anthropic-api
+        reason_fr: Claude Sonnet 4 pour qualité française et raisonnement sur contenu sensible
+      - tool_id: gmail-graph-api
+        reason_fr: Pour accès programmatique aux boîtes courriel
+      - tool_id: make-zapier
+        reason_fr: Orchestration des workflows sans code serveur additionnel
+    fivepennyai_service_fr: |
+      AI Sprint 3-6 semaines : conception, développement, déploiement,
+      formation. Idéal pour cabinets professionnels au Québec qui
+      veulent l'IA mais doivent respecter la Loi 25 strictement.
+    fivepennyai_revenue_potential: eleve-par-client-mais-volume-faible
+    honest_note_fr: |
+      La voie custom est rarement nécessaire pour les micro-entreprises.
+      À réserver aux PME avec volume élevé (100+ courriels par jour par
+      personne), logique métier unique, ou contrainte réglementaire
+      forte. Pour la majorité des clients, la voie B couvre tous les besoins.
+
+# ───── OUTILS DU MARCHÉ (HIÉRARCHISÉS) ─────
+
+tools:
+
+  # ── TIER 1 : Outils accessibles et largement utilisés ──
+
+  - id: claude-ai
+    tier: 1
+    name: Claude (Anthropic)
+    origin: USA
+    url: https://claude.ai
+    interface_fr: oui-excellente
+    starting_price_monthly: 0
+    currency: USD
+    target_segment_fr: Solopreneurs et professionnels qui rédigent des courriels sensibles ou en français nuancé
+    strength_fr: |
+      Reconnu comme "l'assistant d'e-mailing le plus efficace pour les
+      mails sensibles" grâce à sa finesse et son empathie. Excelle dans
+      l'art de dire non sans brusquer, de négocier sans paraître agressif.
+      Ton naturel supérieur à ChatGPT pour le français.
+    plans:
+      - name: Free
+        price_usd: 0
+        note_fr: Usage limité mais suffisant pour quelques courriels par jour
+      - name: Pro
+        price_usd: 20
+        note_fr: Usage étendu, Projects pour garder contexte client
+    affiliate_potential: non-applicable
+    source_id: jedha-meilleures-ia-gratuites
+    used_in_paths: [self-serve, accompanied]
+    recommended_priority: 1
+    note_fr: |
+      Premier choix pour la voie A. Ouvert dans un onglet séparé, sert
+      de "co-pilote" pour les courriels qui méritent de la réflexion.
+      Pas d'intégration directe mais le copier-coller fonctionne bien.
+
+  - id: copilot-outlook
+    tier: 1
+    name: Microsoft Copilot (Outlook)
+    origin: USA
+    url: https://www.microsoft.com/microsoft-365/copilot
+    interface_fr: oui
+    starting_price_monthly: 0
+    currency: USD
+    target_segment_fr: Professionnels et PME utilisant déjà Microsoft 365
+    strength_fr: |
+      Intégration native dans Outlook. Trois fonctions clés : rédaction
+      d'e-mails à partir d'un prompt, récapitulatif de fils de discussion
+      avec références cliquables, et Coaching by Copilot qui analyse le
+      ton et suggère des améliorations. Microsoft affirme ne pas utiliser
+      les données pour entraîner ses modèles.
+    plans:
+      - name: Gratuit (copilot.com)
+        price_usd: 0
+        note_fr: Accessible via copilot.com, nécessite copier-coller vers Outlook
+      - name: Microsoft 365 Copilot
+        price_usd: 30
+        per_unit: "utilisateur/mois"
+        note_fr: Intégration complète dans Outlook, Word, Excel, Teams. Requiert abonnement Microsoft 365 Business ou Enterprise.
+    affiliate_potential: a-verifier-partenariat-microsoft
+    source_id: microsoft-copilot-outlook
+    used_in_paths: [self-serve, accompanied]
+    recommended_priority: 2
+    note_fr: |
+      À recommander en priorité si le client utilise déjà Microsoft 365.
+      La fonction Coaching by Copilot est unique et très utile pour améliorer
+      les communications clients.
+
+  - id: gemini-gmail
+    tier: 1
+    name: Gemini (Gmail via Google Workspace)
+    origin: USA
+    url: https://workspace.google.com/solutions/ai/
+    interface_fr: oui
+    starting_price_monthly: 0
+    currency: USD
+    target_segment_fr: Professionnels et PME utilisant Gmail/Google Workspace
+    strength_fr: |
+      Intégration native dans Gmail. Résumé de conversations, rédaction,
+      recherche intelligente. Moins complet que Copilot (pas de coaching
+      de ton, tri/priorisation limités) mais bien intégré à l'écosystème
+      Google.
+    pricing_note_fr: |
+      Inclus dans les plans Google Workspace Business Standard (18 $
+      CAD/utilisateur/mois) ou Plus (26 $/utilisateur/mois). Pas
+      disponible en plan Starter de base.
+    affiliate_potential: a-verifier
+    source_id: botpress-ai-email-assistant
+    used_in_paths: [self-serve, accompanied]
+    recommended_priority: 3
+
+  - id: chatgpt
+    tier: 1
+    name: ChatGPT (OpenAI)
+    origin: USA
+    url: https://chatgpt.com
+    interface_fr: oui
+    starting_price_monthly: 0
+    currency: USD
+    target_segment_fr: Alternative à Claude pour rédaction et reformulation de courriels
+    strength_fr: |
+      Très polyvalent, base d'utilisateurs énorme (beaucoup de ressources).
+      Custom GPTs permettent de créer un assistant pour ses propres
+      templates de courriels.
+    plans:
+      - name: Free
+        price_usd: 0
+      - name: Plus
+        price_usd: 20
+        note_fr: Usage étendu, Custom GPTs
+    affiliate_potential: non-applicable
+    source_id: null
+    used_in_paths: [self-serve, accompanied]
+    recommended_priority: 4
+    note_fr: |
+      Pour les courriels, Claude est souvent préféré pour le français
+      naturel et l'empathie. ChatGPT reste une bonne alternative polyvalente.
+
+  # ── TIER 2 : Clients courriel premium avec IA ──
+
+  - id: missive
+    tier: 2
+    name: Missive
+    origin: Québec (Sherbrooke)
+    url: https://missiveapp.com
+    interface_fr: partielle-anglais-primary
+    starting_price_usd_monthly: 0
+    currency: USD
+    target_segment_fr: Équipes 2-20 personnes qui collaborent sur boîtes courriel partagées (support client, ventes, recrutement)
+    strength_fr: |
+      Entreprise québécoise (Sherbrooke). Combine courriel partagé +
+      chat d'équipe + IA. Sa fonctionnalité AI Rules permet d'automatiser
+      tri, assignations, archivage, réponses par templates. Plan gratuit
+      jusqu'à 3 utilisateurs (historique limité à 15 jours). L'utilisateur
+      apporte sa propre clé API OpenAI pour l'IA, ce qui donne un contrôle
+      total sur les coûts.
+    plans:
+      - name: Free
+        price_usd: 0
+        note_fr: Jusqu'à 3 utilisateurs, historique 15 jours
+      - name: Starter
+        price_usd: 14
+        per_unit: "utilisateur/mois (annuel)"
+        note_fr: Boîtes partagées, pas d'IA ni d'automatisation
+      - name: Productive
+        price_usd: 24
+        per_unit: "utilisateur/mois (annuel)"
+        note_fr: Inclut AI Rules, automatisations, intégrations
+      - name: Business
+        price_usd: 36
+        per_unit: "utilisateur/mois (annuel)"
+        note_fr: Analytics, contrôles avancés, SSO
+    affiliate_potential: a-verifier
+    affiliate_link: null
+    source_id: clean-email-ai-outlook
+    used_in_paths: [accompanied]
+    recommended_priority: 1
+    note_fr: |
+      Entreprise québécoise (Sherbrooke) — à mettre en avant pour le
+      marché local. Excellent pour équipes. La clé API OpenAI à apporter
+      soi-même est un atout (pas de majoration) mais aussi un frein pour
+      clients non techniques (gérable par 5PennyAi en voie B).
+
+  - id: superhuman
+    tier: 2
+    name: Superhuman
+    origin: USA (acquis par Grammarly en 2025)
+    url: https://superhuman.com
+    interface_fr: non
+    starting_price_usd_monthly: 25
+    currency: USD
+    target_segment_fr: Professionnels individuels à volume élevé (consultants, dirigeants, vendeurs) valorisant la vitesse
+    strength_fr: |
+      "L'application de messagerie la plus productive jamais créée" selon
+      ses adeptes. Raccourcis clavier, IA pour rédaction, résumés de fils,
+      recherche intelligente. Idéal pour qui reçoit 100+ courriels/jour.
+    pricing_note_fr: |
+      25 $ USD/utilisateur/mois. Une des applications courriel les plus
+      chères du marché, justifiée par le gain de productivité pour
+      professionnels à haut volume.
+    weakness_fr: |
+      Interface anglais seulement. Courbe d'apprentissage des raccourcis
+      clavier. Pas d'intégration workflows tiers. Données hébergées aux
+      USA (enjeu Loi 25 pour professions réglementées au Québec).
+    affiliate_potential: a-verifier
+    source_id: herothemes-assistants-email
+    used_in_paths: [accompanied]
+    recommended_priority: 2
+    note_fr: |
+      À recommander surtout aux clients anglophones ou bilingues à très
+      haut volume. Pour francophones pur laine, Missive ou Copilot sont
+      probablement meilleurs.
+
+  - id: shortwave
+    tier: 2
+    name: Shortwave
+    origin: USA
+    url: https://www.shortwave.com
+    interface_fr: non
+    starting_price_usd_monthly: 0
+    currency: USD
+    target_segment_fr: Utilisateurs Gmail qui cherchent une expérience IA moderne
+    strength_fr: |
+      Client courriel moderne pour Gmail développé par d'anciens employés
+      Google. Résumés IA, bundles intelligents, recherche en langage
+      naturel. Plan gratuit généreux.
+    pricing_note_fr: Plan gratuit disponible, plans payants pour fonctions avancées (à vérifier sur le site)
+    affiliate_potential: a-verifier
+    source_id: superhuman-best-ai-email
+    used_in_paths: [accompanied]
+    recommended_priority: 3
+    note_fr: Uniquement pour utilisateurs Gmail. Interface anglais seulement.
+
+  - id: front
+    tier: 2
+    name: Front
+    origin: USA
+    url: https://front.com
+    interface_fr: partielle
+    starting_price_usd_monthly: 25
+    currency: USD
+    target_segment_fr: Équipes service client qui gèrent courriel + SMS + réseaux sociaux en un seul endroit
+    strength_fr: |
+      Boîte partagée avec assignations, workflows, IA pour résumés et
+      brouillons. Supporte SMS et réseaux sociaux en plus du courriel.
+      Remplace souvent logiciel de help desk + CRM.
+    pricing_note_fr: "À partir de 25 $ USD/utilisateur/mois"
+    affiliate_potential: a-verifier
+    source_id: herothemes-assistants-email
+    used_in_paths: [accompanied]
+    recommended_priority: 4
+    note_fr: À recommander pour équipes service client multi-canal.
+
+  # ── TIER 2 bis : Couches IA sur courriel existant ──
+
+  - id: sanebox
+    tier: 2
+    name: SaneBox
+    origin: USA
+    url: https://www.sanebox.com
+    interface_fr: non
+    starting_price_usd_monthly: 7
+    currency: USD
+    target_segment_fr: Utilisateurs de tout client courriel IMAP qui veulent uniquement du tri automatique
+    strength_fr: |
+      Pionnier du tri automatique. Compatible avec tous les protocoles
+      IMAP (Gmail, Outlook, Yahoo, iCloud, Proton, etc.). Analyse les
+      habitudes et déplace les courriels peu importants. Résumé quotidien
+      des courriels non prioritaires. Simple et efficace.
+    plans:
+      - name: Snack
+        price_usd: 7
+      - name: Lunch
+        price_usd: 12
+      - name: Dinner
+        price_usd: 36
+    weakness_fr: |
+      Hébergement américain, soumis au Cloud Act. Risque Loi 25/RGPD
+      pour les professions réglementées au Québec (avocats, notaires,
+      médecins, comptables).
+    affiliate_potential: a-verifier
+    source_id: optimum-ia-tri-mails
+    used_in_paths: [self-serve, accompanied]
+    recommended_priority: 5
+
+  - id: inbox-zero
+    tier: 2
+    name: Inbox Zero
+    origin: Open source
+    url: https://www.getinboxzero.com
+    interface_fr: non
+    starting_price_monthly: 0
+    currency: USD
+    target_segment_fr: Utilisateurs Gmail qui valorisent l'open source et le contrôle
+    strength_fr: |
+      Open source, se configure en langage naturel, fonctionne
+      directement dans Gmail. Alternative éthique à SaneBox.
+    affiliate_potential: non-applicable-open-source
+    source_id: assistance-email-inbox-zero
+    used_in_paths: [self-serve]
+    recommended_priority: 6
+
+  - id: compose-ai
+    tier: 2
+    name: Compose AI
+    origin: USA
+    url: https://www.compose.ai
+    interface_fr: non
+    starting_price_monthly: 0
+    currency: USD
+    target_segment_fr: Utilisateurs qui veulent uniquement de l'autocomplétion dans leur client courriel
+    strength_fr: Extension browser qui ajoute de l'autocomplétion à n'importe quel webmail. Plan gratuit.
+    affiliate_potential: a-verifier
+    source_id: superhuman-best-ai-email
+    used_in_paths: [self-serve]
+    recommended_priority: 7
+
+  # ── TIER 2 ter : Spécialisés conformité (importante pour le Québec) ──
+
+  - id: proton-scribe
+    tier: 2
+    name: Proton Mail + Proton Scribe
+    origin: Suisse
+    url: https://proton.me/mail
+    interface_fr: oui
+    starting_price_monthly: 0
+    currency: EUR
+    target_segment_fr: Professions réglementées au Québec (avocats, notaires, médecins, comptables) sensibles à la Loi 25
+    strength_fr: |
+      Messagerie chiffrée de bout en bout, hébergée en Suisse (hors du
+      champ du Cloud Act américain). Proton Scribe ajoute des fonctions
+      IA (rédaction, correction) avec les mêmes garanties de
+      confidentialité. Alternative sérieuse pour professions où la
+      confidentialité client est sacrée.
+    plans:
+      - name: Free
+        price_eur: 0
+      - name: Mail Plus
+        price_eur: 4.99
+      - name: Proton Unlimited
+        price_eur: 12.99
+    weakness_fr: |
+      Moins de fonctionnalités IA que SaneBox ou Superhuman. Changement
+      de client courriel requis (pas une couche par-dessus Gmail/Outlook).
+    affiliate_potential: a-verifier
+    source_id: assistance-email-inbox-zero
+    used_in_paths: [accompanied]
+    recommended_priority: 8
+    note_fr: |
+      À recommander aux cabinets d'avocats, notaires, comptables
+      québécois qui veulent l'IA mais refusent d'héberger sur serveurs
+      américains. Décision stratégique plus qu'opérationnelle.
+
+  # ── TIER 3 : Infrastructure pour voie custom ──
+
+  - id: anthropic-api
+    tier: 3
+    name: Anthropic API (Claude)
+    origin: USA
+    url: https://docs.anthropic.com
+    interface_fr: documentation-en
+    starting_price_monthly: 0
+    currency: USD
+    target_segment_fr: Développement custom d'agent IA pour courriels
+    strength_fr: |
+      Claude Sonnet 4 pour qualité de français et raisonnement sur
+      contenu sensible. Stack que 5PennyAi maîtrise.
+    pricing_note_fr: "Facturation à l'usage, 10-100 $/mois selon volume"
+    affiliate_potential: non-applicable
+    source_id: null
+    used_in_paths: [custom]
+    recommended_priority: 1
+
+  - id: gmail-graph-api
+    tier: 3
+    name: Gmail API / Microsoft Graph API
+    origin: USA
+    url: null
+    interface_fr: documentation-en
+    starting_price_monthly: 0
+    currency: USD
+    target_segment_fr: Développement custom avec accès programmatique aux courriels
+    strength_fr: |
+      APIs officielles pour lire, envoyer, trier les courriels par code.
+      Permettent de construire des agents sur mesure intégrés à Gmail ou
+      Outlook.
+    pricing_note_fr: Gratuit jusqu'à certaines quotas, puis facturation à l'usage
+    affiliate_potential: non-applicable
+    source_id: null
+    used_in_paths: [custom]
+    recommended_priority: 2
+
+  - id: make-zapier
+    tier: 3
+    name: Make ou Zapier
+    origin: USA (international)
+    url: https://www.make.com
+    interface_fr: oui
+    starting_price_monthly: 0
+    currency: USD
+    target_segment_fr: Orchestration de workflows courriel multi-outils sans code
+    strength_fr: |
+      Pour automatiser : nouveau courriel → extraire données → créer
+      fiche CRM → notifier Slack → répondre avec template personnalisé.
+      Make typiquement moins cher que Zapier.
+    pricing_note_fr: "Gratuit à 50 $/mois selon volume"
+    affiliate_potential: confirme
+    source_id: null
+    used_in_paths: [accompanied, custom]
+    recommended_priority: 3
+
+# ───── INTÉGRATEURS IA QUÉBÉCOIS (CONCURRENCE DIRECTE) ─────
+
+quebec_competitors:
+  - name: FloatAI
+    url: https://www.floatai.ca
+    positioning_fr: Automatisation pour PME québécoises; peut couvrir gestion courriel dans approche globale
+    note_fr: Concurrent indirect; pas spécialisé courriel mais peut en faire partie
+
+  - name: IT Cares
+    url: https://itcares.ca
+    positioning_fr: Copilot Microsoft pour PME, donc expertise Microsoft 365 / Outlook
+    note_fr: Concurrent direct si le client est dans l'écosystème Microsoft
+
+  - name: EvoluAI
+    url: https://evoluai.ca
+    positioning_fr: Support client IA incluant potentiellement courriel
+    note_fr: Concurrent sur voie B accompagné
+
+  - name: CyberPerformance
+    url: https://cyberperformance.ca
+    positioning_fr: Intégration Teams/Outlook/SharePoint pour PME
+    note_fr: Concurrent surtout pour la voie C custom
+
+strategic_note_fr: |
+  La gestion intelligente des courriels est un pattern moins "visible"
+  que les chatbots ou la réceptionniste IA, mais le gain de temps par
+  client est souvent énorme (2h par jour pour certaines professions).
+  Différenciation 5PennyAi : (1) audit automatisé qui identifie si
+  l'outil gratuit suffit ou si la voie B apporte une vraie valeur,
+  (2) mettre en avant Missive (entreprise québécoise), (3) pour
+  professions réglementées : compétence sur la conformité Loi 25 avec
+  recommandations Proton Mail + Proton Scribe ou voie C custom hébergé
+  au Canada — angle peu couvert par les concurrents.
+
+# ───── COÛTS (RÉSUMÉ TROIS VOIES) ─────
+
+cost_summary_cad:
+  voie_a_self_serve:
+    first_year: "0 à 560 $"
+    recurring_monthly: "0 à 30 $"
+  voie_b_accompanied:
+    first_year: "1 300 à 4 300 $"
+    recurring_monthly: "25 à 150 $"
+  voie_c_custom:
+    first_year: "9 200 à 26 000 $"
+    recurring_monthly: "100 à 500 $"
+
+# ───── VALEUR DOCUMENTÉE ─────
+
+documented_benefits:
+  time_saved_daily_hours:
+    min: 0.5
+    max: 2
+  writing_time_reduction_percent:
+    min: 40
+    max: 60
+  sorting_accuracy_percent_after_training: 90
+  typical_payback_months:
+    min: 1
+    max: 4
+  note_fr: |
+    Les gains de temps se matérialisent rapidement (1-2 semaines) et
+    sont cumulatifs : 30 minutes par jour = 130 heures/an récupérées.
+    Pour un professionnel facturant 75-150 $/h, ROI très rapide même
+    pour la voie B à 2000 $ de setup.
+
+customer_cases:
+  - company: Cabinets d'avocats (via SECRETAIR IA / OPTIMUM IA)
+    industry: droit-avocats
+    segment_fr: Cabinets d'avocats français submergés par courriels clients
+    result_fr: "2 heures par jour récupérées dès les premières semaines selon OPTIMUM IA"
+    source_id: optimum-ia-tri-mails
+    relevance_for_micro: moyenne-pertinent-pour-professions-reglementees
+    confidence: medium
+    note_fr: Source intégrateur (à prendre avec recul), mais cohérent avec d'autres témoignages
+
+  - company: Utilisateurs Superhuman (base agrégée)
+    industry: professionnels-haut-volume
+    segment_fr: Cadres, consultants, vendeurs à 100+ courriels/jour
+    result_fr: "Réduction de 40 à 60 % du temps de rédaction selon témoignages cumulés"
+    source_id: assistance-email-inbox-zero
+    relevance_for_micro: elevee-solopreneurs-haut-volume
+
+  - company: Cas anonyme avocate d'affaires parisienne
+    industry: droit-avocats
+    segment_fr: Avocate parisienne; DSI a refusé SaneBox pour raisons RGPD
+    result_fr: "Passée à Proton Mail + Proton Scribe : moins de fonctions mais conformité assurée"
+    source_id: assistance-email-inbox-zero
+    relevance_for_micro: moyenne-pertinent-professions-reglementees-qc
+    confidence: medium
+
+# ───── RISQUES ─────
+
+risks:
+  - type: reglementaire-qc
+    title_fr: Loi 25 (protection des renseignements personnels) — MAJEUR
+    severity: important
+    description_fr: |
+      La plupart des outils populaires (SaneBox, Superhuman, Copilot,
+      Gemini) hébergent les données sur serveurs américains, soumis au
+      Cloud Act. Pour les professions réglementées (avocats, notaires,
+      médecins, comptables, psychothérapeutes au Québec), cela peut
+      constituer une violation des obligations de confidentialité
+      professionnelle.
+    mitigation_fr: |
+      Pour professions sensibles : privilégier Proton Mail + Proton
+      Scribe (Suisse), ou voie C avec hébergement Canada (AWS ca-central-1,
+      Azure Canada Central). Pour professions non réglementées : vérifier
+      que la politique de confidentialité de l'outil spécifie que les
+      données ne sont pas utilisées pour l'entraînement (Microsoft Copilot
+      l'affirme explicitement, par exemple).
+
+  - type: technique
+    title_fr: Hallucinations dans les réponses
+    severity: moyen
+    description_fr: |
+      L'IA peut inventer des détails factuels dans un brouillon de
+      réponse (date, montant, personne). Envoyé sans révision, cela
+      peut causer des erreurs professionnelles.
+    mitigation_fr: |
+      Règle absolue : TOUJOURS réviser avant d'envoyer. Ne jamais
+      activer l'envoi automatique. Former le client à reconnaître les
+      erreurs typiques (dates inventées, noms déformés).
+
+  - type: technique
+    title_fr: Qualité du français québécois
+    severity: faible-a-moyen
+    description_fr: |
+      Les outils IA peuvent utiliser des expressions françaises européennes
+      qui sonnent étranges au Québec ("courriel" vs "email", formulations
+      plus formelles).
+    mitigation_fr: |
+      Claude gère mieux le français québécois que Copilot ou ChatGPT.
+      Spécifier dans le prompt "utilise un français québécois naturel".
+      Relire et ajuster.
+
+  - type: technique
+    title_fr: Tri IA trop agressif ou trop permissif
+    severity: moyen
+    description_fr: |
+      Les règles IA peuvent mal classer des courriels importants (faux
+      négatifs) ou laisser passer du spam (faux positifs), surtout les
+      premières semaines d'apprentissage.
+    mitigation_fr: |
+      Vérifier le dossier "faible priorité" quotidiennement les 2 premières
+      semaines. Former l'IA en réclassant manuellement les erreurs.
+      Après 1-2 semaines, la précision dépasse généralement 90 %.
+
+  - type: business
+    title_fr: Dépendance à l'outil
+    severity: faible
+    description_fr: |
+      Si le client devient très dépendant d'un outil (Missive, Superhuman),
+      un changement futur devient coûteux (reconfiguration, formation).
+    mitigation_fr: |
+      Documenter la configuration. Privilégier des outils avec export
+      de données (règles, snippets, templates).
+
+  - type: business
+    title_fr: Courriels automatisés sonnant "IA"
+    severity: faible-a-moyen
+    description_fr: |
+      Des brouillons générés à la chaîne et envoyés sans personnalisation
+      peuvent être reconnus comme "IA" et détériorer la relation client.
+    mitigation_fr: |
+      Toujours personnaliser le brouillon IA avant envoi. Ne jamais
+      utiliser l'IA pour remplacer le jugement humain sur les courriels
+      émotionnels (plaintes, licenciements, annonces sensibles).
+
+  - type: business
+    title_fr: Coûts variables avec API propre (Missive)
+    severity: faible
+    description_fr: |
+      Missive demande d'apporter sa propre clé API OpenAI. Pour un
+      client non technique, comprendre et gérer cette facturation
+      séparée peut être déroutant.
+    mitigation_fr: |
+      En voie B, 5PennyAi configure la clé API avec le client et explique
+      les coûts typiques (5-20 $ par mois selon volume). Surveiller le
+      premier mois et ajuster si nécessaire.
+
+# ───── PRÉREQUIS ─────
+
+prerequisites:
+  - Compte courriel professionnel (Gmail, Outlook, ou autre IMAP)
+  - Pour voie A Copilot/Gemini : abonnement Microsoft 365 ou Google Workspace
+  - Consentement à ce que les courriels soient traités par l'outil IA (bien lire la politique de confidentialité)
+  - Politique de confidentialité de l'entreprise à jour
+  - Pour professions réglementées : vérification auprès de l'ordre professionnel applicable
+  - Volonté de réviser les brouillons avant envoi (toujours)
+
+# ───── SOURCES (référentiel central) ─────
+
+sources:
+  - id: clean-email-ai-outlook
+    type: comparison-article
+    title: "Clean Email — La meilleure IA pour les e-mails Outlook en 2026"
+    url: https://clean.email/fr/blog/email-providers/ai-for-outlook-email
+    accessed: 2026-04-22
+    reliability: medium
+    key_facts_fr: |
+      Missive Gratuit 3 users, Starter 14 $, Productive 24 $, Business 36 $
+      par user/mois annuel. Clé API OpenAI à apporter soi-même.
+
+  - id: optimum-ia-tri-mails
+    type: integrator-article
+    title: "OPTIMUM IA — Meilleure IA pour tri et priorisation des mails 2026"
+    url: https://optimumia.fr/meilleure-ia-pour-tri-et-priorisation-des-mails-guide-complet-2026/
+    accessed: 2026-04-22
+    reliability: medium
+    note_fr: |
+      Source française qui vend SECRETAIR IA (donc biaisée), mais donne
+      bonne vue d'ensemble et soulève l'enjeu RGPD/Cloud Act pour
+      professions réglementées. À prendre avec recul.
+
+  - id: jedha-meilleures-ia-gratuites
+    type: comparison-article
+    title: "Jedha — 10 meilleures IA gratuites pour vos mails en 2026"
+    url: https://www.jedha.co/formation-ia/meilleures-ia-gratuites-pour-mails
+    accessed: 2026-04-22
+    reliability: medium
+    key_facts_fr: |
+      Claude reconnu comme "l'assistant d'e-mailing le plus efficace
+      pour les mails sensibles" grâce à sa finesse et son empathie.
+
+  - id: assistance-email-inbox-zero
+    type: comparison-article
+    title: "Assistance Email — Inbox Zero avec l'IA en 2026"
+    url: https://assistance.email/inbox-zero-avec-la-2026/
+    accessed: 2026-04-22
+    reliability: medium
+    key_facts_fr: |
+      Précision tri 90 %+ après 1-2 semaines. Superhuman/Shortwave
+      réduction 40-60 % temps rédaction. Enjeu Cloud Act critique pour
+      professions réglementées. Cas avocate parisienne + DSI + Proton.
+
+  - id: herothemes-assistants-email
+    type: comparison-article
+    title: "HeroThemes — 8 meilleurs assistants IA pour e-mails 2026"
+    url: https://herothemes.com/fr/blog/ai-email-assistants/
+    accessed: 2026-04-22
+    reliability: medium
+    key_facts_fr: |
+      Superhuman 25 $/user/mois. Front 25 $/user/mois. Copilot impressionnant,
+      fonction Coaching.
+
+  - id: zapier-best-ai-email
+    type: comparison-article
+    title: "Zapier — Les 9 meilleurs assistants d'e-mail IA"
+    url: https://zapier.com/fr/blog/best-ai-email-assistant/
+    accessed: 2026-04-22
+    reliability: medium
+    key_facts_fr: |
+      Superhuman acquis par Grammarly. Fonction Coaching by Copilot
+      analyse ton et suggère améliorations.
+
+  - id: microsoft-copilot-outlook
+    type: vendor-official
+    title: "Microsoft — Assistant IA pour les e-mails dans Outlook"
+    url: https://www.microsoft.com/fr-fr/microsoft-365/outlook/ai-email-assistant
+    accessed: 2026-04-22
+    reliability: high
+    key_facts_fr: |
+      Microsoft affirme : Copilot n'utilise pas les données pour entraîner
+      ses modèles, chiffrement en transit et au repos, conformité RGPD
+      et ISO/IEC.
+
+  - id: superhuman-best-ai-email
+    type: vendor-article
+    title: "Superhuman — Top 7 Best AI Email Platform Compared"
+    url: https://blog.superhuman.com/best-ai-email-platform/
+    accessed: 2026-04-22
+    reliability: medium
+    key_facts_fr: |
+      Shortwave plan gratuit disponible. Compose AI extension autocomplete.
+
+  - id: botpress-ai-email-assistant
+    type: comparison-article
+    title: "Botpress — 10 assistants email IA"
+    url: https://botpress.com/fr/blog/ai-email-assistant
+    accessed: 2026-04-22
+    reliability: medium
+    key_facts_fr: |
+      Gemini moins organisé que Copilot (pas de filtrage/étiquetage/
+      priorisation réels).
+
+  - id: sba-ai-adoption-2025
+    type: government-research
+    title: "SBA Office of Advocacy — AI in Business Small Firms Closing In"
+    url: https://advocacy.sba.gov/wp-content/uploads/2025/09/Research-Spotlight-AI-in-Business-Small-Firms-Closing-In_-092425.pdf
+    published: 2025-09
+    reliability: high
+
+# ───── MÉTADONNÉES INTERNES ─────
+
+confidence_level: high
+source_diversity: vendor-sources + integrator-articles + government-research + comparison-articles
+
+adaptation_needed_for_qc:
+  - Mettre Missive en avant (entreprise québécoise de Sherbrooke)
+  - Enjeu Loi 25 majeur pour professions réglementées
+  - Claude préféré à ChatGPT pour qualité du français
+  - Vérifier les ordres professionnels (Barreau, Ordre des comptables, etc.) pour exigences spécifiques
+
+# ───── NOTES HONNÊTES (usage interne uniquement) ─────
+
+internal_notes_fr: |
+  DÉCOUVERTE IMPORTANTE : MISSIVE EST QUÉBÉCOIS
+  Missive est basé à Sherbrooke, Québec. C'est une information cruciale
+  que je n'avais pas mise en avant initialement. À utiliser activement
+  comme argument de vente pour clients québécois : "outil développé ici"
+  résonne différemment qu'un outil américain. À vérifier formellement
+  mais c'est largement documenté.
+
+  FORCE DE CE PATTERN :
+  Gain de temps très tangible (30 min à 2h/jour) avec outils souvent
+  gratuits ou peu coûteux. ROI immédiat même pour voie A. Complémentaire
+  aux patterns 1-2-4. Point d'entrée naturel pour un client qui doute
+  de l'utilité de l'IA : "essayez Claude pour votre prochain courriel
+  important, vous verrez la différence".
+
+  ANGLE DIFFÉRENCIATEUR : LOI 25
+  Aucun des concurrents québécois ne met la Loi 25 en avant dans leur
+  marketing de façon aussi visible. FloatAI mentionne la conformité
+  générale mais ne creuse pas les implications pour les courriels.
+  Pour les cabinets d'avocats, notaires, comptables, médecins au
+  Québec, 5PennyAi peut se positionner comme LE consultant qui
+  comprend l'enjeu et propose des solutions conformes (Proton ou
+  custom Canada).
+
+  ATTENTION SUR LES MÉTRIQUES :
+  "2h par jour récupérées" vient d'OPTIMUM IA qui vend SECRETAIR IA,
+  donc source biaisée. À présenter comme "selon OPTIMUM IA". Les 40-60 %
+  de réduction temps rédaction pour Superhuman/Shortwave sont plus
+  fiables (source : compilation de témoignages utilisateurs).
+
+  POSITIONNEMENT 5PENNYAI :
+  - Voie A : audit + guide prompts personnalisés (100-299 $)
+  - Voie B : setup Missive ou Copilot, bon forfait 1500-2500 $
+  - Voie C : réservée aux cas Loi 25 critiques avec volume élevé
+
+  CROSS-SELL :
+  Client qui fait voie B pour gestion courriel = excellent prospect
+  pour pattern 004 (rédaction marketing) ou 003 (prise de RDV) car
+  c'est le même profil "je suis submergé par les communications".
+
+# ───── EMBEDDING (généré automatiquement au seed Supabase) ─────
+
+embedding: null

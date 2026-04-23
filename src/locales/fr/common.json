@@ -1,0 +1,74 @@
+{
+  "nav": {
+    "why": "Pourquoi",
+    "how": "Comment ça marche",
+    "pricing": "Tarifs",
+    "examples": "Exemples",
+    "startAudit": "Lancer un audit",
+    "openMenu": "Ouvrir le menu",
+    "closeMenu": "Fermer le menu"
+  },
+  "footer": {
+    "copyright": "© 2026 5PennyAi · Fait avec passion à Québec, QC",
+    "contact": "Contact",
+    "terms": "Conditions",
+    "privacy": "Confidentialité"
+  },
+  "cta": {
+    "startAudit": "Commencer mon audit",
+    "viewExample": "Voir un exemple",
+    "continue": "Continuer",
+    "back": "Retour",
+    "cancel": "Annuler",
+    "submit": "Envoyer"
+  },
+  "status": {
+    "processing": "Traitement",
+    "completed": "Terminé",
+    "pending": "En attente",
+    "failed": "Échec"
+  },
+  "common": {
+    "loading": "Chargement",
+    "error": "Erreur",
+    "success": "Succès",
+    "save": "Enregistrer",
+    "delete": "Supprimer",
+    "edit": "Modifier"
+  },
+  "auth": {
+    "loginTitle": "Bienvenue",
+    "loginSub": "Connectez-vous pour accéder à vos audits.",
+    "loginCta": "Se connecter",
+    "signupTitle": "Créer un compte",
+    "signupSub": "Prenez quelques secondes — c'est gratuit tant qu'on ne lance pas l'audit.",
+    "signupCta": "Créer mon compte",
+    "signOut": "Se déconnecter",
+    "email": "Adresse courriel",
+    "emailPlaceholder": "vous@entreprise.ca",
+    "password": "Mot de passe",
+    "passwordHint": "8 caractères minimum.",
+    "fullName": "Nom complet",
+    "fullNamePlaceholder": "Christian Couillard",
+    "language": "Langue préférée",
+    "noAccount": "Pas encore de compte ?",
+    "haveAccount": "Déjà un compte ?",
+    "createAccount": "Créer un compte",
+    "signIn": "Se connecter",
+    "submitting": "Un instant…",
+    "errors": {
+      "generic": "Une erreur s'est produite. Réessaie dans un instant.",
+      "invalidCredentials": "Courriel ou mot de passe invalide.",
+      "passwordTooShort": "Le mot de passe doit contenir au moins 8 caractères.",
+      "emailRequired": "Le courriel est requis.",
+      "nameRequired": "Le nom est requis.",
+      "profileCreateFailed": "Compte créé, mais le profil n'a pas pu être enregistré. Contacte le support."
+    },
+    "dashboard": {
+      "greeting": "Bonjour {{name}}",
+      "greetingFallback": "Bonjour",
+      "empty": "Vos audits apparaîtront ici.",
+      "emptyCta": "Lancer un premier audit"
+    }
+  }
+}

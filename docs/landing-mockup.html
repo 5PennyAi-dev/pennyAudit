@@ -1,0 +1,1286 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Audit IA — 5PennyAi (identité de marque)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* Identité 5PennyAi */
+  --navy: #0F2744;          /* Bleu marine profond du hero 5PennyAi */
+  --navy-deep: #081A30;     /* Bleu nuit pour contraste max */
+  --navy-soft: #1B3A5F;     /* Bleu marine plus clair */
+  --orange: #F57D20;        /* Orange vif des CTA 5PennyAi */
+  --orange-deep: #D8631A;   /* Orange plus saturé au hover */
+  --orange-soft: #FDE8D0;   /* Orange pâle pour backgrounds */
+  --cream: #FBF7F0;         /* Crème chaud pour sections claires */
+  --white: #FFFFFF;
+  --ink: #0F2744;           /* Texte principal = navy */
+  --muted: #5B6B7E;         /* Texte secondaire */
+  --line: #E3E8EE;          /* Bordures discrètes */
+  --green: #10B981;         /* Succès/validation */
+
+  --sans: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--sans);
+  background: var(--white);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.5;
+}
+
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+/* ════════ NAV (style 5PennyAi) ════════ */
+.nav {
+  background: var(--navy);
+  color: var(--white);
+  padding: 18px 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.logo {
+  font-weight: 700;
+  font-size: 20px;
+  letter-spacing: -0.02em;
+  color: var(--white);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.logo-accent {
+  color: var(--orange);
+}
+.nav-links {
+  display: flex;
+  gap: 36px;
+  list-style: none;
+  font-size: 14px;
+}
+.nav-links a {
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+.nav-links a:hover {
+  color: var(--white);
+}
+.nav-cta {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.lang-switch {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+  display: flex;
+  gap: 2px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 4px;
+  border-radius: 6px;
+  font-weight: 500;
+}
+.lang-switch span {
+  padding: 2px 8px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+.lang-switch .active {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--white);
+}
+
+.btn {
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: 14px;
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  transition: all 0.15s;
+  letter-spacing: -0.01em;
+}
+.btn-orange {
+  background: var(--orange);
+  color: var(--white);
+}
+.btn-orange:hover {
+  background: var(--orange-deep);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px -4px rgba(245, 125, 32, 0.4);
+}
+.btn-ghost {
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--line);
+}
+.btn-ghost:hover {
+  background: var(--cream);
+  border-color: var(--ink);
+}
+.btn-ghost-dark {
+  background: transparent;
+  color: var(--white);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+.btn-ghost-dark:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* ════════ HERO (bleu marine comme 5PennyAi) ════════ */
+.hero {
+  background: linear-gradient(180deg, var(--navy) 0%, var(--navy-deep) 100%);
+  color: var(--white);
+  padding: 80px 0 100px;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -200px;
+  right: -200px;
+  width: 700px;
+  height: 700px;
+  background: radial-gradient(circle, rgba(245, 125, 32, 0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(245, 125, 32, 0.4), transparent);
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 80px;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--orange);
+  background: rgba(245, 125, 32, 0.1);
+  padding: 8px 14px;
+  border-radius: 24px;
+  margin-bottom: 28px;
+  font-weight: 500;
+  border: 1px solid rgba(245, 125, 32, 0.2);
+}
+.eyebrow::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  background: var(--orange);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+h1.hero-title {
+  font-weight: 700;
+  font-size: clamp(42px, 5.2vw, 68px);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  margin-bottom: 24px;
+  color: var(--white);
+}
+.hero-title .accent {
+  color: var(--orange);
+  font-weight: 700;
+}
+
+.hero-sub {
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.75);
+  line-height: 1.6;
+  max-width: 540px;
+  margin-bottom: 36px;
+}
+
+.hero-cta {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 48px;
+}
+.hero-cta .btn {
+  padding: 14px 24px;
+  font-size: 15px;
+}
+.hero-meta {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+  margin-left: 4px;
+}
+
+/* Stats row (style 5PennyAi) */
+.hero-stats {
+  display: flex;
+  gap: 56px;
+  padding-top: 32px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+.hero-stat {
+  flex: 0;
+}
+.hero-stat-number {
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--orange);
+  letter-spacing: -0.02em;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.hero-stat-label {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 500;
+}
+
+/* Audit card (visuel hero à droite) */
+.audit-card {
+  background: var(--white);
+  border-radius: 16px;
+  padding: 28px;
+  box-shadow: 0 30px 80px -20px rgba(0, 0, 0, 0.4), 0 8px 24px -8px rgba(245, 125, 32, 0.15);
+  position: relative;
+  color: var(--ink);
+  transform: rotate(-1deg);
+  transition: transform 0.3s;
+}
+.audit-card:hover {
+  transform: rotate(0deg) translateY(-4px);
+}
+.audit-card::before {
+  content: '';
+  position: absolute;
+  top: -12px;
+  right: -12px;
+  width: 60px;
+  height: 60px;
+  background: var(--orange);
+  border-radius: 50%;
+  opacity: 0.9;
+  filter: blur(32px);
+  z-index: -1;
+}
+
+.audit-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 24px;
+}
+.audit-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+.audit-client {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--navy);
+}
+.audit-status {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--green);
+  background: rgba(16, 185, 129, 0.1);
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.audit-status-dot {
+  width: 6px;
+  height: 6px;
+  background: var(--green);
+  border-radius: 50%;
+  animation: pulse 1.5s infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.2); }
+}
+
+.audit-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.audit-step {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 14px;
+}
+.step-num {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  background: var(--cream);
+  border: 1.5px solid var(--line);
+  color: var(--muted);
+  flex-shrink: 0;
+}
+.audit-step.done .step-num {
+  background: var(--navy);
+  color: var(--white);
+  border-color: var(--navy);
+}
+.audit-step.done .step-num::before {
+  content: '✓';
+  font-size: 14px;
+}
+.audit-step.done .step-num span {
+  display: none;
+}
+.audit-step.active .step-num {
+  background: var(--orange);
+  color: var(--white);
+  border-color: var(--orange);
+  box-shadow: 0 0 0 4px rgba(245, 125, 32, 0.2);
+}
+.step-label {
+  flex: 1;
+  color: var(--ink);
+  font-weight: 500;
+}
+.audit-step.pending .step-label {
+  color: var(--muted);
+  font-weight: 400;
+}
+.step-time {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.audit-progress {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.progress-bar {
+  flex: 1;
+  height: 6px;
+  background: var(--line);
+  border-radius: 6px;
+  overflow: hidden;
+  margin: 0 16px;
+}
+.progress-fill {
+  height: 100%;
+  width: 60%;
+  background: linear-gradient(90deg, var(--orange), var(--orange-deep));
+  border-radius: 6px;
+  animation: progress 3s ease-in-out infinite;
+}
+@keyframes progress {
+  0% { width: 40%; }
+  50% { width: 65%; }
+  100% { width: 40%; }
+}
+.progress-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+/* ════════ TRUST ════════ */
+.trust {
+  padding: 32px 0;
+  background: var(--cream);
+  border-bottom: 1px solid var(--line);
+}
+.trust-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+.trust-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  font-weight: 500;
+}
+.trust-items {
+  display: flex;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+.trust-item {
+  font-size: 14px;
+  color: var(--ink);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.trust-item::before {
+  content: '✓';
+  color: var(--orange);
+  font-weight: 700;
+}
+
+/* ════════ PROBLÈME (fond blanc) ════════ */
+.problem {
+  padding: 120px 0;
+  background: var(--white);
+}
+.section-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--orange);
+  background: var(--orange-soft);
+  padding: 6px 14px;
+  border-radius: 20px;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+.section-label::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  background: var(--orange);
+  border-radius: 50%;
+}
+.section-title {
+  font-size: clamp(36px, 4vw, 52px);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+  margin-bottom: 20px;
+  max-width: 800px;
+  color: var(--navy);
+}
+.section-title .accent {
+  color: var(--orange);
+}
+.section-sub {
+  font-size: 18px;
+  color: var(--muted);
+  max-width: 640px;
+  margin-bottom: 64px;
+  line-height: 1.55;
+}
+
+.problem-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+.problem-card {
+  padding: 36px 32px;
+  background: var(--cream);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  position: relative;
+  transition: all 0.2s;
+}
+.problem-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px -15px rgba(15, 39, 68, 0.12);
+  border-color: var(--orange);
+}
+.problem-num {
+  font-family: var(--mono);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--orange);
+  margin-bottom: 20px;
+  letter-spacing: -0.02em;
+}
+.problem-heading {
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  margin-bottom: 12px;
+  color: var(--navy);
+}
+.problem-text {
+  font-size: 15px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+/* ════════ COMMENT (fond crème) ════════ */
+.how {
+  padding: 120px 0;
+  background: var(--cream);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.how-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: start;
+}
+.how-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+}
+.how-step {
+  border-left: 2px solid var(--line);
+  padding-left: 28px;
+  position: relative;
+}
+.how-step.current {
+  border-left-color: var(--orange);
+}
+.how-step-num {
+  position: absolute;
+  left: -16px;
+  top: 0;
+  width: 30px;
+  height: 30px;
+  background: var(--white);
+  border: 2px solid var(--line);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+}
+.how-step.current .how-step-num {
+  background: var(--orange);
+  border-color: var(--orange);
+  color: var(--white);
+  box-shadow: 0 0 0 5px rgba(245, 125, 32, 0.15);
+}
+.how-step-title {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin-bottom: 8px;
+  color: var(--navy);
+}
+.how-step-desc {
+  font-size: 15px;
+  color: var(--muted);
+  line-height: 1.65;
+}
+.how-step-time {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--orange);
+  background: var(--orange-soft);
+  padding: 4px 10px;
+  border-radius: 4px;
+  margin-top: 10px;
+  font-weight: 600;
+}
+
+.how-visual {
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 32px;
+  position: sticky;
+  top: 100px;
+  box-shadow: 0 16px 40px -12px rgba(15, 39, 68, 0.08);
+}
+.sample-title {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 16px;
+  font-weight: 500;
+}
+.sample-heading {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin-bottom: 8px;
+  line-height: 1.25;
+  color: var(--navy);
+}
+.sample-opportunity {
+  border-top: 1px solid var(--line);
+  padding-top: 20px;
+  margin-top: 20px;
+}
+.opp-tag {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--white);
+  background: var(--orange);
+  padding: 4px 9px;
+  border-radius: 4px;
+  margin-bottom: 12px;
+  font-weight: 700;
+}
+.opp-tag.secondary {
+  background: var(--navy);
+}
+.opp-name {
+  font-size: 17px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: var(--navy);
+}
+.opp-desc {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.6;
+  margin-bottom: 14px;
+}
+.opp-stats {
+  display: flex;
+  gap: 24px;
+  font-family: var(--mono);
+  font-size: 10px;
+}
+.opp-stat {
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 500;
+}
+.opp-stat strong {
+  display: block;
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--navy);
+  margin-top: 3px;
+  letter-spacing: -0.01em;
+  text-transform: none;
+}
+
+/* ════════ TARIFS ════════ */
+.pricing {
+  padding: 120px 0;
+  background: var(--white);
+}
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-top: 56px;
+}
+.tier {
+  padding: 40px 32px;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  transition: all 0.2s;
+}
+.tier:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px -15px rgba(15, 39, 68, 0.12);
+}
+.tier.featured {
+  background: var(--navy);
+  color: var(--white);
+  border: none;
+  transform: scale(1.03);
+  box-shadow: 0 30px 60px -20px rgba(15, 39, 68, 0.4), 0 0 0 2px var(--orange);
+}
+.tier.featured:hover {
+  transform: scale(1.03) translateY(-4px);
+}
+
+.tier-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+.tier.featured .tier-label {
+  color: var(--orange);
+}
+.tier-name {
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+  color: var(--navy);
+}
+.tier.featured .tier-name {
+  color: var(--white);
+}
+.tier-desc {
+  font-size: 14px;
+  color: var(--muted);
+  margin-bottom: 28px;
+  line-height: 1.55;
+  min-height: 44px;
+}
+.tier.featured .tier-desc {
+  color: rgba(255, 255, 255, 0.7);
+}
+.tier-price {
+  font-size: 42px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  margin-bottom: 4px;
+  color: var(--navy);
+}
+.tier.featured .tier-price {
+  color: var(--white);
+}
+.tier-price-note {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+  margin-bottom: 32px;
+  font-weight: 500;
+}
+.tier.featured .tier-price-note {
+  color: rgba(255, 255, 255, 0.6);
+}
+.tier-features {
+  list-style: none;
+  margin-bottom: 32px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.tier-features li {
+  font-size: 14px;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  color: var(--ink);
+}
+.tier.featured .tier-features li {
+  color: rgba(255, 255, 255, 0.9);
+}
+.tier-features li::before {
+  content: '→';
+  color: var(--orange);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.tier-cta {
+  width: 100%;
+  text-align: center;
+  padding: 14px;
+  font-size: 15px;
+}
+.tier.featured .tier-cta {
+  background: var(--orange);
+  color: var(--white);
+  border: none;
+}
+.tier.featured .tier-cta:hover {
+  background: var(--orange-deep);
+}
+
+.featured-badge {
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--orange);
+  color: var(--white);
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-weight: 700;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(245, 125, 32, 0.4);
+}
+
+/* ════════ CTA FINAL (bleu marine) ════════ */
+.final {
+  padding: 120px 0;
+  text-align: center;
+  background: linear-gradient(180deg, var(--navy-deep) 0%, var(--navy) 100%);
+  color: var(--white);
+  position: relative;
+  overflow: hidden;
+}
+.final::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 800px;
+  height: 800px;
+  background: radial-gradient(circle, rgba(245, 125, 32, 0.1) 0%, transparent 60%);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+.final-content {
+  position: relative;
+  z-index: 1;
+}
+.final h2 {
+  font-size: clamp(38px, 5vw, 60px);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+  margin-bottom: 20px;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.final h2 .accent {
+  color: var(--orange);
+}
+.final p {
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.7);
+  max-width: 560px;
+  margin: 0 auto 36px;
+  line-height: 1.6;
+}
+.final .btn {
+  padding: 16px 32px;
+  font-size: 16px;
+}
+
+/* ════════ FOOTER ════════ */
+.footer {
+  background: var(--navy-deep);
+  color: rgba(255, 255, 255, 0.5);
+  padding: 40px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+.footer-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.footer a {
+  color: rgba(255, 255, 255, 0.5);
+  text-decoration: none;
+  margin-left: 20px;
+}
+.footer a:hover {
+  color: var(--white);
+}
+
+@media (max-width: 900px) {
+  .hero-grid, .how-grid, .problem-grid, .pricing-grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  .tier.featured { transform: none; }
+  .nav-links { display: none; }
+  .hero { padding: 60px 0 80px; }
+  .problem, .how, .pricing, .final { padding: 80px 0; }
+  .hero-stats { gap: 32px; }
+  .hero-stat-number { font-size: 28px; }
+  .audit-card { transform: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="container nav-inner">
+    <a href="#" class="logo">5Penny<span class="logo-accent">Ai</span></a>
+    <ul class="nav-links">
+      <li><a href="#probleme">Pourquoi</a></li>
+      <li><a href="#comment">Comment ça marche</a></li>
+      <li><a href="#tarifs">Tarifs</a></li>
+      <li><a href="#">Exemples</a></li>
+    </ul>
+    <div class="nav-cta">
+      <div class="lang-switch">
+        <span class="active">FR</span>
+        <span>EN</span>
+      </div>
+      <a href="#" class="btn btn-orange">Lancer un audit</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container hero-grid">
+    <div class="hero-text">
+      <span class="eyebrow">Audit IA automatisé · Conçu au Québec</span>
+      <h1 class="hero-title">
+        Découvrez où l'<span class="accent">IA</span> peut vraiment aider votre entreprise.
+      </h1>
+      <p class="hero-sub">
+        Répondez à 15 questions sur votre entreprise. Recevez en 10 minutes
+        un rapport personnalisé identifiant 3 à 5 opportunités concrètes,
+        leurs outils recommandés, coûts estimés et la marche à suivre.
+      </p>
+      <div class="hero-cta">
+        <a href="#" class="btn btn-orange">Commencer mon audit — 149 $</a>
+        <a href="#" class="btn btn-ghost-dark">Voir un exemple</a>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <div class="hero-stat-number">10 min</div>
+          <div class="hero-stat-label">Pour compléter</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-number">3-5</div>
+          <div class="hero-stat-label">Opportunités identifiées</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-number">20+</div>
+          <div class="hero-stat-label">Pages personnalisées</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="audit-card">
+      <div class="audit-head">
+        <div>
+          <div class="audit-label">Audit en cours</div>
+          <div class="audit-client">Atelier Beaulieu — Plomberie</div>
+        </div>
+        <span class="audit-status">
+          <span class="audit-status-dot"></span>
+          Traitement
+        </span>
+      </div>
+      <div class="audit-steps">
+        <div class="audit-step done">
+          <div class="step-num"><span>1</span></div>
+          <div class="step-label">Analyse du profil d'entreprise</div>
+          <div class="step-time">42 s</div>
+        </div>
+        <div class="audit-step done">
+          <div class="step-num"><span>2</span></div>
+          <div class="step-label">Identification des opportunités</div>
+          <div class="step-time">1 m 14 s</div>
+        </div>
+        <div class="audit-step active">
+          <div class="step-num"><span>3</span></div>
+          <div class="step-label">Évaluation des risques</div>
+          <div class="step-time">En cours…</div>
+        </div>
+        <div class="audit-step pending">
+          <div class="step-num"><span>4</span></div>
+          <div class="step-label">Audit technologique</div>
+          <div class="step-time">—</div>
+        </div>
+        <div class="audit-step pending">
+          <div class="step-num"><span>5</span></div>
+          <div class="step-label">Synthèse et feuille de route</div>
+          <div class="step-time">—</div>
+        </div>
+      </div>
+      <div class="audit-progress">
+        <span class="progress-label">3 / 5</span>
+        <div class="progress-bar">
+          <div class="progress-fill"></div>
+        </div>
+        <span class="progress-label">≈ 6 min</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST -->
+<section class="trust">
+  <div class="container trust-inner">
+    <span class="trust-label">Adapté au contexte québécois</span>
+    <div class="trust-items">
+      <span class="trust-item">Conformité Loi 25</span>
+      <span class="trust-item">Outils francophones en priorité</span>
+      <span class="trust-item">Tarifs CAD</span>
+      <span class="trust-item">Aucun engagement</span>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLÈME -->
+<section class="problem" id="probleme">
+  <div class="container">
+    <div class="section-label">Pourquoi ça existe</div>
+    <h2 class="section-title">
+      L'IA est partout. Personne ne vous dit <span class="accent">par où commencer</span>.
+    </h2>
+    <p class="section-sub">
+      Pour une PME, le tri des options est la partie difficile — pas la technologie elle-même.
+    </p>
+
+    <div class="problem-grid">
+      <div class="problem-card">
+        <div class="problem-num">01</div>
+        <h3 class="problem-heading">Trop d'options. Aucune claire.</h3>
+        <p class="problem-text">
+          ChatGPT. Copilot. Jasper. Avoca. Botpress. Missive. Chaque semaine,
+          un nouveau nom. Pour un propriétaire d'entreprise, il est impossible
+          de savoir lequel résout son problème réel.
+        </p>
+      </div>
+      <div class="problem-card">
+        <div class="problem-num">02</div>
+        <h3 class="problem-heading">Les consultants coûtent cher.</h3>
+        <p class="problem-text">
+          Un cabinet traditionnel demande 5 000 à 15 000 $ pour un audit
+          personnalisé. Les micro-entreprises et solopreneurs n'ont pas
+          ce budget mais ont le même besoin de clarté.
+        </p>
+      </div>
+      <div class="problem-card">
+        <div class="problem-num">03</div>
+        <h3 class="problem-heading">Les articles généralistes n'aident pas.</h3>
+        <p class="problem-text">
+          « Top 10 des outils IA » ne vous dit pas si <em>vous</em> devriez
+          investir dans un agent vocal plutôt qu'un chatbot. Le choix dépend
+          de votre contexte, pas d'un palmarès.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMMENT -->
+<section class="how" id="comment">
+  <div class="container">
+    <div class="section-label">Comment ça marche</div>
+    <h2 class="section-title">De 15 questions à un rapport <span class="accent">actionnable</span>.</h2>
+    <p class="section-sub">
+      Pas de RDV à fixer. Pas de consultant à rencontrer. Juste votre contexte, notre méthode.
+    </p>
+
+    <div class="how-grid">
+      <div class="how-steps">
+        <div class="how-step">
+          <div class="how-step-num">1</div>
+          <h3 class="how-step-title">Vous remplissez le formulaire</h3>
+          <p class="how-step-desc">
+            15 questions sur votre secteur, votre taille, vos enjeux, vos outils
+            actuels, votre budget. Conçu pour être complété sans préparation.
+          </p>
+          <span class="how-step-time">≈ 8 minutes</span>
+        </div>
+        <div class="how-step current">
+          <div class="how-step-num">2</div>
+          <h3 class="how-step-title">Notre système analyse votre contexte</h3>
+          <p class="how-step-desc">
+            Cinq modèles d'analyse spécialisés traitent vos réponses : profil,
+            opportunités, risques, compatibilité technologique, synthèse financière.
+          </p>
+          <span class="how-step-time">≈ 3 minutes</span>
+        </div>
+        <div class="how-step">
+          <div class="how-step-num">3</div>
+          <h3 class="how-step-title">Vous recevez votre rapport personnalisé</h3>
+          <p class="how-step-desc">
+            Un document de 15 à 25 pages avec 3 à 5 opportunités concrètes,
+            chacune incluant outils recommandés, coûts, effort, risques et
+            feuille de route. Téléchargeable en PDF ou Word.
+          </p>
+          <span class="how-step-time">Immédiat</span>
+        </div>
+      </div>
+
+      <div class="how-visual">
+        <div class="sample-title">Extrait d'un rapport · Atelier Beaulieu</div>
+        <h4 class="sample-heading">Trois opportunités identifiées pour votre atelier de plomberie</h4>
+
+        <div class="sample-opportunity">
+          <span class="opp-tag">Quick win</span>
+          <h5 class="opp-name">Réceptionniste vocale IA</h5>
+          <p class="opp-desc">
+            Capture des appels après-heures et pendant les chantiers.
+            Outil recommandé : AgentZap.
+          </p>
+          <div class="opp-stats">
+            <div class="opp-stat">Investissement<strong>150 $/mois</strong></div>
+            <div class="opp-stat">Retour estimé<strong>8 400 $/mois</strong></div>
+            <div class="opp-stat">Mise en place<strong>2 jours</strong></div>
+          </div>
+        </div>
+
+        <div class="sample-opportunity">
+          <span class="opp-tag secondary">À court terme</span>
+          <h5 class="opp-name">Prise de rendez-vous en ligne</h5>
+          <p class="opp-desc">
+            Remplacement des courriels de coordination par une page Cal.com
+            intégrée à votre site web.
+          </p>
+          <div class="opp-stats">
+            <div class="opp-stat">Investissement<strong>0 $/mois</strong></div>
+            <div class="opp-stat">Temps gagné<strong>4 h/semaine</strong></div>
+            <div class="opp-stat">Mise en place<strong>3 heures</strong></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TARIFS -->
+<section class="pricing" id="tarifs">
+  <div class="container">
+    <div class="section-label">Tarifs transparents</div>
+    <h2 class="section-title">Choisissez votre niveau d'<span class="accent">accompagnement</span>.</h2>
+    <p class="section-sub">
+      Commencez par l'audit. Si vous voulez ensuite de l'aide pour mettre en place ce qu'il recommande, on est là.
+    </p>
+
+    <div class="pricing-grid">
+      <div class="tier">
+        <div class="tier-label">Voie A</div>
+        <h3 class="tier-name">Audit seul</h3>
+        <p class="tier-desc">Vous recevez le rapport et vous configurez les outils vous-même.</p>
+        <div class="tier-price">149 $</div>
+        <div class="tier-price-note">Paiement unique · CAD</div>
+        <ul class="tier-features">
+          <li>Rapport personnalisé 15-25 pages</li>
+          <li>3 à 5 opportunités identifiées</li>
+          <li>Outils recommandés avec liens</li>
+          <li>Guide de configuration par opportunité</li>
+          <li>Téléchargement PDF + Word</li>
+        </ul>
+        <a href="#" class="btn btn-ghost tier-cta">Commencer</a>
+      </div>
+
+      <div class="tier featured">
+        <span class="featured-badge">Le plus choisi</span>
+        <div class="tier-label">Voie B</div>
+        <h3 class="tier-name">Audit + mise en place</h3>
+        <p class="tier-desc">On configure pour vous les outils recommandés et on forme votre équipe.</p>
+        <div class="tier-price">dès 1 800 $</div>
+        <div class="tier-price-note">Devis après l'audit · CAD</div>
+        <ul class="tier-features">
+          <li>Tout ce qui est inclus dans l'audit</li>
+          <li>Configuration complète des outils</li>
+          <li>Formation 2 à 4 heures</li>
+          <li>Intégrations avec vos systèmes existants</li>
+          <li>Support inclus 30 jours</li>
+        </ul>
+        <a href="#" class="btn btn-orange tier-cta">Commencer par l'audit</a>
+      </div>
+
+      <div class="tier">
+        <div class="tier-label">Voie C</div>
+        <h3 class="tier-name">Développement sur mesure</h3>
+        <p class="tier-desc">Quand les outils du marché ne suffisent pas pour vos besoins spécifiques.</p>
+        <div class="tier-price">dès 8 000 $</div>
+        <div class="tier-price-note">Sur devis · CAD</div>
+        <ul class="tier-features">
+          <li>Application ou intégration sur mesure</li>
+          <li>Développement 2 à 6 semaines</li>
+          <li>Hébergement au Canada disponible</li>
+          <li>Formation et documentation</li>
+          <li>Maintenance continue optionnelle</li>
+        </ul>
+        <a href="#" class="btn btn-ghost tier-cta">Commencer par l'audit</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL -->
+<section class="final">
+  <div class="container final-content">
+    <h2>Votre entreprise mérite mieux qu'une <span class="accent">liste de tendances</span>.</h2>
+    <p>Un audit personnalisé. En 10 minutes. Pour 149 $. Aucun rendez-vous à fixer.</p>
+    <a href="#" class="btn btn-orange">Commencer mon audit</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container footer-inner">
+    <div>© 2026 5PennyAi · Fait avec passion à Québec, QC</div>
+    <div>
+      <a href="#">Contact</a>
+      <a href="#">Conditions</a>
+      <a href="#">Confidentialité</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

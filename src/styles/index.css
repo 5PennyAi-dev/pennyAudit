@@ -1,0 +1,77 @@
+@import "tailwindcss";
+
+@theme {
+  /* Navy — couleur dominante */
+  --color-navy-50:  #E3E8EE;
+  --color-navy-100: #C2CCD8;
+  --color-navy-200: #95A5B7;
+  --color-navy-300: #687E96;
+  --color-navy-400: #3B5775;
+  --color-navy-500: #1B3A5F;
+  --color-navy-600: #0F2744;
+  --color-navy-700: #0B1E36;
+  --color-navy-800: #081A30;
+  --color-navy-900: #050F1C;
+
+  /* Orange — accent */
+  --color-orange-50:  #FDE8D0;
+  --color-orange-100: #FAD2A1;
+  --color-orange-200: #F7BB72;
+  --color-orange-300: #F7A14A;
+  --color-orange-400: #F68C33;
+  --color-orange-500: #F57D20;
+  --color-orange-600: #D8631A;
+  --color-orange-700: #A94E14;
+  --color-orange-800: #7B380E;
+  --color-orange-900: #4F2308;
+
+  /* Neutres */
+  --color-cream: #FBF7F0;
+  --color-paper: #FBFBFB;
+  --color-line: #E3E8EE;
+  --color-muted: #5B6B7E;
+
+  /* Sémantiques */
+  --color-success: #10B981;
+  --color-warning: #F59E0B;
+  --color-danger: #EF4444;
+
+  /* Polices */
+  --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  /* Shadows custom */
+  --shadow-card: 0 4px 12px -4px rgb(15 39 68 / 0.08);
+  --shadow-card-hover: 0 20px 40px -15px rgb(15 39 68 / 0.12);
+  --shadow-orange-glow: 0 6px 16px -4px rgb(245 125 32 / 0.4);
+  --shadow-featured: 0 30px 60px -20px rgb(15 39 68 / 0.4);
+
+  /* Animation pulse custom (scale + opacity) */
+  --animate-pulse-dot: pulse-dot 1.5s ease-in-out infinite;
+
+  /* Progress bar indéterminée — ondulation entre 40% et 65% */
+  --animate-progress-indeterminate: progress-indeterminate 3s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.2); }
+}
+
+@keyframes progress-indeterminate {
+  0%   { width: 40%; }
+  50%  { width: 65%; }
+  100% { width: 40%; }
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  font-family: var(--font-sans);
+  color: var(--color-navy-600);
+  background: var(--color-paper);
+}

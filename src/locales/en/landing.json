@@ -1,0 +1,164 @@
+{
+  "hero": {
+    "eyebrow": "Automated AI audit · Made in Québec",
+    "title": "Find out where <accent>AI</accent> can actually help your business.",
+    "sub": "Answer 15 questions about your business. Within 10 minutes, get a personalized report identifying 3 to 5 concrete opportunities, their recommended tools, estimated costs, and how to get started.",
+    "primaryCta": "Start my audit — $149",
+    "secondaryCta": "See an example",
+    "stats": {
+      "time": { "value": "10 min", "label": "To complete" },
+      "opportunities": { "value": "3-5", "label": "Opportunities identified" },
+      "pages": { "value": "20+", "label": "Personalized pages" }
+    },
+    "auditCard": {
+      "label": "Audit in progress",
+      "client": "Atelier Beaulieu — Plumbing",
+      "status": "Processing",
+      "progressLabel": "3 / 5",
+      "eta": "≈ 6 min",
+      "steps": [
+        { "label": "Business profile analysis", "time": "42 s" },
+        { "label": "Opportunity identification", "time": "1 m 14 s" },
+        { "label": "Risk evaluation", "time": "In progress…" },
+        { "label": "Tech stack audit", "time": "—" },
+        { "label": "Synthesis and roadmap", "time": "—" }
+      ]
+    }
+  },
+  "trust": {
+    "label": "Tuned to the Québec context",
+    "items": [
+      "Law 25 compliance",
+      "French-native tools prioritized",
+      "CAD pricing",
+      "No commitment"
+    ]
+  },
+  "problem": {
+    "label": "Why this exists",
+    "title": "AI is everywhere. No one tells you <accent>where to start</accent>.",
+    "sub": "For a small business, sorting the options is the hard part — not the technology itself.",
+    "cards": [
+      {
+        "heading": "Too many options. None obvious.",
+        "text": "ChatGPT. Copilot. Jasper. Avoca. Botpress. Missive. A new name every week. For a business owner, it's impossible to tell which one solves your actual problem."
+      },
+      {
+        "heading": "Consultants are expensive.",
+        "text": "A traditional firm charges $5,000 to $15,000 for a personalized audit. Micro-businesses and solo founders don't have that budget, yet they need the same clarity."
+      },
+      {
+        "heading": "Generic articles don't help.",
+        "text": "“Top 10 AI tools” won't tell you whether <em>you</em> should invest in a voice agent rather than a chatbot. The choice depends on your context, not a ranking."
+      }
+    ]
+  },
+  "how": {
+    "label": "How it works",
+    "title": "From 15 questions to an <accent>actionable</accent> report.",
+    "sub": "No meeting to schedule. No consultant to meet. Just your context and our method.",
+    "steps": [
+      {
+        "title": "You fill out the form",
+        "desc": "15 questions about your industry, size, challenges, current tools, and budget. Designed to be completed without preparation.",
+        "time": "≈ 8 minutes"
+      },
+      {
+        "title": "Our system analyzes your context",
+        "desc": "Five specialized analysis models process your answers: profile, opportunities, risks, tech compatibility, financial synthesis.",
+        "time": "≈ 3 minutes"
+      },
+      {
+        "title": "You receive your personalized report",
+        "desc": "A 15 to 25-page document with 3 to 5 concrete opportunities — each including recommended tools, costs, effort, risks, and a roadmap. Downloadable as PDF or Word.",
+        "time": "Immediate"
+      }
+    ],
+    "sample": {
+      "label": "Report excerpt · Atelier Beaulieu",
+      "heading": "Three opportunities identified for your plumbing shop",
+      "opportunities": [
+        {
+          "tag": "Quick win",
+          "tagVariant": "primary",
+          "name": "AI voice receptionist",
+          "desc": "Captures after-hours and on-site calls. Recommended tool: AgentZap.",
+          "stats": [
+            { "label": "Investment", "value": "$150/month" },
+            { "label": "Estimated return", "value": "$8,400/month" },
+            { "label": "Setup", "value": "2 days" }
+          ]
+        },
+        {
+          "tag": "Short-term",
+          "tagVariant": "secondary",
+          "name": "Online booking",
+          "desc": "Replace email coordination with a Cal.com page embedded in your website.",
+          "stats": [
+            { "label": "Investment", "value": "$0/month" },
+            { "label": "Time saved", "value": "4 h/week" },
+            { "label": "Setup", "value": "3 hours" }
+          ]
+        }
+      ]
+    }
+  },
+  "pricing": {
+    "label": "Transparent pricing",
+    "title": "Choose your level of <accent>support</accent>.",
+    "sub": "Start with the audit. If you then want help setting up what it recommends, we're here.",
+    "featuredBadge": "Most popular",
+    "tiers": {
+      "a": {
+        "label": "Path A",
+        "name": "Audit only",
+        "desc": "You receive the report and configure the tools yourself.",
+        "price": "$149",
+        "priceNote": "One-time payment · CAD",
+        "features": [
+          "Personalized 15-25 page report",
+          "3 to 5 opportunities identified",
+          "Recommended tools with links",
+          "Setup guide per opportunity",
+          "PDF + Word download"
+        ],
+        "cta": "Start"
+      },
+      "b": {
+        "label": "Path B",
+        "name": "Audit + setup",
+        "desc": "We configure the recommended tools for you and train your team.",
+        "price": "from $1,800",
+        "priceNote": "Quote after the audit · CAD",
+        "features": [
+          "Everything in the audit",
+          "Complete tool configuration",
+          "2 to 4 hours of training",
+          "Integration with your existing systems",
+          "30 days of support included"
+        ],
+        "cta": "Start with the audit"
+      },
+      "c": {
+        "label": "Path C",
+        "name": "Custom development",
+        "desc": "When off-the-shelf tools don't meet your specific needs.",
+        "price": "from $8,000",
+        "priceNote": "Upon quote · CAD",
+        "features": [
+          "Custom app or integration",
+          "2 to 6 weeks of development",
+          "Canadian hosting available",
+          "Training and documentation",
+          "Optional ongoing maintenance"
+        ],
+        "cta": "Start with the audit"
+      }
+    }
+  },
+  "finalCta": {
+    "title": "Your business deserves better than a <accent>trend list</accent>.",
+    "sub": "A personalized audit. In 10 minutes. For $149. No meeting required.",
+    "cta": "Start my audit"
+  }
+}

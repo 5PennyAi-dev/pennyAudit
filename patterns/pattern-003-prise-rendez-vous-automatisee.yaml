@@ -1,0 +1,843 @@
+# ═══════════════════════════════════════════════════════════════
+# Pattern 003 — Prise de rendez-vous automatisée et augmentée par IA
+# Format hybride : structure machine + prose humaine
+# Trois voies d'implémentation (self-serve, accompagné, custom)
+# ═══════════════════════════════════════════════════════════════
+
+id: ai-appointment-scheduling
+title_fr: Prise de rendez-vous en ligne automatisée et augmentée par IA
+category: productivite-gestion-agenda
+version: 1.0
+last_updated: 2026-04-22
+language: fr
+
+# ───── RÉSUMÉS (prose narrative pour livrable client) ─────
+
+summary_short_fr: >
+  Système de réservation en ligne où les clients réservent eux-mêmes sur
+  l'agenda de l'entreprise, avec rappels automatiques, confirmation IA,
+  et relances intelligentes des no-shows.
+
+summary_long_fr: |
+  Un système de prise de rendez-vous automatisé permet aux clients de
+  réserver leurs propres rendez-vous 24 h/24 sur un calendrier partagé
+  en ligne, sans appel téléphonique ni va-et-vient de courriels. Couplé
+  à l'IA, il peut qualifier les demandes (urgence, type de service, budget),
+  envoyer des rappels personnalisés par SMS ou courriel, relancer les
+  no-shows, collecter un paiement ou un dépôt avant confirmation, et
+  s'intégrer au CRM existant. Distinct d'une réceptionniste IA (vocale)
+  et d'un chatbot textuel : ici le client interagit directement avec un
+  calendrier plutôt qu'avec une conversation, ce qui est souvent plus
+  rapide et moins ambigü pour les réservations simples.
+
+# ───── COMPLÉMENTARITÉ AVEC AUTRES PATTERNS ─────
+
+complementary_patterns:
+  - pattern_id: ai-voice-receptionist
+    relation_fr: |
+      La réceptionniste IA vocale PEUT prendre un rendez-vous, mais elle
+      le fait généralement via une intégration avec un outil de ce pattern
+      (Cal.com, Calendly, GOrendezvous). Les deux sont souvent combinés :
+      le vocal gère l'appel et utilise l'outil de scheduling pour réserver.
+
+  - pattern_id: ai-text-chatbot-multichannel
+    relation_fr: |
+      Même relation que le vocal. Le chatbot peut intégrer directement
+      un outil de scheduling dans sa conversation. Les trois patterns
+      ensemble forment une solution complète de gestion de demandes entrantes.
+
+# ───── CIBLAGE (tags structurés pour recherche vectorielle) ─────
+
+target_industries:
+  - dentaire
+  - veterinaire
+  - chiropratique
+  - massotherapie
+  - physiotherapie
+  - therapie-psychologie
+  - acupuncture
+  - osteopathie
+  - podiatrie
+  - optometrie
+  - medecine-esthetique
+  - spa-beaute
+  - salon-coiffure
+  - barbier
+  - coach-vie
+  - coach-business
+  - coach-fitness
+  - nutritionniste
+  - formation-cours-prives
+  - consultant-solo
+  - comptabilite
+  - droit-avocats
+  - photographe
+  - designer-freelance
+  - immobilier
+  - plomberie-estimation
+  - electricite-estimation
+  - renovation-estimation
+  - paysagement-estimation
+  - mecanique-auto
+  - moniteur-auto-ecole
+  - yoga-pilates
+  - studio-danse
+  - tatoueur
+
+target_business_sizes:
+  - solopreneur
+  - micro-2-9
+  - petite-10-49
+
+tech_comfort_required: faible
+requires_existing_calendar: recommande
+requires_existing_website: optionnel
+
+# ───── PROBLÈME (voix du client pour narratif) ─────
+
+pain_point_fr: |
+  Je passe des heures par semaine à jouer au ping-pong courriel avec mes
+  clients pour fixer des rendez-vous. "Quelles sont vos disponibilités?"
+  "Pouvez-vous plutôt le mardi?" "Finalement, jeudi serait mieux...".
+  Et malgré tout ça, j'ai encore des no-shows qui me coûtent de l'argent
+  et me laissent avec des plages vides impossibles à remplir à la dernière
+  minute. Il doit bien y avoir une meilleure façon.
+
+problem_facts:
+  - claim_fr: "Les logiciels de prise de rendez-vous en ligne réduisent significativement le temps administratif et les absences non justifiées grâce aux rappels automatiques"
+    source_id: hubspot-scheduling-guide
+  - claim_fr: "Selon FloatAI, l'automatisation de la planification et du suivi client donne des gains d'efficacité de 32 % à 38 % chez leurs clients québécois (Protech Peinture, Mic Métal Inc.)"
+    source_id: floatai-pme-quebec
+  - claim_fr: "Une réceptionniste IA ou un chatbot peut prendre des rendez-vous automatiquement, mais s'appuie typiquement sur un outil de scheduling comme Cal.com ou Calendly en arrière-plan"
+    source_id: cal-com-pricing
+
+# ───── SOLUTION (prose + structure) ─────
+
+solution_summary_fr: |
+  On déploie un outil de prise de rendez-vous en ligne (Cal.com, Calendly,
+  GOrendezvous ou équivalent) qui publie les disponibilités de l'entreprise
+  sur une page de réservation web. Le client choisit un créneau, remplit
+  un formulaire court (nom, téléphone, motif), et le rendez-vous apparaît
+  automatiquement dans l'agenda de l'entreprise (Google Calendar, Outlook,
+  ou calendrier intégré). Des rappels SMS et courriel sont envoyés
+  automatiquement. L'IA peut être ajoutée en surcouche pour : qualifier
+  la demande avant réservation, router vers le bon intervenant selon le
+  type de service, composer des rappels personnalisés basés sur l'historique
+  du client, ou relancer intelligemment les clients qui ont annulé.
+
+deployment_modes:
+  - id: basic-booking-page
+    name_fr: Page de réservation simple
+    description_fr: Un lien unique (ex. cal.com/monentreprise) que le client visite pour réserver. Le cœur de l'offre.
+
+  - id: embedded-website
+    name_fr: Widget intégré au site web
+    description_fr: Un widget de réservation intégré directement au site de l'entreprise (WordPress, Shopify, etc.).
+
+  - id: multi-service-routing
+    name_fr: Routage intelligent par type de service
+    description_fr: L'IA pose quelques questions au client et le dirige vers le bon intervenant ou le bon type de rendez-vous.
+
+  - id: payment-required
+    name_fr: Paiement ou dépôt obligatoire
+    description_fr: Carte requise pour confirmer; réduit drastiquement les no-shows. Intégration Stripe, Square, PayPal.
+
+  - id: smart-reminders
+    name_fr: Rappels intelligents
+    description_fr: Rappels SMS et courriel automatiques, personnalisables par type de rendez-vous et par client.
+
+  - id: no-show-recovery
+    name_fr: Récupération de no-shows par IA
+    description_fr: Relance automatique des clients qui ont manqué leur RDV, avec proposition de réservation alternative.
+
+typical_capabilities:
+  - Page de réservation personnalisée avec les couleurs et le logo de l'entreprise
+  - Synchronisation bidirectionnelle avec Google Calendar, Outlook, Apple Calendar
+  - Rappels automatiques par SMS et courriel (personnalisables)
+  - Formulaires d'accueil (intake) personnalisés par type de rendez-vous
+  - Paiement ou dépôt obligatoire via Stripe, Square ou PayPal
+  - Gestion de plusieurs intervenants et de leurs disponibilités
+  - Types de rendez-vous multiples (durées, tarifs, lieux différents)
+  - Intégration CRM (HubSpot, Salesforce, Zoho, Pipedrive)
+  - Analytics (taux de remplissage, taux de no-show, source des réservations)
+  - Multilangue (français et anglais)
+  - Confirmation automatique ou manuelle selon la politique de l'entreprise
+
+# ───── VOIES D'IMPLÉMENTATION (core du pattern) ─────
+
+implementation_paths:
+
+  - id: self-serve
+    name_fr: Voie A — Self-serve (autonomie)
+    ideal_profile_fr: |
+      Solopreneur ou micro-entreprise avec besoin simple : un seul
+      intervenant, quelques types de rendez-vous, budget minimal. À l'aise
+      à suivre un tutoriel de configuration.
+    description_fr: |
+      Le client s'inscrit sur Cal.com (gratuit), Calendly (gratuit) ou
+      GOrendezvous (essai gratuit puis ~45 $/mois pour un seul praticien).
+      Il configure ses disponibilités, crée 1-3 types de rendez-vous, connecte
+      son agenda Google ou Outlook, et partage son lien de réservation.
+      5PennyAi intervient uniquement pour l'audit et la recommandation.
+    setup_duration: 2-4-heures
+    client_time_required_hours:
+      min: 2
+      max: 4
+    total_cost_cad:
+      setup_range:
+        min: 0
+        max: 300
+      monthly_min: 0
+      monthly_max: 60
+      first_year: "0 à 1 020 $"
+    recommended_tools_priority:
+      - tool_id: cal-com
+        reason_fr: Plan gratuit illimité pour solo, open source, très populaire
+      - tool_id: calendly
+        reason_fr: Plan gratuit basique, plus populaire internationalement, intégrations vastes
+      - tool_id: gorendezvous
+        reason_fr: Pour professionnels de santé/bien-être au Québec exclusivement
+    fivepennyai_service_fr: |
+      Audit payant (99-299 $) qui identifie le bon outil pour le contexte
+      du client, liste les types de rendez-vous à configurer, fournit un
+      guide de setup pas-à-pas.
+    fivepennyai_revenue_potential: faible-par-client-mais-volume-tres-eleve
+
+  - id: accompanied
+    name_fr: Voie B — Accompagnement hybride (prêt-à-l'emploi)
+    ideal_profile_fr: |
+      PME avec plusieurs intervenants, types de rendez-vous variés, besoin
+      d'intégration avec CRM ou site web existant, volonté que "ça marche
+      bien dès le départ" sans y perdre des soirées.
+    description_fr: |
+      5PennyAi configure l'outil de A à Z : création du compte, paramétrage
+      des disponibilités multi-intervenants, création des types de rendez-vous
+      avec durées et tarifs, personnalisation de la page de réservation au
+      branding du client, intégration au site web via widget, configuration
+      des rappels SMS personnalisés, intégration au CRM, tests réels, formation
+      du client (1 h), puis support ponctuel 30 jours. Peut inclure
+      l'intégration avec un chatbot ou une réceptionniste IA existante.
+    setup_duration: 1-2-jours
+    client_time_required_hours:
+      min: 2
+      max: 5
+    total_cost_cad:
+      setup_range:
+        min: 600
+        max: 1800
+      monthly_tool_range:
+        min: 20
+        max: 120
+      first_year: "840 à 3 240 $"
+    recommended_tools_priority:
+      - tool_id: cal-com
+        reason_fr: Rapport qualité/prix imbattable pour PME, flexible
+      - tool_id: hubspot-scheduling
+        reason_fr: Si le client utilise HubSpot CRM, intégration native
+      - tool_id: gorendezvous
+        reason_fr: Pour cliniques santé/bien-être au Québec, tout-en-un
+      - tool_id: calendly
+        reason_fr: Si le client préfère une interface polie et éprouvée
+    fivepennyai_service_fr: |
+      Forfait "Prise de rendez-vous clé en main" : audit + configuration
+      complète + intégrations + formation + 30 jours support. Option :
+      maintenance mensuelle (ajustements, nouveaux types de RDV, etc.).
+    fivepennyai_revenue_potential: moyen-par-client
+
+  - id: custom
+    name_fr: Voie C — Développement sur mesure avec surcouche IA
+    ideal_profile_fr: |
+      PME avec logique complexe qu'aucun SaaS standard ne couvre :
+      multi-locations avec règles d'allocation spécifiques, qualification
+      poussée avant réservation, workflows de relance personnalisés basés
+      sur l'historique client, intégration profonde avec logiciel métier
+      (Jobber, ServiceTitan, Acomba, DEP, logiciel dentaire, etc.).
+    description_fr: |
+      5PennyAi développe une surcouche IA sur un outil de scheduling
+      existant (via API) ou construit une solution custom avec Anthropic
+      API + base de données. L'IA peut : qualifier les demandes avant
+      réservation, composer des confirmations et rappels personnalisés,
+      détecter les clients à risque de no-show et les contacter
+      différemment, router intelligemment les demandes, analyser les
+      patterns de réservation et optimiser les plages horaires.
+    setup_duration: 3-6-semaines
+    client_time_required_hours:
+      min: 10
+      max: 30
+    total_cost_cad:
+      setup_range:
+        min: 6000
+        max: 18000
+      monthly_hosting_range:
+        min: 50
+        max: 400
+      first_year: "6 600 à 22 800 $"
+    recommended_tools_priority:
+      - tool_id: cal-com
+        reason_fr: API très flexible, open source permet customisation profonde
+      - tool_id: anthropic-api
+        reason_fr: Claude Sonnet 4 pour les compositions et l'analyse IA
+      - tool_id: make-zapier
+        reason_fr: Pour orchestrer les workflows sans code serveur
+    fivepennyai_service_fr: |
+      AI Sprint 3-6 semaines : développement surcouche IA, déploiement,
+      formation, maintenance continue optionnelle (mensuelle).
+    fivepennyai_revenue_potential: eleve-par-client-mais-volume-faible
+    honest_note_fr: |
+      La voie custom est rarement nécessaire pour de la pure prise de RDV.
+      La plupart des besoins sont couverts par la voie B avec un bon outil
+      SaaS. Réserver la voie C aux cas où l'intégration avec un système
+      métier spécifique (ex. logiciel dentaire propriétaire, ERP sur mesure)
+      rend les SaaS standards inadéquats.
+
+# ───── OUTILS DU MARCHÉ (HIÉRARCHISÉS) ─────
+
+tools:
+
+  # ── TIER 1 : Outils majeurs pour voies A et B ──
+
+  - id: cal-com
+    tier: 1
+    name: Cal.com
+    origin: USA (open source)
+    url: https://cal.com
+    interface_fr: oui
+    starting_price_monthly: 0
+    currency: USD
+    target_segment_fr: Indépendants et PME qui cherchent flexibilité, open source et bon rapport qualité/prix
+    strength_fr: |
+      Open source (auto-hébergement possible). Plan gratuit généreux avec
+      réservations illimitées pour 1 utilisateur. Alternative transparente
+      à Calendly, souvent moins chère. 100+ intégrations. Très apprécié
+      des freelances et startups techniques.
+    plans:
+      - name: Free
+        price_usd: 0
+        note_fr: 1 utilisateur, réservations illimitées, branding Cal.com sur la page
+      - name: Teams
+        price_usd: 12
+        per_unit: "utilisateur/mois"
+        note_fr: Round-robin, workflows d'équipe, custom branding (réduction récente 25 %)
+      - name: Organizations
+        price_usd: 24
+        per_unit: "utilisateur/mois"
+        note_fr: SSO, HIPAA, SOC 2, rôles avancés
+      - name: Enterprise
+        price_usd: null
+        note_fr: Sur devis, à partir de 99 $/mois approximativement
+    affiliate_potential: a-verifier
+    affiliate_link: null
+    source_id: cal-com-pricing
+    used_in_paths: [self-serve, accompanied, custom]
+    recommended_priority: 1
+    note_fr: |
+      Recommandé comme outil principal par 5PennyAi pour les trois voies.
+      Déjà utilisé pour le site 5PennyAi (cal.com/5pennyai). Excellente
+      documentation API pour la voie C.
+
+  - id: calendly
+    tier: 1
+    name: Calendly
+    origin: USA
+    url: https://calendly.com
+    interface_fr: partielle
+    starting_price_monthly: 0
+    currency: USD
+    target_segment_fr: Professionnels et PME qui veulent une solution polie, éprouvée, avec de nombreuses intégrations
+    strength_fr: |
+      L'outil le plus connu mondialement dans sa catégorie, utilisé par
+      des millions. Interface très polished, intégrations vastes (32+
+      plateformes CRM/vente), fiabilité prouvée.
+    plans:
+      - name: Free
+        price_usd: 0
+        note_fr: Très limité (1 type d'événement, 1 agenda connecté)
+      - name: Standard
+        price_usd: 12
+        per_unit: "utilisateur/mois"
+        note_fr: Plusieurs types de RDV, paiements Stripe/PayPal
+      - name: Teams
+        price_usd: 20
+        per_unit: "utilisateur/mois"
+        note_fr: Round-robin, lead routing, Salesforce
+      - name: Enterprise
+        price_usd: null
+        note_fr: Pour 30+ utilisateurs, sur devis
+    affiliate_potential: confirme
+    affiliate_link: null
+    source_id: cal-com-calendly-comparison
+    used_in_paths: [self-serve, accompanied]
+    recommended_priority: 2
+    note_fr: |
+      Préférer Calendly quand le client valorise la maturité et la
+      simplicité, ou quand il a besoin d'intégrations CRM très spécifiques
+      (Salesforce, HubSpot avec fonctions avancées).
+
+  - id: gorendezvous
+    tier: 1
+    name: GOrendezvous
+    origin: Québec (Montréal)
+    url: https://www.gorendezvous.com
+    interface_fr: oui-native
+    starting_price_monthly: null
+    currency: CAD
+    target_segment_fr: Professionnels de santé, bien-être, fitness et beauté au Québec exclusivement
+    strength_fr: |
+      Solution québécoise dédiée aux professionnels de santé et bien-être
+      (massothérapeutes, acupuncteurs, physiothérapeutes, chiropraticiens,
+      psychologues, thérapeutes sportifs, etc.). Tout-en-un : prise de RDV,
+      tenue de dossiers, liste d'attente, rappels bidirectionnels, paiements
+      en ligne, facturation. Support en français, adapté aux particularités
+      du marché québécois. Essai gratuit, configuration facile.
+    pricing_note_fr: |
+      Tarifs sur demande, approximativement 45-90 $ CAD/mois par praticien
+      selon les fonctions. À vérifier directement sur leur site.
+    affiliate_potential: a-verifier
+    affiliate_link: null
+    source_id: gorendezvous-capterra
+    used_in_paths: [self-serve, accompanied]
+    recommended_priority: 1
+    note_fr: |
+      À recommander en priorité aux cliniques de santé/bien-être au Québec.
+      L'intégration du dossier client, facturation et agenda dans un seul
+      outil est plus simple pour un solopreneur en santé qu'assembler
+      Cal.com + un logiciel de facturation séparé.
+
+  - id: hubspot-scheduling
+    tier: 1
+    name: HubSpot Scheduling
+    origin: USA (très utilisé au Québec)
+    url: https://www.hubspot.com/products/sales/schedule-meeting
+    interface_fr: oui
+    starting_price_monthly: 0
+    currency: USD
+    target_segment_fr: Entreprises utilisant déjà HubSpot CRM ou cherchant une solution intégrée vente + RDV
+    strength_fr: |
+      Gratuit dans le cadre du CRM gratuit HubSpot. Intégration native avec
+      le CRM (fiches contacts enrichies automatiquement, workflows
+      post-RDV, nurturing). Très populaire chez les PME québécoises qui
+      font du B2B.
+    pricing_note_fr: |
+      Plan Starter gratuit dans HubSpot CRM. Plans payants à partir de
+      20 $ USD/mois pour Sales Hub ou Service Hub.
+    affiliate_potential: confirme-via-solutions-partners
+    affiliate_link: null
+    source_id: null
+    used_in_paths: [accompanied]
+    recommended_priority: 3
+
+  # ── TIER 2 : Alternatives spécialisées ──
+
+  - id: acuity
+    tier: 2
+    name: Acuity Scheduling (Squarespace)
+    origin: USA
+    url: https://acuityscheduling.com
+    interface_fr: partielle
+    starting_price_usd_monthly: 16
+    currency: USD
+    target_segment_fr: Coachs, thérapeutes, consultants, entreprises de services avec paiement obligatoire
+    strength_fr: |
+      Excellente intégration Stripe pour paiement à la réservation.
+      Très populaire dans le coaching et les thérapies alternatives.
+      Propriété de Squarespace donc bonne intégration si site Squarespace.
+    plans:
+      - name: Emerging
+        price_usd: 16
+      - name: Growing
+        price_usd: 27
+      - name: Powerhouse
+        price_usd: 49
+    affiliate_potential: a-verifier
+    source_id: null
+    used_in_paths: [self-serve, accompanied]
+    recommended_priority: 4
+
+  - id: simplybook-me
+    tier: 2
+    name: SimplyBook.me
+    origin: Islande (international)
+    url: https://simplybook.me
+    interface_fr: oui
+    starting_price_monthly: 0
+    currency: USD
+    target_segment_fr: Entreprises multi-intervenants avec besoins complexes (spa, salon multi-services)
+    strength_fr: |
+      Très complet pour entreprises multi-services, multi-intervenants.
+      Plus de 70 fonctionnalités. Plan gratuit limité. Interface française
+      disponible.
+    affiliate_potential: a-verifier
+    source_id: null
+    used_in_paths: [accompanied]
+    recommended_priority: 5
+
+  - id: square-appointments
+    tier: 2
+    name: Square Appointments
+    origin: USA
+    url: https://squareup.com/ca/fr/appointments
+    interface_fr: oui
+    starting_price_monthly: 0
+    currency: CAD
+    target_segment_fr: Salons de coiffure, barbiers, spa qui font déjà leur paiement via Square terminal
+    strength_fr: |
+      Gratuit pour un utilisateur. Très pratique si l'entreprise utilise
+      déjà Square pour le point de vente. Intégration native POS + RDV.
+    plans:
+      - name: Free
+        price_cad: 0
+        note_fr: 1 utilisateur unique
+      - name: Plus
+        price_cad: 29
+        note_fr: Plusieurs employés
+    affiliate_potential: a-verifier
+    source_id: null
+    used_in_paths: [self-serve, accompanied]
+    recommended_priority: 6
+
+  # ── TIER 3 : Infrastructure pour voie custom ──
+
+  - id: anthropic-api
+    tier: 3
+    name: Anthropic API (Claude)
+    origin: USA
+    url: https://docs.anthropic.com
+    interface_fr: documentation-en
+    starting_price_monthly: 0
+    currency: USD
+    target_segment_fr: Développement custom d'une surcouche IA sur outil de scheduling
+    strength_fr: |
+      Claude Sonnet 4 pour composer des rappels personnalisés, analyser
+      les patterns, qualifier les demandes. Stack que 5PennyAi maîtrise.
+    pricing_note_fr: Facturation à l'usage tokens, typiquement 10-50 $/mois
+    affiliate_potential: non-applicable
+    source_id: null
+    used_in_paths: [custom]
+    recommended_priority: 1
+
+  - id: make-zapier
+    tier: 3
+    name: Make ou Zapier
+    origin: USA (international)
+    url: https://www.make.com
+    interface_fr: oui
+    starting_price_monthly: 0
+    currency: USD
+    target_segment_fr: Orchestration de workflows multi-outils
+    strength_fr: |
+      Permettent de connecter Cal.com/Calendly à n'importe quel autre outil
+      (CRM, courriel, SMS, Slack) pour des workflows sans serveur. Très
+      utilisé par les intégrateurs québécois. Make typiquement moins cher
+      que Zapier pour volumes équivalents (9 $/mois vs 20+ $/mois).
+    pricing_note_fr: "Gratuit à 50 $/mois selon le volume d'opérations"
+    affiliate_potential: confirme
+    source_id: itsystemes-automation-comparatif
+    used_in_paths: [accompanied, custom]
+    recommended_priority: 2
+
+# ───── INTÉGRATEURS IA QUÉBÉCOIS (CONCURRENCE DIRECTE) ─────
+
+quebec_competitors:
+  - name: FloatAI
+    url: https://www.floatai.ca
+    positioning_fr: "Automatise la prise de rendez-vous, la planification, le suivi client et les rappels pour services à domicile au Québec"
+    case_fr: Clients Protech Peinture, Mic Métal Inc. avec 32-38 % gains d'efficacité
+    note_fr: Concurrent direct sur ce pattern exactement; à étudier leur stack technique
+
+  - name: EvoluAI
+    url: https://evoluai.ca
+    positioning_fr: "Services IA incluant 'gestion de rendez-vous' explicitement mentionnée"
+    note_fr: Concurrent direct pour PME québécoises
+
+  - name: PME AI
+    url: https://pmeai.ca
+    positioning_fr: Conseil IA pour PME québécoises, configuration d'outils
+    note_fr: Concurrent type consultation; pas clairement positionné sur la prise de RDV spécifiquement
+
+strategic_note_fr: |
+  La prise de rendez-vous est le cas d'usage IA le plus universellement
+  applicable aux micro-entreprises québécoises. FloatAI est très explicite
+  sur ce service. Différenciation pour 5PennyAi : (1) audit automatisé en
+  self-serve, (2) transparence sur les trois voies, (3) capacité de
+  développer des intégrations IA custom (voie C) que ni FloatAI ni EvoluAI
+  ne démontrent publiquement, (4) maîtrise de Cal.com (utilisé pour
+  5PennyAi lui-même).
+
+# ───── COÛTS (RÉSUMÉ TROIS VOIES) ─────
+
+cost_summary_cad:
+  voie_a_self_serve:
+    first_year: "0 à 1 020 $"
+    recurring_monthly: "0 à 60 $"
+  voie_b_accompanied:
+    first_year: "840 à 3 240 $"
+    recurring_monthly: "20 à 120 $"
+  voie_c_custom:
+    first_year: "6 600 à 22 800 $"
+    recurring_monthly: "50 à 400 $"
+
+# ───── VALEUR DOCUMENTÉE ─────
+
+documented_benefits:
+  time_saved_hours_weekly:
+    min: 3
+    max: 10
+  no_show_reduction_percent:
+    min: 30
+    max: 70
+  administrative_efficiency_gain_percent:
+    min: 32
+    max: 38
+  typical_payback_months:
+    min: 1
+    max: 3
+  note_fr: |
+    Les gains principaux de ce pattern sont plus modestes que ceux de la
+    réceptionniste vocale ou du chatbot, mais le coût d'entrée est beaucoup
+    plus faible (gratuit à 60 $/mois vs 150 $/mois+). Le ROI est presque
+    toujours positif même pour un volume modeste de RDV.
+
+customer_cases:
+  - company: Protech Peinture
+    industry: peinture-renovation
+    segment_fr: PME québécoise en peinture résidentielle
+    result_fr: "Entre 32 % et 38 % d'augmentation d'efficacité via automatisation planification et suivi client (selon FloatAI)"
+    source_id: floatai-pme-quebec
+    relevance_for_micro: tres-elevee-contexte-local
+    confidence: medium
+
+  - company: Mic Métal Inc.
+    industry: manufacturier-metal
+    segment_fr: PME manufacturière québécoise
+    result_fr: "Entre 32 % et 38 % d'augmentation d'efficacité via automatisation planification et suivi client (selon FloatAI)"
+    source_id: floatai-pme-quebec
+    relevance_for_micro: elevee-pme-comparable
+    confidence: medium
+
+  - company: Clients GOrendezvous (témoignages Capterra)
+    industry: massotherapie-sante-bien-etre
+    segment_fr: Massothérapeutes et professionnels de santé solo au Québec
+    result_fr: "Réduction significative de la charge mentale liée à la gestion des rendez-vous, gain de temps important sur la prise de RDV et les rappels"
+    source_id: gorendezvous-capterra
+    relevance_for_micro: tres-elevee
+    confidence: medium
+    note_fr: Témoignages authentiques de praticiens solo mais peu de métriques chiffrées
+
+# ───── RISQUES ─────
+
+risks:
+  - type: technique
+    title_fr: Adoption par la clientèle
+    severity: moyen
+    description_fr: |
+      Certains clients (souvent plus âgés) préfèrent téléphoner pour
+      prendre rendez-vous plutôt que d'utiliser un formulaire web.
+    mitigation_fr: |
+      Garder une alternative téléphone (réceptionniste humaine ou IA).
+      Promouvoir la réservation en ligne sans l'imposer. Offrir le lien
+      de réservation comme commodité, pas comme seul canal.
+
+  - type: technique
+    title_fr: Synchronisation calendrier
+    severity: faible
+    description_fr: |
+      Les conflits d'agenda peuvent se produire si le calendrier maître
+      n'est pas bien synchronisé, ou si l'entreprise utilise plusieurs
+      agendas non connectés.
+    mitigation_fr: |
+      Vérifier la synchronisation bidirectionnelle lors du setup. Tester
+      avec des scénarios réels (RDV manuel vs en ligne). Un seul agenda
+      source de vérité.
+
+  - type: technique
+    title_fr: Dépendance à la stabilité du calendrier connecté
+    severity: faible
+    description_fr: |
+      Si Google Calendar ou Outlook est temporairement indisponible,
+      les réservations peuvent échouer ou créer des doublons.
+    mitigation_fr: |
+      Incidents rares mais possibles. Avoir une procédure de vérification
+      quotidienne des RDV.
+
+  - type: business
+    title_fr: Sur-réservation par le client (no-shows)
+    severity: moyen
+    description_fr: |
+      Les clients réservent plus facilement quand c'est en ligne, mais
+      oublient aussi plus facilement quand il n'y a pas eu de contact humain.
+    mitigation_fr: |
+      Rappels SMS 24 h et 2 h avant. Exiger un dépôt ou carte de crédit
+      pour certains types de RDV. Configurer la politique d'annulation
+      (délai minimum).
+
+  - type: business
+    title_fr: Configuration initiale mal faite
+    severity: moyen
+    description_fr: |
+      Un mauvais paramétrage des disponibilités (plages horaires, buffers
+      entre RDV, jours fériés) cause des problèmes récurrents.
+    mitigation_fr: |
+      Prendre le temps de configurer correctement la première fois.
+      Tester en réservant soi-même un RDV test. Prévoir buffers entre
+      RDV (15-30 min selon le métier).
+
+  - type: business
+    title_fr: Image de marque (page de réservation générique)
+    severity: faible
+    description_fr: |
+      Les plans gratuits affichent souvent le logo de l'outil (Cal.com,
+      Calendly) sur la page de réservation.
+    mitigation_fr: |
+      Pour une image professionnelle, passer au plan payant qui permet
+      de retirer le branding et d'ajouter son propre logo.
+
+  - type: reglementaire-qc
+    title_fr: Loi 25 (protection des renseignements personnels)
+    severity: important
+    description_fr: |
+      Les informations collectées lors de la réservation (nom, téléphone,
+      courriel, motif du RDV, parfois données médicales) doivent respecter
+      les obligations de consentement et de sécurité.
+    mitigation_fr: |
+      Politique de confidentialité visible sur la page de réservation.
+      Pour cliniques : vérifier que l'outil est conforme (Cal.com offre
+      HIPAA en plan Organizations; GOrendezvous est conforme aux normes
+      québécoises pour la santé). Limiter la collecte au strict nécessaire.
+
+  - type: reglementaire-qc
+    title_fr: Données de santé (cliniques)
+    severity: important
+    description_fr: |
+      Un outil qui collecte le motif d'un rendez-vous médical manipule
+      des données de santé protégées.
+    mitigation_fr: |
+      Privilégier GOrendezvous (conçu pour santé québécoise) ou Cal.com
+      plan Organizations (HIPAA). Éviter de demander le motif détaillé
+      à la réservation (juste une catégorie générale : suivi, nouvelle
+      consultation, urgence).
+
+# ───── PRÉREQUIS ─────
+
+prerequisites:
+  - Un calendrier numérique principal (Google Calendar, Outlook, Apple Calendar)
+  - Une liste claire des types de rendez-vous offerts avec durées
+  - Une politique d'annulation (délai minimum, frais si applicable)
+  - Une adresse courriel professionnelle pour recevoir les notifications
+  - Optionnel mais recommandé : un site web pour y intégrer le widget
+  - Pour cliniques santé : vérification de conformité de l'outil
+
+# ───── SOURCES (référentiel central) ─────
+
+sources:
+  - id: cal-com-pricing
+    type: vendor-pricing-page
+    title: Cal.com — Page de tarification officielle
+    url: https://cal.com/pricing
+    accessed: 2026-04-22
+    reliability: high
+    note_fr: "Plans Free, Teams (12 $/mois), Organizations (24 $/mois), Enterprise. Réduction récente de 25 % sur les plans payants."
+
+  - id: cal-com-calendly-comparison
+    type: comparison-article
+    title: "Cal.com vs Calendly : comparatif 2026"
+    url: https://cal.com/blog/calendly-pricing
+    accessed: 2026-04-22
+    reliability: medium
+    note_fr: Article comparatif de Cal.com (biaisé) mais utile pour connaître les prix Calendly
+
+  - id: hubspot-scheduling-guide
+    type: vendor-guide
+    title: HubSpot — Guide des 18 logiciels de prise de rendez-vous en ligne
+    url: https://blog.hubspot.fr/sales/prise-de-rdv-en-ligne
+    accessed: 2026-04-22
+    reliability: medium
+    note_fr: Guide en français, utile pour l'aperçu global
+
+  - id: impli-scheduling-comparison
+    type: comparison-article
+    title: "Impli — Les 8 meilleurs logiciels de prise de rendez-vous en ligne 2026"
+    url: https://www.impli.fr/comparatif/logiciel-prise-de-rendez-vous-en-ligne
+    accessed: 2026-04-22
+    reliability: medium
+
+  - id: gorendezvous-capterra
+    type: third-party-reviews
+    title: GOrendezvous — Avis Capterra Canada 2026
+    url: https://fr.capterra.ca/software/145659/gorendezvous
+    accessed: 2026-04-22
+    reliability: medium
+    note_fr: Témoignages authentiques de praticiens santé québécois
+
+  - id: itsystemes-automation-comparatif
+    type: comparison-article
+    title: IT Systèmes — Comparatif 8 outils d'automatisation IA 2026
+    url: https://www.itsystemes.fr/articles/quel-est-le-meilleur-outil-dautomatisation-ia-en-2026-comparatif-complet
+    accessed: 2026-04-22
+    reliability: medium
+    note_fr: Source française, utile pour Make vs Zapier
+
+  - id: floatai-pme-quebec
+    type: integrator-article
+    title: FloatAI — Intelligence Artificielle pour PME Québécoises en 2025
+    url: https://www.floatai.ca/intelligence-artificielle-pme-quebec
+    accessed: 2026-04-21
+    reliability: medium
+    note_fr: |
+      Source québécoise. Mentionne explicitement Protech Peinture et
+      Mic Métal Inc. avec 32-38 % d'augmentation d'efficacité. Mentionne
+      aussi tarifs FloatAI : agent vocal 1000 $ unique ou 100 $/mois,
+      automatisation 500-10 000 $ unique ou 50-1 000 $/mois.
+
+# ───── MÉTADONNÉES INTERNES ─────
+
+confidence_level: high
+source_diversity: vendor-pricing + quebec-integrators + third-party-reviews + comparison-articles
+
+adaptation_needed_for_qc:
+  - Privilégier GOrendezvous pour clientèle santé/bien-être francophone
+  - Cal.com en EUR, Calendly en USD, GOrendezvous en CAD (mention des devises)
+  - Conformité Loi 25 pour toutes les cliniques
+
+# ───── NOTES HONNÊTES (usage interne uniquement) ─────
+
+internal_notes_fr: |
+  FORCE DE CE PATTERN :
+  La prise de RDV automatisée est le pattern le plus universellement
+  applicable de la librairie. Presque toute micro-entreprise qui prend
+  des rendez-vous en bénéficie. C'est aussi le pattern avec le coût
+  d'entrée le plus bas (plan gratuit Cal.com ou Calendly). Excellent
+  point d'entrée pour un client qui veut "tester l'IA sans se ruiner".
+
+  COMPLÉMENTARITÉ AVEC AUTRES PATTERNS :
+  Les trois premiers patterns (vocal, chat, scheduling) forment un
+  trio qui couvre les demandes entrantes complètement. Dans un audit,
+  on peut recommander un seul de ces patterns ou les trois selon le
+  contexte du client.
+
+  POSITIONNEMENT GO-RENDEZVOUS :
+  Outil québécois important qu'on découvre. Très bien positionné pour
+  santé/bien-être. Son avantage vs Cal.com : tout-en-un avec dossiers
+  clients et facturation, ce qui simplifie la vie d'un solopreneur en
+  santé. À mettre en avant pour ce segment spécifique.
+
+  ATTENTION SUR LES MÉTRIQUES :
+  Les 32-38 % d'efficacité de FloatAI sont des métriques agrégées par
+  un intégrateur, pas des études indépendantes. À présenter comme
+  "selon FloatAI" dans les livrables, pas comme des faits établis.
+  Pour des chiffres plus solides, on a documentation HubSpot sur la
+  réduction des no-shows et les témoignages Capterra.
+
+  POTENTIEL AFFILIATION :
+  Calendly et HubSpot ont des programmes d'affiliation confirmés.
+  Cal.com et GOrendezvous à vérifier. Make et Zapier ont des programmes
+  d'affiliation. Pattern avec gros potentiel de revenus passifs parce
+  qu'énormément de clients vont en avoir besoin.
+
+  OBSERVATION STRATÉGIQUE :
+  FloatAI mentionne explicitement la prise de rendez-vous dans son offre
+  ET donne ses tarifs : agent vocal 1000 $ unique ou 100 $/mois.
+  C'est un benchmark précieux pour la tarification de la voie B de 5PennyAi.
+
+# ───── EMBEDDING (généré automatiquement au seed Supabase) ─────
+
+embedding: null

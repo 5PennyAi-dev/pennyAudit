@@ -1,0 +1,164 @@
+{
+  "hero": {
+    "eyebrow": "Audit IA automatisé · Conçu au Québec",
+    "title": "Découvrez où l'<accent>IA</accent> peut vraiment aider votre entreprise.",
+    "sub": "Répondez à 15 questions sur votre entreprise. Recevez en 10 minutes un rapport personnalisé identifiant 3 à 5 opportunités concrètes, leurs outils recommandés, coûts estimés et la marche à suivre.",
+    "primaryCta": "Commencer mon audit — 149 $",
+    "secondaryCta": "Voir un exemple",
+    "stats": {
+      "time": { "value": "10 min", "label": "Pour compléter" },
+      "opportunities": { "value": "3-5", "label": "Opportunités identifiées" },
+      "pages": { "value": "20+", "label": "Pages personnalisées" }
+    },
+    "auditCard": {
+      "label": "Audit en cours",
+      "client": "Atelier Beaulieu — Plomberie",
+      "status": "Traitement",
+      "progressLabel": "3 / 5",
+      "eta": "≈ 6 min",
+      "steps": [
+        { "label": "Analyse du profil d'entreprise", "time": "42 s" },
+        { "label": "Identification des opportunités", "time": "1 m 14 s" },
+        { "label": "Évaluation des risques", "time": "En cours…" },
+        { "label": "Audit technologique", "time": "—" },
+        { "label": "Synthèse et feuille de route", "time": "—" }
+      ]
+    }
+  },
+  "trust": {
+    "label": "Adapté au contexte québécois",
+    "items": [
+      "Conformité Loi 25",
+      "Outils francophones en priorité",
+      "Tarifs CAD",
+      "Aucun engagement"
+    ]
+  },
+  "problem": {
+    "label": "Pourquoi ça existe",
+    "title": "L'IA est partout. Personne ne vous dit <accent>par où commencer</accent>.",
+    "sub": "Pour une PME, le tri des options est la partie difficile — pas la technologie elle-même.",
+    "cards": [
+      {
+        "heading": "Trop d'options. Aucune claire.",
+        "text": "ChatGPT. Copilot. Jasper. Avoca. Botpress. Missive. Chaque semaine, un nouveau nom. Pour un propriétaire d'entreprise, il est impossible de savoir lequel résout son problème réel."
+      },
+      {
+        "heading": "Les consultants coûtent cher.",
+        "text": "Un cabinet traditionnel demande 5 000 à 15 000 $ pour un audit personnalisé. Les micro-entreprises et solopreneurs n'ont pas ce budget mais ont le même besoin de clarté."
+      },
+      {
+        "heading": "Les articles généralistes n'aident pas.",
+        "text": "« Top 10 des outils IA » ne vous dit pas si <em>vous</em> devriez investir dans un agent vocal plutôt qu'un chatbot. Le choix dépend de votre contexte, pas d'un palmarès."
+      }
+    ]
+  },
+  "how": {
+    "label": "Comment ça marche",
+    "title": "De 15 questions à un rapport <accent>actionnable</accent>.",
+    "sub": "Pas de RDV à fixer. Pas de consultant à rencontrer. Juste votre contexte, notre méthode.",
+    "steps": [
+      {
+        "title": "Vous remplissez le formulaire",
+        "desc": "15 questions sur votre secteur, votre taille, vos enjeux, vos outils actuels, votre budget. Conçu pour être complété sans préparation.",
+        "time": "≈ 8 minutes"
+      },
+      {
+        "title": "Notre système analyse votre contexte",
+        "desc": "Cinq modèles d'analyse spécialisés traitent vos réponses : profil, opportunités, risques, compatibilité technologique, synthèse financière.",
+        "time": "≈ 3 minutes"
+      },
+      {
+        "title": "Vous recevez votre rapport personnalisé",
+        "desc": "Un document de 15 à 25 pages avec 3 à 5 opportunités concrètes, chacune incluant outils recommandés, coûts, effort, risques et feuille de route. Téléchargeable en PDF ou Word.",
+        "time": "Immédiat"
+      }
+    ],
+    "sample": {
+      "label": "Extrait d'un rapport · Atelier Beaulieu",
+      "heading": "Trois opportunités identifiées pour votre atelier de plomberie",
+      "opportunities": [
+        {
+          "tag": "Quick win",
+          "tagVariant": "primary",
+          "name": "Réceptionniste vocale IA",
+          "desc": "Capture des appels après-heures et pendant les chantiers. Outil recommandé : AgentZap.",
+          "stats": [
+            { "label": "Investissement", "value": "150 $/mois" },
+            { "label": "Retour estimé", "value": "8 400 $/mois" },
+            { "label": "Mise en place", "value": "2 jours" }
+          ]
+        },
+        {
+          "tag": "À court terme",
+          "tagVariant": "secondary",
+          "name": "Prise de rendez-vous en ligne",
+          "desc": "Remplacement des courriels de coordination par une page Cal.com intégrée à votre site web.",
+          "stats": [
+            { "label": "Investissement", "value": "0 $/mois" },
+            { "label": "Temps gagné", "value": "4 h/semaine" },
+            { "label": "Mise en place", "value": "3 heures" }
+          ]
+        }
+      ]
+    }
+  },
+  "pricing": {
+    "label": "Tarifs transparents",
+    "title": "Choisissez votre niveau d'<accent>accompagnement</accent>.",
+    "sub": "Commencez par l'audit. Si vous voulez ensuite de l'aide pour mettre en place ce qu'il recommande, on est là.",
+    "featuredBadge": "Le plus choisi",
+    "tiers": {
+      "a": {
+        "label": "Voie A",
+        "name": "Audit seul",
+        "desc": "Vous recevez le rapport et vous configurez les outils vous-même.",
+        "price": "149 $",
+        "priceNote": "Paiement unique · CAD",
+        "features": [
+          "Rapport personnalisé 15-25 pages",
+          "3 à 5 opportunités identifiées",
+          "Outils recommandés avec liens",
+          "Guide de configuration par opportunité",
+          "Téléchargement PDF + Word"
+        ],
+        "cta": "Commencer"
+      },
+      "b": {
+        "label": "Voie B",
+        "name": "Audit + mise en place",
+        "desc": "On configure pour vous les outils recommandés et on forme votre équipe.",
+        "price": "dès 1 800 $",
+        "priceNote": "Devis après l'audit · CAD",
+        "features": [
+          "Tout ce qui est inclus dans l'audit",
+          "Configuration complète des outils",
+          "Formation 2 à 4 heures",
+          "Intégrations avec vos systèmes existants",
+          "Support inclus 30 jours"
+        ],
+        "cta": "Commencer par l'audit"
+      },
+      "c": {
+        "label": "Voie C",
+        "name": "Développement sur mesure",
+        "desc": "Quand les outils du marché ne suffisent pas pour vos besoins spécifiques.",
+        "price": "dès 8 000 $",
+        "priceNote": "Sur devis · CAD",
+        "features": [
+          "Application ou intégration sur mesure",
+          "Développement 2 à 6 semaines",
+          "Hébergement au Canada disponible",
+          "Formation et documentation",
+          "Maintenance continue optionnelle"
+        ],
+        "cta": "Commencer par l'audit"
+      }
+    }
+  },
+  "finalCta": {
+    "title": "Votre entreprise mérite mieux qu'une <accent>liste de tendances</accent>.",
+    "sub": "Un audit personnalisé. En 10 minutes. Pour 149 $. Aucun rendez-vous à fixer.",
+    "cta": "Commencer mon audit"
+  }
+}

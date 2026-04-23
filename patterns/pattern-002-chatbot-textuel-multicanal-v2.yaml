@@ -1,0 +1,786 @@
+# ═══════════════════════════════════════════════════════════════
+# Pattern 002 — Chatbot IA textuel multi-canal
+# Version 2.0 : Trois voies d'implémentation (self-serve, accompagné, custom)
+# Outils hiérarchisés : francophones/accessibles en priorité
+# ═══════════════════════════════════════════════════════════════
+
+id: ai-text-chatbot-multichannel
+title_fr: Chatbot IA textuel multi-canal (site web, Messenger, WhatsApp)
+category: service-client-messagerie
+version: 2.0
+last_updated: 2026-04-21
+language: fr
+
+# ───── RÉSUMÉS (prose narrative pour livrable client) ─────
+
+summary_short_fr: >
+  Agent IA qui répond aux messages écrits reçus sur le site web,
+  Facebook Messenger, Instagram, WhatsApp et courriel. Résout les
+  questions fréquentes, qualifie les leads et collecte les informations.
+
+summary_long_fr: |
+  Un agent IA textuel qui répond automatiquement aux messages écrits
+  reçus sur tous les canaux numériques (site web via chat widget,
+  Facebook Messenger, Instagram DM, WhatsApp, courriel). Il résout les
+  questions fréquentes, qualifie les leads potentiels, collecte les
+  informations de contact et transfère aux humains les conversations
+  complexes. Idéal pour les entreprises dont les clients écrivent plus
+  qu'ils n'appellent — commerce en ligne, services professionnels,
+  entreprises avec forte présence sociale.
+
+# ───── COMPLÉMENTARITÉ AVEC AUTRES PATTERNS ─────
+
+complementary_patterns:
+  - pattern_id: ai-voice-receptionist
+    relation_fr: |
+      Les deux patterns peuvent coexister. Le pattern vocal gère les appels
+      téléphoniques (souvent pour l'urgence et les services à domicile);
+      ce pattern gère les messages écrits (site web, réseaux sociaux).
+      Une PME avec forte présence multicanal bénéficie souvent des deux.
+
+# ───── CIBLAGE (tags structurés pour recherche vectorielle) ─────
+
+target_industries:
+  - commerce-en-ligne
+  - boutique-vetements
+  - bijouterie
+  - fleuriste
+  - cosmetiques
+  - commerce-artisanal
+  - restaurant
+  - cafe
+  - traiteur
+  - immobilier
+  - coach-vie
+  - coach-business
+  - coach-fitness
+  - photographe
+  - designer-freelance
+  - redacteur
+  - traducteur
+  - consultant-solo
+  - therapie
+  - spa-beaute
+  - salon-coiffure
+  - fitness-gym
+  - garderie-animaux
+  - ecole-formation
+  - agence-marketing
+  - agence-evenementielle
+
+target_business_sizes:
+  - solopreneur
+  - micro-2-9
+  - petite-10-49
+
+tech_comfort_required: faible-a-moyen
+requires_existing_website: true
+requires_active_social_presence: recommande
+
+# ───── PROBLÈME (voix du client pour narratif) ─────
+
+pain_point_fr: |
+  Je reçois des tonnes de messages similaires : "Quels sont vos prix?",
+  "Est-ce que vous livrez dans ma région?", "Avez-vous ce produit en
+  stock?", "Quels sont vos horaires?". Je passe mes soirées à y répondre
+  un par un au lieu de me concentrer sur mon vrai travail. Et quand je
+  rate un message, le client trouve la réponse chez un concurrent.
+
+problem_facts:
+  - claim_fr: "Un chatbot IA bien configuré peut résoudre jusqu'à 67 % des questions clients automatiquement"
+    source_id: tidio-ai-agent
+  - claim_fr: "Les visiteurs s'attendent à une réponse en moins de 30 secondes"
+    source_id: tidio-pricing
+  - claim_fr: "82 % des micro-entreprises (<5 employés) croient que l'IA ne s'applique pas à leur business, malgré des cas d'usage simples comme les FAQ"
+    source_id: sba-ai-adoption-2025
+  - claim_fr: "D'ici 2027, Gartner prévoit que les chatbots deviendront le principal canal de service à la clientèle pour environ 25 % des organisations"
+    source_id: cyberperformance-chatbot
+
+# ───── SOLUTION (prose + structure) ─────
+
+solution_summary_fr: |
+  Un chatbot IA est installé sur le site web via un widget de chat et/ou
+  connecté aux comptes Messenger, Instagram, WhatsApp de l'entreprise.
+  L'IA est entraînée sur le contenu du site web ou sur un document de FAQ
+  téléversé. Elle répond 24 h/24 dans le ton de l'entreprise, transfère
+  aux humains quand nécessaire, et collecte les informations de contact
+  pour le suivi commercial. Trois voies d'implémentation sont possibles
+  selon le budget et le confort technique du client.
+
+deployment_modes:
+  - id: website-widget
+    name_fr: Widget sur site web
+    description_fr: Bulle de chat sur toutes les pages du site; l'IA répond aux visiteurs en direct
+  - id: social-channels
+    name_fr: Canaux sociaux
+    description_fr: Intégration avec Facebook Messenger, Instagram DM, WhatsApp pour répondre aux messages privés
+  - id: lead-capture
+    name_fr: Capture de leads
+    description_fr: Formulaire conversationnel qui remplace les formulaires statiques; l'IA pose les bonnes questions et enregistre les réponses
+  - id: faq-automation
+    name_fr: Automatisation FAQ
+    description_fr: L'IA répond aux questions récurrentes (prix, horaires, livraison, disponibilité) sans intervention humaine
+
+typical_capabilities:
+  - Entraînement automatique sur le contenu du site web
+  - Upload de documents FAQ personnalisés
+  - Réponses en multilangue (français, anglais, 50+ langues)
+  - Transfert vers agent humain en un clic
+  - Qualification et collecte de leads avec questions personnalisées
+  - Intégrations CRM (HubSpot, Salesforce, Zapier, Shopify)
+  - Notifications par email ou Slack quand un lead est capté
+  - Analytics de performance (taux de résolution, satisfaction, conversions)
+
+# ───── VOIES D'IMPLÉMENTATION (core du pattern) ─────
+
+implementation_paths:
+
+  - id: self-serve
+    name_fr: Voie A — Self-serve (autonomie)
+    ideal_profile_fr: |
+      Solopreneur ou micro-entreprise qui veut tester sans gros engagement.
+      À l'aise avec la techno, accepte d'y passer quelques heures,
+      budget limité, volume de messages modéré.
+    description_fr: |
+      Le client s'inscrit lui-même sur une plateforme SaaS, uploade sa FAQ
+      ou laisse le scraper analyser son site, active le widget. 5PennyAi
+      intervient uniquement pour l'audit et la recommandation du bon outil.
+    setup_duration: quelques-heures
+    client_time_required_hours:
+      min: 2
+      max: 8
+    total_cost_cad:
+      setup: 0
+      monthly_min: 0
+      monthly_max: 70
+      first_year: "0 à 850 $"
+    recommended_tools_priority:
+      - tool_id: crisp
+        reason_fr: Interface française, plan gratuit généreux, français natif
+      - tool_id: tidio
+        reason_fr: Meilleur IA (Lyro), plan gratuit, 300 000+ clients
+      - tool_id: manychat
+        reason_fr: Si focus Messenger/Instagram uniquement
+    fivepennyai_service_fr: |
+      Audit payant (99-299 $) qui identifie le bon outil pour le contexte
+      client et donne les étapes de configuration clés.
+    fivepennyai_revenue_potential: faible-par-client-mais-volume
+
+  - id: accompanied
+    name_fr: Voie B — Accompagnement hybride (prêt-à-l'emploi)
+    ideal_profile_fr: |
+      PME de 5 à 20 employés qui veut un résultat qui fonctionne bien sans
+      y perdre des soirées. Budget modéré, préfère déléguer la configuration,
+      veut être formé pour gérer l'outil au quotidien ensuite.
+    description_fr: |
+      5PennyAi configure l'outil SaaS choisi de A à Z : création du compte,
+      paramétrage du ton, entraînement sur le contenu client, intégrations
+      (site, Messenger, WhatsApp, CRM), tests, formation du client (1 h),
+      puis support ponctuel pendant 30 jours.
+    setup_duration: 1-2-jours
+    client_time_required_hours:
+      min: 3
+      max: 6
+    total_cost_cad:
+      setup_range:
+        min: 800
+        max: 2000
+      monthly_tool_range:
+        min: 30
+        max: 100
+      first_year: "1 200 à 3 200 $"
+    recommended_tools_priority:
+      - tool_id: crisp
+        reason_fr: Excellent rapport qualité/prix pour l'accompagnement francophone
+      - tool_id: tidio
+        reason_fr: Plus riche en fonctionnalités IA pour cas complexes
+      - tool_id: hubspot-chatbot
+        reason_fr: Si le client utilise déjà HubSpot CRM
+    fivepennyai_service_fr: |
+      Forfait "Chatbot clé en main" : audit + configuration complète + formation
+      + 30 jours de support. Tarif fixe prévisible.
+    fivepennyai_revenue_potential: moyen-par-client
+
+  - id: custom
+    name_fr: Voie C — Développement sur mesure
+    ideal_profile_fr: |
+      PME de 20+ employés avec besoins spécifiques qu'aucun SaaS ne couvre
+      bien : contenu très spécialisé, intégrations complexes, branding strict,
+      volume élevé, ou besoin de garder les données chez soi. Budget 5 000 $+.
+    description_fr: |
+      5PennyAi développe un agent IA personnalisé avec Botpress ou via
+      Anthropic API directement. L'agent est entraîné sur le contenu
+      spécifique du client, intégré profondément à ses systèmes existants,
+      avec un branding complet. Peut inclure fonctions avancées (agents
+      multi-étapes, actions dans des systèmes tiers, raisonnement complexe).
+    setup_duration: 2-4-semaines
+    client_time_required_hours:
+      min: 10
+      max: 30
+    total_cost_cad:
+      setup_range:
+        min: 5000
+        max: 15000
+      monthly_hosting_range:
+        min: 50
+        max: 500
+      first_year: "5 600 à 21 000 $"
+    recommended_tools_priority:
+      - tool_id: botpress
+        reason_fr: Plateforme québécoise (Montréal), développement no-code/low-code flexible, pas de majoration sur les coûts IA
+      - tool_id: anthropic-api
+        reason_fr: Pour contrôle total; Claude Sonnet 4 comme moteur, stack React/Supabase
+      - tool_id: voiceflow
+        reason_fr: Alternative à Botpress, très visuel
+    fivepennyai_service_fr: |
+      AI Sprint 2-4 semaines : développement, déploiement, formation,
+      maintenance continue optionnelle (mensuelle).
+    fivepennyai_revenue_potential: eleve-par-client-mais-volume-faible
+
+# ───── OUTILS DU MARCHÉ (HIÉRARCHISÉS) ─────
+
+tools:
+
+  # ── TIER 1 : Outils accessibles, francophones ou très populaires ──
+
+  - id: crisp
+    tier: 1
+    name: Crisp
+    origin: France (Nantes)
+    url: https://crisp.chat
+    interface_fr: oui-native
+    starting_price_monthly: 0
+    currency: EUR
+    target_segment_fr: Solopreneurs et PME francophones cherchant une solution unifiée et simple en français
+    strength_fr: |
+      Interface 100 % française, plan gratuit qui inclut chatbot, widget,
+      chat illimité, intégrations e-commerce. Conçu dès le départ pour
+      le marché francophone (européen et canadien).
+    plans:
+      - name: Gratuit
+        price_eur: 0
+        note_fr: Solopreneurs, fonctionnalités de base
+      - name: Mini
+        price_eur: 45
+        note_fr: Ajoute campagnes email et réponses préenregistrées
+      - name: Essentials
+        price_eur: 95
+        note_fr: PME, CRM, traduction temps réel, tickets, 10 sièges
+      - name: Plus
+        price_eur: 295
+        note_fr: Entreprises moyennes, 20+ sièges, résumés automatiques
+    affiliate_potential: a-verifier
+    affiliate_link: null
+    source_id: ringover-chatbot-comparison
+    used_in_paths: [self-serve, accompanied]
+    recommended_priority: 1
+
+  - id: tidio
+    tier: 1
+    name: Tidio
+    origin: Pologne (international)
+    url: https://www.tidio.com
+    interface_fr: oui-disponible
+    starting_price_monthly: 0
+    currency: USD
+    target_segment_fr: E-commerce et services avec 300 000+ clients dont Under Armour, The Body Shop, ADT
+    strength_fr: |
+      Lyro AI résout jusqu'à 67 % des questions automatiquement.
+      Intégration multi-canaux complète (Messenger, Instagram, WhatsApp,
+      email). Plan gratuit permet de tester.
+    plans:
+      - name: Free
+        price_usd: 0
+        note_fr: 50 conversations Lyro AI à vie (pas mensuelles)
+      - name: Starter
+        price_usd: 24.17
+        note_fr: Prix annuel, 100 conversations facturables
+      - name: Growth
+        price_usd: 49.17
+        note_fr: 250 conversations, fonctionnalités avancées
+      - name: Lyro AI Agent (add-on)
+        price_usd: 32.50
+        note_fr: 50 conversations IA mensuelles renouvelées
+    affiliate_potential: confirme
+    affiliate_link: null
+    source_id: tidio-pricing
+    used_in_paths: [self-serve, accompanied]
+    recommended_priority: 2
+
+  - id: hubspot-chatbot
+    tier: 1
+    name: HubSpot Chatbot
+    origin: USA (très utilisé au Québec)
+    url: https://www.hubspot.com
+    interface_fr: oui
+    starting_price_monthly: 0
+    currency: USD
+    target_segment_fr: Entreprises utilisant déjà HubSpot CRM ou cherchant un écosystème complet
+    strength_fr: |
+      Intégration native avec le CRM HubSpot, très populaire au Québec.
+      Plan gratuit disponible qui s'intègre à l'outil de CRM gratuit.
+      Communauté d'utilisateurs importante.
+    pricing_note_fr: |
+      Gratuit pour les bases; plans payants à partir de 20 $/mois
+      (plans Sales/Service/Marketing Hub). Souvent déjà dans le stack client.
+    affiliate_potential: confirme-via-solutions-partners
+    affiliate_link: null
+    source_id: null
+    used_in_paths: [accompanied]
+    recommended_priority: 3
+
+  # ── TIER 2 : Alternatives sectorielles ou spécialisées ──
+
+  - id: manychat
+    tier: 2
+    name: ManyChat
+    origin: USA
+    url: https://manychat.com
+    interface_fr: partielle
+    starting_price_monthly: 15
+    currency: USD
+    target_segment_fr: Entreprises actives sur Messenger et Instagram (coachs, restaurants, créateurs, influenceurs)
+    strength_fr: Spécialisation Messenger/Instagram, flows conversationnels visuels, très fort pour l'acquisition sociale
+    plans:
+      - name: Free
+        price_usd: 0
+      - name: Pro
+        price_usd: 15
+        note_fr: Contacts illimités, automatisations complètes
+    affiliate_potential: a-verifier
+    affiliate_link: null
+    source_id: manychat-pricing-perplexity
+    used_in_paths: [self-serve]
+    recommended_priority: 4
+    note_fr: Recommander uniquement si le client est principalement actif sur Instagram/Messenger
+
+  - id: livechat
+    tier: 2
+    name: LiveChat
+    origin: Pologne
+    url: https://www.livechat.com
+    interface_fr: partielle
+    starting_price_monthly: 19
+    currency: USD
+    target_segment_fr: Petites équipes qui veulent du chat humain avec touches d'IA
+    strength_fr: Focus live chat humain + assistant IA
+    affiliate_potential: a-verifier
+    source_id: livechat-pricing-perplexity
+    used_in_paths: [self-serve]
+    recommended_priority: 5
+    note_fr: Moins orienté IA autonome; à réserver aux clients qui veulent garder des humains au premier plan
+
+  # ── TIER 3 : Plateformes de développement (pour voie custom) ──
+
+  - id: botpress
+    tier: 3
+    name: Botpress
+    origin: Québec (Montréal)
+    url: https://botpress.com
+    interface_fr: partielle
+    starting_price_monthly: 0
+    currency: USD
+    target_segment_fr: Développeurs et consultants (comme 5PennyAi) qui construisent des chatbots sur mesure pour leurs clients
+    strength_fr: |
+      Plateforme québécoise basée à Montréal, à l'avant-garde des chatbots
+      IA avec LLM. Interface visuelle drag-and-drop, traductions automatiques
+      100+ langues. Aucune majoration sur les coûts IA (refacturé au coût).
+      Idéal pour les consultants qui construisent pour leurs clients.
+    plans:
+      - name: Pay-as-you-go
+        price_usd: 0
+        note_fr: 500 messages/mois gratuits, 5 $ crédit IA mensuel, 1 collaborateur
+      - name: Plus
+        price_usd: 79
+        note_fr: Plan annuel (89 $ mensuel). Human handoff, live chat, retrait branding
+      - name: Team
+        price_usd: 446
+        note_fr: Plan annuel (495 $ mensuel). 50 000 messages/mois inclus, collaboration
+      - name: Enterprise
+        price_usd: null
+        note_fr: Sur devis, à partir d'environ 2 000 $/mois
+    billing_note_fr: |
+      Attention : les coûts des LLM (OpenAI, Anthropic) sont facturés SEPARÉMENT
+      par Botpress au coût exact du fournisseur. Budget IA à prévoir en plus.
+      Canaux externes (WhatsApp via Meta, SMS via Twilio) également facturés séparément.
+    affiliate_potential: a-verifier-programme-partenaires
+    affiliate_link: null
+    source_id: botpress-pricing
+    used_in_paths: [custom]
+    recommended_priority: 1
+    note_fr: |
+      Outil de prédilection pour la voie C (développement sur mesure).
+      5PennyAi utilise Botpress comme plateforme principale pour les
+      clients qui veulent une solution sur mesure.
+
+  - id: anthropic-api
+    tier: 3
+    name: Anthropic API (Claude)
+    origin: USA
+    url: https://docs.anthropic.com
+    interface_fr: documentation-en
+    starting_price_monthly: 0
+    currency: USD
+    target_segment_fr: Développement custom où 5PennyAi a le contrôle total de l'architecture
+    strength_fr: |
+      Claude Sonnet 4 comme moteur IA principal. Idéal pour les applications
+      custom stack React/Vite + Supabase + Vercel que 5PennyAi maîtrise déjà.
+      Excellente qualité en français, raisonnement avancé.
+    pricing_note_fr: Facturation à l'usage (entrée/sortie tokens). Coût typique 10-100 $/mois pour un chatbot de PME.
+    affiliate_potential: non-applicable
+    source_id: null
+    used_in_paths: [custom]
+    recommended_priority: 2
+    note_fr: |
+      Choix pour les projets où la voie Botpress serait trop contraignante.
+      Nécessite développement full-stack complet, pas recommandé si le client
+      ne paie pas le coût de ce développement.
+
+  - id: voiceflow
+    tier: 3
+    name: Voiceflow
+    origin: Canada (Toronto)
+    url: https://www.voiceflow.com
+    interface_fr: non
+    starting_price_monthly: 0
+    currency: USD
+    target_segment_fr: Alternative à Botpress, très orientée visuel drag-and-drop
+    strength_fr: Plan gratuit (Sandbox), clients comme Amazon, Home Depot
+    affiliate_potential: a-verifier
+    source_id: null
+    used_in_paths: [custom]
+    recommended_priority: 3
+
+# ───── INTÉGRATEURS IA QUÉBÉCOIS (CONCURRENCE DIRECTE) ─────
+
+quebec_competitors:
+  - name: CyberPerformance
+    url: https://cyberperformance.ca
+    positioning_fr: Chatbot sur mesure pour PME, intégration Teams/Outlook/SharePoint
+    note_fr: Concurrent direct pour la voie C custom
+
+  - name: Gestisoft
+    url: https://www.gestisoft.com
+    positioning_fr: Intégrateur Microsoft Dynamics 365 + IA, vise municipalités et ordres professionnels
+    note_fr: Concurrent pour PME plus grosses, surtout dans écosystème Microsoft
+
+  - name: FloatAI
+    url: https://www.floatai.ca
+    positioning_fr: IA pour PME montréalaises, focus services à domicile, conformité Loi 25
+    note_fr: Concurrent direct dans ton segment cible; à étudier
+
+  - name: IT Cares
+    url: https://itcares.ca
+    positioning_fr: Chatbot personnalisé, Copilot, automatisation Zapier/Make pour PME québécoises
+    note_fr: Concurrent direct; approche similaire à la tienne
+
+  - name: EvoluAI
+    url: https://evoluai.ca
+    positioning_fr: Chatbots, rédaction automatisée, gestion de rendez-vous pour PME québécoises
+    note_fr: Concurrent direct; approche similaire à la tienne
+
+  - name: Nexxo
+    url: https://www.nexxo.tech
+    positioning_fr: Accompagnement transformation IA PME
+    note_fr: Plus orienté conseil général
+
+strategic_note_fr: |
+  Ces concurrents montrent que le marché québécois pour l'IA-PME existe et
+  est servi par plusieurs acteurs. Différenciation possible pour 5PennyAi :
+  (1) audit automatisé en self-serve (ils font tous du conseil manuel),
+  (2) expertise technique full-stack démontrable via PennySEO,
+  (3) positionnement sur la micro-entreprise vs. PME 50+ où la plupart se placent.
+
+# ───── COÛTS (RÉSUMÉ TROIS VOIES) ─────
+
+cost_summary_cad:
+  voie_a_self_serve:
+    first_year: "0 à 850 $"
+    recurring_monthly: "0 à 70 $"
+  voie_b_accompanied:
+    first_year: "1 200 à 3 200 $"
+    recurring_monthly: "30 à 100 $"
+  voie_c_custom:
+    first_year: "5 600 à 21 000 $"
+    recurring_monthly: "50 à 500 $"
+
+# ───── VALEUR DOCUMENTÉE (inchangée de v1) ─────
+
+documented_benefits:
+  query_resolution_rate_percent:
+    min: 50
+    max: 94
+  response_time_reduction_percent:
+    min: 80
+    max: 86
+  lead_generation_increase_percent:
+    min: 25
+    max: 500
+  time_saved_hours_weekly:
+    min: 5
+    max: 15
+  typical_payback_months:
+    min: 1
+    max: 6
+
+customer_cases:
+  - company: eye-oo
+    industry: commerce-en-ligne
+    segment_fr: E-commerce de lunettes multi-marques
+    result_fr: "177 000 € de revenus supplémentaires attribués à Tidio, +25 % de ventes, 2 233 conversations gérées dont 1 825 résolues, 1 305 leads collectés, -86 % temps d'attente"
+    source_id: tidio-eye-oo
+    relevance_for_micro: faible-entreprise-moyenne
+
+  - company: Cove Smart
+    industry: securite-domicile
+    segment_fr: Entreprise de sécurité domiciliaire DIY
+    result_fr: "-80 % temps de réponse, +70 % taux de résolution self-service, +35 % satisfaction client"
+    source_id: tidio-cove-smart
+    relevance_for_micro: moyenne
+
+  - company: Pastreez
+    industry: traiteur
+    segment_fr: Startup de macarons français aux USA
+    result_fr: "70 % des demandes chat converties en commandes; partenariats corporatifs Netflix, Google, Visa, Snapchat"
+    source_id: tidio-case-studies
+    relevance_for_micro: elevee-petite-entreprise
+
+  - company: Pearl Lemon
+    industry: agence-marketing
+    segment_fr: Agence multi-marques
+    result_fr: "70+ leads capturés par mois qui auraient été perdus; temps de réponse coupé de moitié"
+    source_id: tidio-case-studies
+    relevance_for_micro: elevee-tres-pertinent
+
+  - company: NRVTA
+    industry: ecole-formation
+    segment_fr: École de formation pour techniciens
+    result_fr: "94 % taux de résolution avec Lyro AI pour les demandes d'étudiants"
+    source_id: tidio-case-studies
+    relevance_for_micro: elevee-tres-pertinent
+
+  - company: Procosmet
+    industry: cosmetiques
+    segment_fr: Marque italienne de beauté
+    result_fr: "+500 % de leads générés, satisfaction de 3,8 à 4,7/5, ROI de 1 000+ € sur une seule campagne"
+    source_id: tidio-case-studies
+    relevance_for_micro: moyenne-entreprise-moyenne
+
+  - company: FloatAI (cas agrégés)
+    industry: services-a-domicile-pme
+    segment_fr: PME québécoises (plomberie, électricité, peinture)
+    result_fr: "-40 % d'appels manqués, +15 h/semaine en gestion administrative (cas agrégés selon FloatAI)"
+    source_id: floatai-pme-quebec
+    relevance_for_micro: tres-elevee-contexte-local
+    confidence: medium
+
+# ───── RISQUES (inchangés de v1) ─────
+
+risks:
+  - type: technique
+    title_fr: Hallucinations possibles
+    severity: moyen
+    description_fr: L'IA peut inventer des informations sur des produits ou politiques qu'elle n'a pas dans sa base
+    mitigation_fr: Scope strict à la FAQ et au contenu vérifié, tester activement les premières semaines, utiliser un outil qui limite l'IA à la base de connaissances uploadée
+
+  - type: technique
+    title_fr: Qualité du français québécois
+    severity: moyen
+    description_fr: La plupart des outils internationaux sont entraînés sur français européen; certaines expressions peuvent sonner étrangères. Crisp (français natif) limite ce risque.
+    mitigation_fr: Privilégier Crisp pour clientèle québécoise sensible au langage. Pour Tidio et autres, uploader des FAQ rédigées en québécois et tester.
+
+  - type: technique
+    title_fr: Limites du contenu uploadé
+    severity: faible
+    description_fr: Si le site web ou la FAQ est incomplet, l'IA aura des trous dans ses réponses
+    mitigation_fr: Audit initial du contenu, enrichissement de la FAQ pour couvrir les questions les plus fréquentes
+
+  - type: business
+    title_fr: Attentes clients pour réponse humaine
+    severity: faible
+    description_fr: Certains clients veulent parler à un humain, surtout pour questions complexes
+    mitigation_fr: Offrir option explicite "parler à un humain" en début de conversation; configurer transferts intelligents
+
+  - type: business
+    title_fr: Dépassement des quotas
+    severity: faible
+    description_fr: Pics de trafic imprévus peuvent faire exploser les conversations facturables
+    mitigation_fr: Monitorer les premiers mois, choisir un plan avec marge, configurer des alertes de quota
+
+  - type: business
+    title_fr: Qualité de la voix de marque
+    severity: moyen
+    description_fr: Un chatbot mal configuré peut sonner robotique ou inapproprié pour la marque
+    mitigation_fr: Configurer le ton (formel, amical, décontracté), relire les premières conversations, ajuster jusqu'à satisfaction
+
+  - type: reglementaire-qc
+    title_fr: Loi 25 (protection des renseignements personnels)
+    severity: important
+    description_fr: La collecte de données personnelles via le chatbot doit respecter les obligations de consentement, conservation, sécurité. Privilégier des fournisseurs hébergeant en Europe (Crisp) ou certifiés pour l'Amérique du Nord.
+    mitigation_fr: Politique de confidentialité visible, consentement explicite avant collecte, vérifier localisation des données du fournisseur choisi
+
+  - type: reglementaire-qc
+    title_fr: Transparence sur l'utilisation de l'IA
+    severity: moyen
+    description_fr: Les règles évoluent sur l'obligation de divulguer qu'un client parle à une IA; au Québec, la tendance favorise la transparence
+    mitigation_fr: Indiquer clairement que la conversation est gérée par un assistant IA; préciser la possibilité de parler à un humain
+
+  - type: reglementaire-qc
+    title_fr: Données de santé (cliniques, thérapeutes)
+    severity: important
+    description_fr: Un chatbot qui capte des informations de santé tombe sous obligations accrues
+    mitigation_fr: Limiter les questions du chatbot à la prise de rendez-vous et informations publiques; éviter la collecte de symptômes détaillés
+
+# ───── PRÉREQUIS (inchangés) ─────
+
+prerequisites:
+  - Site web de l'entreprise (WordPress, Shopify, Squarespace, Wix ou site personnalisé)
+  - Ou présence active sur au moins un canal social (Facebook, Instagram, WhatsApp)
+  - FAQ claire ou contenu du site à jour (alimentera l'IA)
+  - Adresse courriel pour recevoir les notifications de leads
+  - Politique de confidentialité à jour (obligation Loi 25)
+  - Accès administrateur aux comptes sociaux pour intégration
+
+# ───── SOURCES (ENRICHIES) ─────
+
+sources:
+  - id: tidio-pricing
+    type: vendor-pricing-page
+    title: Tidio — Page de tarification officielle
+    url: https://www.tidio.com/pricing/
+    accessed: 2026-04-21
+    reliability: high
+
+  - id: tidio-ai-agent
+    type: vendor-product-page
+    title: Tidio — Lyro AI Agent page
+    url: https://www.tidio.com/ai-agent/
+    accessed: 2026-04-21
+    reliability: high
+    key_claim_fr: "Lyro AI résout jusqu'à 67 % des problèmes clients automatiquement"
+
+  - id: tidio-eye-oo
+    type: vendor-case-study
+    title: Tidio — eye-oo case study
+    url: https://www.tidio.com/blog/eye-oo-case-study/
+    accessed: 2026-04-21
+    reliability: medium
+
+  - id: tidio-cove-smart
+    type: vendor-case-study
+    title: Tidio — Cove Smart case study
+    url: https://www.tidio.com/blog/cove-case-study/
+    accessed: 2026-04-21
+    reliability: medium
+
+  - id: tidio-case-studies
+    type: vendor-case-studies
+    title: Tidio — Liste complète des cas clients
+    url: https://www.tidio.com/customers/
+    accessed: 2026-04-21
+    reliability: medium
+
+  - id: manychat-pricing-perplexity
+    type: third-party-review
+    title: ManyChat pricing — via setsmart.io
+    url: https://manychat.com/pricing
+    accessed: 2026-04-21
+    reliability: medium
+    note_fr: Prix 15 $ Pro à revérifier sur la page officielle avant citation
+
+  - id: livechat-pricing-perplexity
+    type: third-party-review
+    title: LiveChat pricing — via tooltester.com
+    url: https://www.livechat.com/pricing/
+    accessed: 2026-04-21
+    reliability: medium
+
+  - id: botpress-pricing
+    type: vendor-pricing-page-multiple-sources
+    title: Botpress — Pricing (source directe + G2 + Capterra + reviews)
+    url: https://botpress.com/pricing
+    accessed: 2026-04-21
+    reliability: high
+    note_fr: "Pay-as-you-go gratuit (500 msg/mois), Plus 79 $/mois annuel, Team 446 $/mois annuel. Coûts IA et canaux externes facturés séparément."
+
+  - id: ringover-chatbot-comparison
+    type: comparison-article
+    title: Ringover — Les 10 meilleurs outils de chatbot
+    url: https://www.ringover.fr/blog/solution-chatbot
+    accessed: 2026-04-21
+    reliability: medium
+    note_fr: Source française qui détaille Crisp en profondeur
+
+  - id: cyberperformance-chatbot
+    type: integrator-article
+    title: CyberPerformance — Création de Chatbots sur mesure pour PME
+    url: https://cyberperformance.ca/creation-de-chatbot-ia/
+    accessed: 2026-04-21
+    reliability: medium
+    note_fr: Source québécoise; cite la stat Gartner 2027 sur 25 % des organisations
+
+  - id: floatai-pme-quebec
+    type: integrator-article
+    title: FloatAI — Intelligence Artificielle pour PME Québécoises en 2025
+    url: https://www.floatai.ca/intelligence-artificielle-pme-quebec
+    accessed: 2026-04-21
+    reliability: medium
+    note_fr: "Source québécoise. Métriques agrégées : -40 % appels manqués, +15 h/semaine. Bon benchmark pour contexte local."
+
+  - id: sba-ai-adoption-2025
+    type: government-research
+    title: SBA Office of Advocacy — AI in Business Small Firms Closing In
+    url: https://advocacy.sba.gov/wp-content/uploads/2025/09/Research-Spotlight-AI-in-Business-Small-Firms-Closing-In_-092425.pdf
+    published: 2025-09
+    reliability: high
+    key_stats_fr: |
+      Les chatbots sont le use case avec le plus grand écart d'adoption
+      (7 points) entre petites et grandes entreprises.
+
+# ───── MÉTADONNÉES INTERNES ─────
+
+confidence_level: high
+source_diversity: vendor-cases + vendor-pricing + government-research + quebec-integrators
+
+adaptation_needed_for_qc:
+  - Privilégier Crisp pour clientèle exigeant français québécois impeccable
+  - Vérifier localisation des données (Loi 25)
+  - Mentionner les intégrateurs québécois comme benchmark concurrentiel
+
+# ───── NOTES HONNÊTES (usage interne uniquement) ─────
+
+internal_notes_fr: |
+  CHANGEMENTS v1 → v2 :
+  - Trois voies d'implémentation explicites (self-serve / accompagné / custom)
+  - Outils hiérarchisés en tiers avec Crisp promu n°1 pour clientèle francophone
+  - Botpress ajouté comme plateforme de développement custom (Tier 3)
+  - Intégrateurs québécois listés comme concurrence directe
+  - Cas FloatAI ajouté pour benchmark local
+  - Champ `relevance_for_micro` ajouté aux cas clients pour filtrer les
+    cas d'entreprises trop grosses qu'on ne devrait pas citer à un plombier
+  - Champ `affiliate_potential` ajouté à chaque outil
+
+  PIÈGES À GARDER EN TÊTE :
+  - Le "plan gratuit" de Tidio limite Lyro à 50 conversations à vie.
+    Pour usage régulier, vrai coût 24-55 $/mois.
+  - Botpress est une plateforme de DÉVELOPPEMENT, pas un SaaS clé en main.
+    Ne pas recommander à un plombier self-serve. Réserver pour voie C.
+  - Crisp tarifie en EUR; conversion approximative × 1,45 pour CAD.
+  - Les cas eye-oo (entreprise moyenne), Procosmet (marque établie),
+    Cove Smart (tech grand public) ne sont PAS transposables à un salon
+    de coiffure solo. Privilégier NRVTA, Pearl Lemon, Pastreez, FloatAI.
+
+  POSITIONNEMENT 5PENNYAI :
+  - Voie A : revenu d'audit + potentiel affiliations
+  - Voie B : forfait clé en main (800-2000 $), probablement le sweet spot
+  - Voie C : AI Sprints (5000-15000 $), pour projets qualifiés
+
+  CONCURRENCE QUÉBÉCOISE :
+  CyberPerformance, Gestisoft, FloatAI, IT Cares, EvoluAI, Nexxo sont
+  déjà positionnés. Différenciation de 5PennyAi = audit automatisé par
+  IA (self-serve) que personne n'offre encore, + expertise technique
+  démontrable via PennySEO.
+
+# ───── EMBEDDING (généré automatiquement au seed Supabase) ─────
+
+embedding: null

@@ -1,0 +1,74 @@
+{
+  "nav": {
+    "why": "Why",
+    "how": "How it works",
+    "pricing": "Pricing",
+    "examples": "Examples",
+    "startAudit": "Start an audit",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu"
+  },
+  "footer": {
+    "copyright": "© 2026 5PennyAi · Crafted with care in Québec, QC",
+    "contact": "Contact",
+    "terms": "Terms",
+    "privacy": "Privacy"
+  },
+  "cta": {
+    "startAudit": "Start my audit",
+    "viewExample": "See an example",
+    "continue": "Continue",
+    "back": "Back",
+    "cancel": "Cancel",
+    "submit": "Submit"
+  },
+  "status": {
+    "processing": "Processing",
+    "completed": "Completed",
+    "pending": "Pending",
+    "failed": "Failed"
+  },
+  "common": {
+    "loading": "Loading",
+    "error": "Error",
+    "success": "Success",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit"
+  },
+  "auth": {
+    "loginTitle": "Welcome back",
+    "loginSub": "Sign in to access your audits.",
+    "loginCta": "Sign in",
+    "signupTitle": "Create an account",
+    "signupSub": "Just a few seconds — it stays free until you start the audit.",
+    "signupCta": "Create my account",
+    "signOut": "Sign out",
+    "email": "Email address",
+    "emailPlaceholder": "you@company.com",
+    "password": "Password",
+    "passwordHint": "Minimum 8 characters.",
+    "fullName": "Full name",
+    "fullNamePlaceholder": "Christian Couillard",
+    "language": "Preferred language",
+    "noAccount": "No account yet?",
+    "haveAccount": "Already have an account?",
+    "createAccount": "Create an account",
+    "signIn": "Sign in",
+    "submitting": "One moment…",
+    "errors": {
+      "generic": "Something went wrong. Try again in a moment.",
+      "invalidCredentials": "Invalid email or password.",
+      "passwordTooShort": "Password must be at least 8 characters.",
+      "emailRequired": "Email is required.",
+      "nameRequired": "Full name is required.",
+      "profileCreateFailed": "Account created, but the profile could not be saved. Please contact support."
+    },
+    "dashboard": {
+      "greeting": "Hi {{name}}",
+      "greetingFallback": "Hi there",
+      "empty": "Your audits will appear here.",
+      "emptyCta": "Start your first audit"
+    }
+  }
+}
