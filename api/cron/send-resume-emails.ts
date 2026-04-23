@@ -3,7 +3,7 @@
 //
 // Cible : audits où
 //   status = 'draft'
-//   AND updated_at < NOW() - INTERVAL '10 minutes'
+//   AND updated_at < NOW() - INTERVAL '30 minutes'
 //   AND resume_email_sent_at IS NULL
 //   AND intake_data->>'email' IS NOT NULL
 //
@@ -15,7 +15,9 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { getSupabaseAdmin } from '../_supabaseAdmin';
 import { sendResumeEmail } from '../_sendResumeEmail';
 
-const INACTIVITY_MINUTES = 10;
+// 30 min : laisse le temps à un utilisateur parti chercher un café / répondre
+// au téléphone de revenir sans recevoir de relance prématurée.
+const INACTIVITY_MINUTES = 30;
 const BATCH_SIZE = 50;
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {

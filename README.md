@@ -48,7 +48,7 @@ Supabase SQL Editor par ordre chronologique. Session 2A :
 
 Un cron Vercel (`vercel.json`) tape `/api/cron/send-resume-emails` toutes
 les 15 minutes. Il cible les `audits` avec `status='draft'`, inactivité
-> 10 min, email présent, et `resume_email_sent_at IS NULL` — exactement
+> 30 min, email présent, et `resume_email_sent_at IS NULL` — exactement
 une relance par draft.
 
 ### Tester le cron en local
