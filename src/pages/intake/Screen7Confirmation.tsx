@@ -134,6 +134,7 @@ export function Screen7Confirmation() {
   const setSubmitting = useIntakeFormStore((s) => s.setSubmitting);
   const isSubmitting = useIntakeFormStore((s) => s.isSubmitting);
   const saveProgress = useIntakeFormStore((s) => s.saveProgress);
+  const auditId = useIntakeFormStore((s) => s.auditId);
 
   const recap = buildRecap(formData);
 
@@ -144,11 +145,17 @@ export function Screen7Confirmation() {
 
     setSubmitting(true);
     try {
+      // Finaliser la sauvegarde — crée auditId si absent.
       await saveProgress();
-      // Session 2A : redirection vers la page d'attente.
-      // Session 2B : appellera POST /api/audit/run.
-      console.log('[intake] submit — audit prêt à lancer', formData);
-      navigate('/intake/submitted');
+      const id = useIntakeFormStore.getState().auditId ?? auditId;
+      if (!id) {
+        console.error('[intake] saveProgress terminé sans auditId.');
+        navigate('/intake/submitted');
+        return;
+      }
+      // La page AuditProgress déclenche elle-même POST /api/audit/run
+      // via useAuditProgress.start() au montage.
+      navigate(`/audit/progress/${id}`);
     } finally {
       setSubmitting(false);
     }

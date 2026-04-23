@@ -10,6 +10,7 @@ import { Login } from './pages/Login';
 import { Signup } from './pages/Signup';
 import { Dashboard } from './pages/Dashboard';
 import { IntakeForm, IntakeSubmitted, ResumeFromToken } from './pages/intake';
+import { AuditProgress } from './pages/audit/AuditProgress';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route path="/intake" element={<IntakeForm />} />
         <Route path="/intake/submitted" element={<IntakeSubmitted />} />
         <Route path="/intake/resume/:token" element={<ResumeFromToken />} />
+        <Route path="/audit/progress/:auditId" element={<AuditProgress />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
 
