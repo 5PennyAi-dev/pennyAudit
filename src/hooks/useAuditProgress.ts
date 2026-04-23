@@ -84,8 +84,18 @@ export function useAuditProgress(auditId: string | undefined): UseAuditProgressR
   const [status, setStatus] = useState<PipelineStatus>('idle');
   const [steps, setSteps] = useState<UiStep[]>(INITIAL_STEPS);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  // Évite de lancer deux fois le pipeline sur un re-render. Réinitialisé
+  // quand auditId change (cas d'un nouveau audit dans la même session).
+  // PAS d'AbortController : la promesse côté serveur que « fermer l'onglet
+  // ne perd pas la progression » suppose que le pipeline tourne jusqu'au
+  // bout côté backend, indépendamment du client. Abort côté client casserait
+  // ça en dev (StrictMode mount/unmount/remount) sans bénéfice en prod.
   const startedRef = useRef(false);
-  const abortRef = useRef<AbortController | null>(null);
+
+  // Reset du verrou si auditId change : permet de relancer pour un nouvel audit.
+  useEffect(() => {
+    startedRef.current = false;
+  }, [auditId]);
 
   const applyEvent = useCallback((event: string) => {
     switch (event) {
@@ -123,16 +133,12 @@ export function useAuditProgress(auditId: string | undefined): UseAuditProgressR
     setStatus('starting');
     setErrorMessage(null);
 
-    const controller = new AbortController();
-    abortRef.current = controller;
-
     (async () => {
       try {
         const res = await fetch('/api/audit/run', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ auditId }),
-          signal: controller.signal,
         });
 
         if (!res.ok || !res.body) {
@@ -159,7 +165,6 @@ export function useAuditProgress(auditId: string | undefined): UseAuditProgressR
           }
         }
       } catch (err) {
-        if ((err as { name?: string })?.name === 'AbortError') return;
         console.error('[useAuditProgress] stream error:', err);
         setStatus('error');
         setErrorMessage(
@@ -168,12 +173,6 @@ export function useAuditProgress(auditId: string | undefined): UseAuditProgressR
       }
     })();
   }, [auditId, applyEvent]);
-
-  useEffect(() => {
-    return () => {
-      abortRef.current?.abort();
-    };
-  }, []);
 
   return { status, steps, errorMessage, start };
 }
