@@ -1,5 +1,5 @@
 // Schémas Zod pour valider input/output de chaque skill.
-// Alignés sur docs/specs/skills-prompts-v1.yaml et src/types/skills.ts.
+// Alignés sur docs/specs/skills-prompts-v2.yaml et src/types/skills.ts.
 
 import { z } from 'zod';
 
@@ -10,6 +10,31 @@ const reviewerNotes = z.string().nullable();
 
 export const skill1InputSchema = z.object({
   intake_data: z.record(z.string(), z.unknown()),
+});
+
+const industryBenchmarkSchema = z.object({
+  metric: z.string(),
+  value: z.string(),
+  source: z.string(),
+  source_year: z.string(),
+  source_url: z.string().nullable().optional(),
+  geographic_scope: z.enum(['quebec', 'canada', 'etats_unis', 'international']),
+  relevance_to_client: z.string(),
+});
+
+const clientFigureSchema = z.object({
+  raw_quote: z.string(),
+  interpreted_value: z.string(),
+  unit: z.enum([
+    'heures',
+    'minutes',
+    'pourcentage',
+    'nombre_absolu',
+    'montant_cad',
+    'autre',
+  ]),
+  dimension: z.enum(['temps', 'volume', 'montant', 'taux', 'autre']),
+  source_field: z.string(),
 });
 
 export const skill1OutputSchema = z.object({
@@ -34,6 +59,15 @@ export const skill1OutputSchema = z.object({
     tech_comfort_confirmed: z.string(),
     existing_stack_summary: z.string(),
     readiness_for_change: z.string(),
+  }),
+  industry_portrait: z.object({
+    narrative: z.string(),
+    benchmarks: z.array(industryBenchmarkSchema).max(5),
+    search_coverage: z.enum(['complete', 'partial', 'minimal']),
+  }),
+  extracted_client_figures: z.object({
+    figures: z.array(clientFigureSchema),
+    extraction_coverage: z.enum(['rich', 'moderate', 'sparse', 'none']),
   }),
   confidence_level: confidenceLevel,
   reviewer_notes: reviewerNotes,
@@ -76,7 +110,33 @@ export const skill2OutputSchema = z.object({
         ),
         expected_impact: z.object({
           qualitative: z.string(),
-          quantitative_if_available: z.string(),
+          quantitative_estimate: z.object({
+            available: z.boolean(),
+            basis: z.enum([
+              'client_figures',
+              'sector_benchmarks',
+              'hybrid',
+              'unavailable',
+            ]),
+            figures: z
+              .array(
+                z.object({
+                  metric: z.string(),
+                  low_range: z.string(),
+                  high_range: z.string(),
+                  unit: z.string(),
+                  timeframe: z.enum([
+                    'hebdomadaire',
+                    'mensuel',
+                    'annuel',
+                    'par_evenement',
+                  ]),
+                }),
+              )
+              .max(3),
+            assumptions: z.array(z.string()),
+            confidence: confidenceLevel,
+          }),
         }),
         effort_estimate: z.object({
           setup_effort: z.string(),
@@ -272,6 +332,40 @@ export const skill5OutputSchema = z.object({
       notes: z.string(),
     }),
   ),
+  consolidated_impact_summary: z.object({
+    total_opportunities: z.number().int(),
+    consolidated_figures: z
+      .array(
+        z.object({
+          metric: z.string(),
+          low_range: z.string(),
+          high_range: z.string(),
+          unit: z.string(),
+          timeframe: z.enum(['hebdomadaire', 'mensuel', 'annuel']),
+          overlap_note: z.string(),
+        }),
+      )
+      .max(3),
+    consolidation_method: z.string(),
+    cautions: z.array(z.string()),
+  }),
+  actionable_deliverables: z
+    .array(
+      z.object({
+        deliverable_type: z.enum([
+          'ai_prompts_pack',
+          'loi_25_policy_template',
+          'vendor_selection_checklist',
+          'automation_starter_workflow',
+          'kpi_tracking_sheet',
+        ]),
+        title: z.string(),
+        rationale: z.string(),
+        content: z.record(z.string(), z.unknown()),
+      }),
+    )
+    .min(2)
+    .max(4),
   recommended_path: z.object({
     primary_path: recommendedPathWithMixte,
     rationale: z.string(),

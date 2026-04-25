@@ -1,5 +1,5 @@
 // Types TypeScript des 5 skills du pipeline d'audit IA.
-// Source de vérité : docs/specs/skills-prompts-v1.yaml (output_schema).
+// Source de vérité : docs/specs/skills-prompts-v2.yaml (output_schema).
 
 import type { IntakeFormData } from './intake';
 
@@ -69,6 +69,49 @@ export interface Skill1Input {
   intake_data: IntakeFormData;
 }
 
+export type GeographicScope =
+  | 'quebec'
+  | 'canada'
+  | 'etats_unis'
+  | 'international';
+
+export type SearchCoverage = 'complete' | 'partial' | 'minimal';
+
+export type ExtractionCoverage = 'rich' | 'moderate' | 'sparse' | 'none';
+
+export type ClientFigureUnit =
+  | 'heures'
+  | 'minutes'
+  | 'pourcentage'
+  | 'nombre_absolu'
+  | 'montant_cad'
+  | 'autre';
+
+export type ClientFigureDimension =
+  | 'temps'
+  | 'volume'
+  | 'montant'
+  | 'taux'
+  | 'autre';
+
+export interface IndustryBenchmark {
+  metric: string;
+  value: string;
+  source: string;
+  source_year: string;
+  source_url?: string | null;
+  geographic_scope: GeographicScope;
+  relevance_to_client: string;
+}
+
+export interface ClientFigure {
+  raw_quote: string;
+  interpreted_value: string;
+  unit: ClientFigureUnit;
+  dimension: ClientFigureDimension;
+  source_field: string;
+}
+
 export interface Skill1Output {
   business_profile: {
     narrative: string;
@@ -91,6 +134,15 @@ export interface Skill1Output {
     tech_comfort_confirmed: string;
     existing_stack_summary: string;
     readiness_for_change: ReadinessForChange | string;
+  };
+  industry_portrait: {
+    narrative: string;
+    benchmarks: IndustryBenchmark[];
+    search_coverage: SearchCoverage;
+  };
+  extracted_client_figures: {
+    figures: ClientFigure[];
+    extraction_coverage: ExtractionCoverage;
   };
   confidence_level: ConfidenceLevel;
   reviewer_notes: string | null;
@@ -116,6 +168,34 @@ export interface RecommendedTool {
   estimated_monthly_cost_cad: string;
 }
 
+export type EstimateBasis =
+  | 'client_figures'
+  | 'sector_benchmarks'
+  | 'hybrid'
+  | 'unavailable';
+
+export type EstimateTimeframe =
+  | 'hebdomadaire'
+  | 'mensuel'
+  | 'annuel'
+  | 'par_evenement';
+
+export interface QuantitativeFigure {
+  metric: string;
+  low_range: string;
+  high_range: string;
+  unit: string;
+  timeframe: EstimateTimeframe;
+}
+
+export interface QuantitativeEstimate {
+  available: boolean;
+  basis: EstimateBasis;
+  figures: QuantitativeFigure[];
+  assumptions: string[];
+  confidence: ConfidenceLevel;
+}
+
 export interface SelectedOpportunity {
   pattern_id: string;
   adapted_title: string;
@@ -124,7 +204,7 @@ export interface SelectedOpportunity {
   recommended_tools: RecommendedTool[];
   expected_impact: {
     qualitative: string;
-    quantitative_if_available: string;
+    quantitative_estimate: QuantitativeEstimate;
   };
   effort_estimate: {
     setup_effort: string;
@@ -274,6 +354,38 @@ export interface RoiEstimate {
   notes: string;
 }
 
+export type ConsolidatedTimeframe = 'hebdomadaire' | 'mensuel' | 'annuel';
+
+export interface ConsolidatedFigure {
+  metric: string;
+  low_range: string;
+  high_range: string;
+  unit: string;
+  timeframe: ConsolidatedTimeframe;
+  overlap_note: string;
+}
+
+export interface ConsolidatedImpactSummary {
+  total_opportunities: number;
+  consolidated_figures: ConsolidatedFigure[];
+  consolidation_method: string;
+  cautions: string[];
+}
+
+export type DeliverableType =
+  | 'ai_prompts_pack'
+  | 'loi_25_policy_template'
+  | 'vendor_selection_checklist'
+  | 'automation_starter_workflow'
+  | 'kpi_tracking_sheet';
+
+export interface ActionableDeliverable {
+  deliverable_type: DeliverableType;
+  title: string;
+  rationale: string;
+  content: Record<string, unknown>;
+}
+
 export interface Skill5Output {
   executive_summary: {
     opening_paragraph: string;
@@ -288,6 +400,8 @@ export interface Skill5Output {
     phase_3_long_term: RoadmapPhase3;
   };
   roi_estimates: RoiEstimate[];
+  consolidated_impact_summary: ConsolidatedImpactSummary;
+  actionable_deliverables: ActionableDeliverable[];
   recommended_path: {
     primary_path: RecommendedPath;
     rationale: string;
