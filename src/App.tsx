@@ -11,6 +11,8 @@ import { Signup } from './pages/Signup';
 import { Dashboard } from './pages/Dashboard';
 import { IntakeForm, IntakeSubmitted, ResumeFromToken } from './pages/intake';
 import { AuditProgress } from './pages/audit/AuditProgress';
+import { AdminLogin } from './pages/admin/Login';
+import { RequireAdmin } from './components/admin/RequireAdmin';
 
 function App() {
   return (
@@ -32,10 +34,9 @@ function App() {
         <Route path="/test-search" element={<TestSearch />} />
         <Route path="/test" element={<TestPage />} />
 
-        {/* Pages protégées */}
+        {/* Pages protégées (auth client Supabase) */}
         <Route element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/admin" element={<Placeholder title="Admin Dashboard" />} />
           <Route
             path="/audit/:id/processing"
             element={<Placeholder title="Processing Screen" />}
@@ -43,6 +44,29 @@ function App() {
           <Route
             path="/audit/:id/report"
             element={<Placeholder title="Report" />}
+          />
+        </Route>
+
+        {/* Admin (auth séparée par mot de passe + cookie signé — Session 2C) */}
+        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route element={<RequireAdmin />}>
+          <Route
+            path="/admin"
+            element={
+              <Placeholder
+                title="Admin"
+                description="Redirection vers la liste des audits…"
+              />
+            }
+          />
+          <Route
+            path="/admin/audits"
+            element={
+              <Placeholder
+                title="Liste des audits"
+                description="À venir — Étape 4 de la Session 2C."
+              />
+            }
           />
         </Route>
 
