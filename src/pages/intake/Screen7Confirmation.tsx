@@ -135,6 +135,7 @@ export function Screen7Confirmation() {
   const isSubmitting = useIntakeFormStore((s) => s.isSubmitting);
   const saveProgress = useIntakeFormStore((s) => s.saveProgress);
   const auditId = useIntakeFormStore((s) => s.auditId);
+  const resetForm = useIntakeFormStore((s) => s.resetForm);
 
   const recap = buildRecap(formData);
 
@@ -154,8 +155,11 @@ export function Screen7Confirmation() {
         return;
       }
       // La page AuditProgress déclenche elle-même POST /api/audit/run
-      // via useAuditProgress.start() au montage.
+      // via useAuditProgress.start() au montage. Une fois la soumission
+      // confirmée, on vide le store : les données sont en DB et l'audit
+      // suivant doit partir avec un formulaire vierge.
       navigate(`/audit/progress/${id}`);
+      resetForm();
     } finally {
       setSubmitting(false);
     }
