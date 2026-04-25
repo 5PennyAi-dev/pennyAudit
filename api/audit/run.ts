@@ -162,7 +162,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   // Idempotence naïve : si déjà en cours ou complété, on refuse.
-  if (audit.status !== 'draft' && audit.status !== 'error') {
+  // 'changes_requested' = relance depuis l'admin (Session 2C) — accepté.
+  if (
+    audit.status !== 'draft' &&
+    audit.status !== 'error' &&
+    audit.status !== 'changes_requested'
+  ) {
     return res.status(409).json({
       error: `Audit dans un état non relançable : ${audit.status}`,
     });

@@ -73,16 +73,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     });
   }
 
-  // Repasse à 'draft' pour que /api/audit/run accepte la relance.
-  const { error: updErr } = await supabase
-    .from('audits')
-    .update({ status: 'draft' })
-    .eq('id', id);
-  if (updErr) {
-    console.error('[rerun] status reset error:', updErr);
-    return res.status(500).json({ error: updErr.message });
-  }
-
+  // /api/audit/run accepte maintenant 'changes_requested' comme état d'entrée.
+  // Pas besoin de toucher au statut ici — l'orchestrateur le passera à 'running'.
   // Event de déclenchement (visible dans la timeline).
   const { error: evErr } = await supabase.from('audit_review_events').insert({
     audit_id: id,
@@ -109,7 +101,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   return res.status(200).json({
     ok: true,
-    status: 'draft',
+    status: 'changes_requested',
     message: 'Pipeline relancé. Le statut passera à running puis pending_review.',
   });
 }
