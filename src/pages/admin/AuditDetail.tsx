@@ -2,6 +2,14 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { AuditDetailHeader } from '../../components/admin/AuditDetailHeader';
 import { AuditTabs, AUDIT_TABS, type AuditTabId } from '../../components/admin/AuditTabs';
+import { IntakeView } from '../../components/admin/sections/IntakeView';
+import { ContextView } from '../../components/admin/sections/ContextView';
+import { OpportunitiesView } from '../../components/admin/sections/OpportunitiesView';
+import { RisksView } from '../../components/admin/sections/RisksView';
+import { StackView } from '../../components/admin/sections/StackView';
+import { ReportView } from '../../components/admin/sections/ReportView';
+import { ReviewEventsTimeline } from '../../components/admin/sections/ReviewEventsTimeline';
+import { SectionShell, Subsection, EmptyHint } from '../../components/admin/sections/_shared';
 
 interface ReviewEvent {
   id: string;
@@ -141,50 +149,23 @@ interface TabContentProps {
 function TabContent({ tab, audit, reviewEvents }: TabContentProps) {
   switch (tab) {
     case 'intake':
-      return <PlaceholderJson title="Intake" subtitle="Réponses brutes du formulaire — rendu humain à venir Étape 6." data={audit.intake_data} />;
+      return <IntakeView data={audit.intake_data} />;
     case 'context':
-      return <PlaceholderJson title="Contexte" subtitle="Output du Skill 1 — rendu humain à venir Étape 6." data={audit.skill_1_output} />;
+      return <ContextView data={audit.skill_1_output} />;
     case 'opportunities':
-      return <PlaceholderJson title="Opportunités" subtitle="Output du Skill 2 — rendu humain à venir Étape 6." data={audit.skill_2_output} />;
+      return <OpportunitiesView data={audit.skill_2_output} />;
     case 'risks':
-      return <PlaceholderJson title="Risques" subtitle="Output du Skill 3 — rendu humain à venir Étape 6." data={audit.skill_3_output} />;
+      return <RisksView data={audit.skill_3_output} />;
     case 'stack':
-      return <PlaceholderJson title="Stack" subtitle="Output du Skill 4 — rendu humain à venir Étape 6." data={audit.skill_4_output} />;
+      return <StackView data={audit.skill_4_output} />;
     case 'report':
-      return <PlaceholderJson title="Rapport final" subtitle="Output du Skill 5 — rendu humain à venir Étape 6." data={audit.skill_5_output} />;
+      return <ReportView data={audit.skill_5_output} />;
     case 'notes':
-      return <NotesPlaceholder audit={audit} reviewEvents={reviewEvents} />;
+      return <NotesTabContent audit={audit} reviewEvents={reviewEvents} />;
   }
 }
 
-function PlaceholderJson({
-  title,
-  subtitle,
-  data,
-}: {
-  title: string;
-  subtitle: string;
-  data: unknown;
-}) {
-  const empty = data == null || (typeof data === 'object' && Object.keys(data as object).length === 0);
-  return (
-    <section className="rounded-2xl border border-line bg-paper p-5 sm:p-6">
-      <header className="mb-4">
-        <h3 className="text-lg font-bold text-navy-600">{title}</h3>
-        <p className="text-xs text-muted mt-1">{subtitle}</p>
-      </header>
-      {empty ? (
-        <p className="text-sm text-muted italic">Pas de données disponibles pour cette section.</p>
-      ) : (
-        <pre className="overflow-x-auto rounded-lg border border-line bg-cream p-4 font-mono text-xs leading-relaxed text-navy-600">
-          {JSON.stringify(data, null, 2)}
-        </pre>
-      )}
-    </section>
-  );
-}
-
-function NotesPlaceholder({
+function NotesTabContent({
   audit,
   reviewEvents,
 }: {
@@ -192,61 +173,23 @@ function NotesPlaceholder({
   reviewEvents: ReviewEvent[];
 }) {
   return (
-    <section className="rounded-2xl border border-line bg-paper p-5 sm:p-6 flex flex-col gap-6">
-      <header>
-        <h3 className="text-lg font-bold text-navy-600">Notes & historique</h3>
-        <p className="text-xs text-muted mt-1">
-          Édition de la note globale et historique complet — édition câblée à l'Étape 7,
-          rendu enrichi à l'Étape 6.
-        </p>
-      </header>
-
-      <div>
-        <h4 className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted mb-2">
-          Note globale (admin_notes_global)
-        </h4>
-        <div className="rounded-lg border border-line bg-cream p-4 text-sm text-navy-600 whitespace-pre-wrap min-h-[3rem]">
-          {audit.admin_notes_global || (
-            <span className="text-muted italic">Aucune note pour l'instant.</span>
-          )}
-        </div>
-      </div>
-
-      <div>
-        <h4 className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted mb-2">
-          Historique ({reviewEvents.length})
-        </h4>
-        {reviewEvents.length === 0 ? (
-          <p className="text-sm text-muted italic">Aucun événement enregistré.</p>
+    <SectionShell
+      title="Notes & historique"
+      subtitle="Note globale (édition à l'Étape 7) et journal des décisions"
+    >
+      <Subsection title="Note globale">
+        {audit.admin_notes_global ? (
+          <div className="rounded-lg border border-line bg-cream p-4 text-sm text-navy-600 whitespace-pre-wrap">
+            {audit.admin_notes_global}
+          </div>
         ) : (
-          <ul className="flex flex-col gap-2">
-            {reviewEvents.map((ev) => (
-              <li
-                key={ev.id}
-                className="flex flex-col gap-1 rounded-lg border border-line bg-cream/60 p-3 text-sm"
-              >
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-orange-500">
-                    {ev.event_type}
-                  </span>
-                  <span className="text-xs text-muted">
-                    {new Date(ev.created_at).toLocaleString('fr-CA')}
-                  </span>
-                  {ev.actor_email && (
-                    <span className="text-xs text-muted">· {ev.actor_email}</span>
-                  )}
-                </div>
-                {ev.payload && Object.keys(ev.payload).length > 0 && (
-                  <pre className="overflow-x-auto font-mono text-xs text-navy-600">
-                    {JSON.stringify(ev.payload, null, 2)}
-                  </pre>
-                )}
-              </li>
-            ))}
-          </ul>
+          <EmptyHint>Aucune note pour l'instant. L'édition arrive à l'Étape 7.</EmptyHint>
         )}
-      </div>
-    </section>
+      </Subsection>
+      <Subsection title={`Historique (${reviewEvents.length})`}>
+        <ReviewEventsTimeline events={reviewEvents} />
+      </Subsection>
+    </SectionShell>
   );
 }
 
