@@ -115,10 +115,56 @@ function extractJsonObject(raw: string): string {
     }
   }
 
-  if (lastStart !== -1 && lastEnd !== -1) {
-    return text.slice(lastStart, lastEnd + 1);
+  const candidate =
+    lastStart !== -1 && lastEnd !== -1
+      ? text.slice(lastStart, lastEnd + 1)
+      : text;
+  return sanitizeControlCharsInStrings(candidate);
+}
+
+// Claude insère parfois des sauts de ligne ou tabulations littéraux à
+// l'intérieur des strings JSON (au lieu de \\n / \\t). JSON.parse les
+// rejette. On parcourt en respectant les strings et on échappe les
+// chars de contrôle (< 0x20) restés bruts dedans.
+function sanitizeControlCharsInStrings(json: string): string {
+  let inString = false;
+  let escape = false;
+  let out = '';
+  for (let i = 0; i < json.length; i++) {
+    const c = json[i];
+    if (escape) {
+      out += c;
+      escape = false;
+      continue;
+    }
+    if (inString) {
+      if (c === '\\') {
+        out += c;
+        escape = true;
+        continue;
+      }
+      if (c === '"') {
+        out += c;
+        inString = false;
+        continue;
+      }
+      const code = c.charCodeAt(0);
+      if (code < 0x20) {
+        if (c === '\n') out += '\\n';
+        else if (c === '\r') out += '\\r';
+        else if (c === '\t') out += '\\t';
+        else if (c === '\b') out += '\\b';
+        else if (c === '\f') out += '\\f';
+        else out += '\\u' + code.toString(16).padStart(4, '0');
+        continue;
+      }
+      out += c;
+      continue;
+    }
+    if (c === '"') inString = true;
+    out += c;
   }
-  return text;
+  return out;
 }
 
 export async function callClaudeJSON<T = unknown>(
