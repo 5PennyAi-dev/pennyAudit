@@ -56,10 +56,16 @@ function getClient(): Anthropic {
 function extractTextFromResponse(
   content: Anthropic.Messages.ContentBlock[],
 ): string {
-  return content
-    .filter((block): block is Anthropic.Messages.TextBlock => block.type === 'text')
-    .map((block) => block.text)
-    .join('');
+  // Quand un tool serveur (ex. web_search) est utilisé, la réponse contient
+  // plusieurs text blocks entrelacés avec les server_tool_use et
+  // web_search_tool_result : un texte de raisonnement avant chaque recherche,
+  // puis le text block final qui porte le JSON. On prend uniquement le
+  // dernier text block. Sans tool, il n'y en a qu'un de toute façon.
+  const textBlocks = content.filter(
+    (block): block is Anthropic.Messages.TextBlock => block.type === 'text',
+  );
+  if (textBlocks.length === 0) return '';
+  return textBlocks[textBlocks.length - 1].text;
 }
 
 // Les skills sont instruits de ne pas utiliser de fences, mais on tolère
