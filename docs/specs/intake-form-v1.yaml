@@ -234,16 +234,22 @@ screens:
         label: "Quelles tâches prennent le plus de temps à vous ou à votre équipe ?"
         placeholder: |
           Exemple : Je passe environ 2 heures par jour à répondre aux mêmes
-          questions de clients au téléphone et par courriel, surtout pour
-          les prises de rendez-vous et les questions sur les tarifs.
+          questions de clients au téléphone et par courriel, surtout pour les
+          prises de rendez-vous et les questions sur les tarifs. Je reçois à peu
+          près 30-40 appels par semaine, et je dirais qu'une bonne moitié sont
+          des demandes d'info répétitives qu'un bon système pourrait traiter.
         helper_text: |
-          ⚡ Astuce : plus votre réponse est précise et détaillée (exemples
-          concrets, temps passé, fréquence), plus votre audit sera pertinent.
+          ⚡ Astuce : les chiffres rendent votre audit beaucoup plus concret.
+          Essayez d'inclure des ordres de grandeur — heures par semaine passées
+          sur la tâche, nombre de clients, dossiers ou transactions traités par
+          mois, montants moyens si pertinent. Des estimations « à la louche »
+          suffisent (ex. « environ 5 h/semaine », « entre 20 et 30 dossiers par
+          mois »).
         required: true
         min_length: 50
         max_length: 2000
         skills_used: [2]
-        purpose: "Champ principal pour le matching sémantique via embeddings pgvector"
+        purpose: "Champ principal pour le matching sémantique via embeddings pgvector. En v2, aussi la source principale de extracted_client_figures du Skill 1."
 
       - id: lost_opportunities
         type: multi_select_with_other

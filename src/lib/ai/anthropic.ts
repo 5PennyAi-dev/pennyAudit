@@ -2,7 +2,7 @@
 // Côté serveur uniquement (lit ANTHROPIC_API_KEY depuis process.env).
 
 import Anthropic from '@anthropic-ai/sdk';
-import { ANTHROPIC_MODEL_DEFAULT } from './config';
+import { ANTHROPIC_MODEL_DEFAULT, type SkillTool } from './config';
 
 export class InvalidJsonResponseError extends Error {
   readonly rawResponse: string;
@@ -20,6 +20,10 @@ export interface CallClaudeJsonParams {
   userInput: string;
   model?: string;
   maxTokens: number;
+  // Outils server-side Anthropic (ex. web_search_20250305 pour Skill 1).
+  // Quand fournis, les content blocks de type non-text (server_tool_use,
+  // web_search_tool_result) sont filtrés à l'extraction du JSON final.
+  tools?: SkillTool[];
   // Note : Claude Opus 4.7+ n'accepte plus temperature/top_p/top_k.
   // Toute valeur non-défaut renvoie 400. On ne les passe donc plus du tout.
   // Voir : https://platform.claude.com/docs/en/about-claude/models/whats-new-claude-4-7
@@ -52,18 +56,115 @@ function getClient(): Anthropic {
 function extractTextFromResponse(
   content: Anthropic.Messages.ContentBlock[],
 ): string {
+  // Concatène tous les text blocks. Avec un tool serveur (ex. web_search),
+  // Claude entrelace text blocks de raisonnement et server_tool_use. Le
+  // JSON final peut être splitté sur plusieurs text blocks (notamment si
+  // Claude reprend la rédaction après une recherche). On filtre les blocs
+  // server_tool_use / web_search_tool_result et on garde tout le texte.
   return content
-    .filter((block): block is Anthropic.Messages.TextBlock => block.type === 'text')
+    .filter(
+      (block): block is Anthropic.Messages.TextBlock => block.type === 'text',
+    )
     .map((block) => block.text)
-    .join('');
+    .join('\n');
 }
 
-// Les skills sont instruits de ne pas utiliser de fences, mais on tolère
-// ```json ... ``` au cas où.
-function stripJsonFences(raw: string): string {
+// Extrait l'objet JSON top-level depuis le texte brut produit par Claude.
+// Avec web_search activé, le texte contient du raisonnement intercalé
+// (introductions, énumérations de sources). On parcourt en gérant les
+// strings (et leurs échappements) pour identifier les frontières d'un
+// objet `{...}` de niveau racine. On retourne le DERNIER objet trouvé,
+// qui est typiquement le JSON final demandé.
+function extractJsonObject(raw: string): string {
   const trimmed = raw.trim();
-  const fenceMatch = trimmed.match(/^```(?:json)?\s*([\s\S]*?)\s*```$/);
-  return fenceMatch ? fenceMatch[1].trim() : trimmed;
+  const fenceMatch = trimmed.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
+  const text = fenceMatch ? fenceMatch[1].trim() : trimmed;
+
+  let inString = false;
+  let escape = false;
+  let depth = 0;
+  let start = -1;
+  let lastStart = -1;
+  let lastEnd = -1;
+
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (escape) {
+      escape = false;
+      continue;
+    }
+    if (inString) {
+      if (c === '\\') escape = true;
+      else if (c === '"') inString = false;
+      continue;
+    }
+    if (c === '"') {
+      inString = true;
+      continue;
+    }
+    if (c === '{') {
+      if (depth === 0) start = i;
+      depth++;
+    } else if (c === '}') {
+      depth--;
+      if (depth === 0 && start !== -1) {
+        lastStart = start;
+        lastEnd = i;
+        start = -1;
+      }
+    }
+  }
+
+  const candidate =
+    lastStart !== -1 && lastEnd !== -1
+      ? text.slice(lastStart, lastEnd + 1)
+      : text;
+  return sanitizeControlCharsInStrings(candidate);
+}
+
+// Claude insère parfois des sauts de ligne ou tabulations littéraux à
+// l'intérieur des strings JSON (au lieu de \\n / \\t). JSON.parse les
+// rejette. On parcourt en respectant les strings et on échappe les
+// chars de contrôle (< 0x20) restés bruts dedans.
+function sanitizeControlCharsInStrings(json: string): string {
+  let inString = false;
+  let escape = false;
+  let out = '';
+  for (let i = 0; i < json.length; i++) {
+    const c = json[i];
+    if (escape) {
+      out += c;
+      escape = false;
+      continue;
+    }
+    if (inString) {
+      if (c === '\\') {
+        out += c;
+        escape = true;
+        continue;
+      }
+      if (c === '"') {
+        out += c;
+        inString = false;
+        continue;
+      }
+      const code = c.charCodeAt(0);
+      if (code < 0x20) {
+        if (c === '\n') out += '\\n';
+        else if (c === '\r') out += '\\r';
+        else if (c === '\t') out += '\\t';
+        else if (c === '\b') out += '\\b';
+        else if (c === '\f') out += '\\f';
+        else out += '\\u' + code.toString(16).padStart(4, '0');
+        continue;
+      }
+      out += c;
+      continue;
+    }
+    if (c === '"') inString = true;
+    out += c;
+  }
+  return out;
 }
 
 export async function callClaudeJSON<T = unknown>(
@@ -84,13 +185,16 @@ export async function callClaudeJSON<T = unknown>(
       max_tokens: params.maxTokens,
       system: params.systemPrompt,
       messages: [{ role: 'user', content: params.userInput }],
+      ...(params.tools && params.tools.length > 0
+        ? { tools: params.tools as unknown as Anthropic.Messages.ToolUnion[] }
+        : {}),
     });
 
     const raw = extractTextFromResponse(response.content);
     lastRaw = raw;
 
     try {
-      const cleaned = stripJsonFences(raw);
+      const cleaned = extractJsonObject(raw);
       const parsed = JSON.parse(cleaned) as T;
       return {
         parsedJson: parsed,
