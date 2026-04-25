@@ -21,6 +21,9 @@ dist-ssr
 # Vercel
 .vercel
 
+# Sortie locale du script de test DOCX (scripts/test-docx-build.ts)
+tmp/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
