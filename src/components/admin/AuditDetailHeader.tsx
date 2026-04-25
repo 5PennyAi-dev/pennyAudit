@@ -10,6 +10,8 @@ interface AuditDetailHeaderProps {
   approvedAt?: string | null;
   deliveredAt?: string | null;
   reviewedBy?: string | null;
+  /** Slot des actions admin (boutons + modals). */
+  actions?: React.ReactNode;
 }
 
 const dateFormatter = new Intl.DateTimeFormat('fr-CA', {
@@ -37,6 +39,7 @@ export function AuditDetailHeader({
   approvedAt,
   deliveredAt,
   reviewedBy,
+  actions,
 }: AuditDetailHeaderProps) {
   const created = fmt(createdAt);
   const approved = fmt(approvedAt);
@@ -74,18 +77,7 @@ export function AuditDetailHeader({
         {delivered && <span>Envoyé au client le {delivered}</span>}
       </div>
 
-      {/* Actions principales — câblées à l'Étape 8 */}
-      <div className="flex flex-wrap gap-2 pt-1 border-t border-line">
-        <Button variant="primary" size="md" disabled title="Câblé à l'Étape 8">
-          Approuver et envoyer
-        </Button>
-        <Button variant="ghost" size="md" disabled title="Câblé à l'Étape 8">
-          Demander des modifications
-        </Button>
-        <Button variant="ghost" size="md" disabled title="Câblé à l'Étape 8">
-          Rejeter
-        </Button>
-      </div>
+      {actions}
     </section>
   );
 }

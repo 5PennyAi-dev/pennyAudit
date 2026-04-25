@@ -18,6 +18,9 @@ import {
 import auditsListHandler from './api/admin/audits/list';
 import auditGetHandler from './api/admin/audits/[id]/get';
 import notesSaveHandler from './api/admin/audits/[id]/notes/save';
+import requestChangesHandler from './api/admin/audits/[id]/request-changes';
+import rejectHandler from './api/admin/audits/[id]/reject';
+import rerunHandler from './api/audit/[id]/rerun';
 
 /**
  * Adapte un handler Vercel (req: VercelRequest, res: VercelResponse) sur
@@ -288,6 +291,9 @@ function devApiAdminAudits(): PluginOption {
       // Pour les routes dynamiques [id], on injecte l'id dans la query du handler.
       const detailGetAdapted = vercelAdapter(auditGetHandler);
       const notesSaveAdapted = vercelAdapter(notesSaveHandler);
+      const requestChangesAdapted = vercelAdapter(requestChangesHandler);
+      const rejectAdapted = vercelAdapter(rejectHandler);
+      const rerunAdapted = vercelAdapter(rerunHandler);
 
       function injectId(req: any, id: string) {
         const sep = req.url?.includes('?') ? '&' : '?';
@@ -308,6 +314,26 @@ function devApiAdminAudits(): PluginOption {
         if (notesSaveMatch) {
           injectId(req, notesSaveMatch[1]);
           return notesSaveAdapted(req, res, next);
+        }
+
+        const requestChangesMatch = path.match(
+          /^\/api\/admin\/audits\/([0-9a-f-]{36})\/request-changes$/i,
+        );
+        if (requestChangesMatch) {
+          injectId(req, requestChangesMatch[1]);
+          return requestChangesAdapted(req, res, next);
+        }
+
+        const rejectMatch = path.match(/^\/api\/admin\/audits\/([0-9a-f-]{36})\/reject$/i);
+        if (rejectMatch) {
+          injectId(req, rejectMatch[1]);
+          return rejectAdapted(req, res, next);
+        }
+
+        const rerunMatch = path.match(/^\/api\/audit\/([0-9a-f-]{36})\/rerun$/i);
+        if (rerunMatch) {
+          injectId(req, rerunMatch[1]);
+          return rerunAdapted(req, res, next);
         }
 
         return next();

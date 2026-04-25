@@ -11,6 +11,7 @@ import { ReportView } from '../../components/admin/sections/ReportView';
 import { ReviewEventsTimeline } from '../../components/admin/sections/ReviewEventsTimeline';
 import { SectionShell, Subsection } from '../../components/admin/sections/_shared';
 import { InlineNoteEditor, type NoteSection } from '../../components/admin/InlineNoteEditor';
+import { AuditActions } from '../../components/admin/AuditActions';
 
 interface ReviewEvent {
   id: string;
@@ -34,6 +35,7 @@ interface AuditRow {
   reviewed_by: string | null;
   approved_at: string | null;
   delivered_at: string | null;
+  public_report_token: string | null;
   created_at: string;
   pipeline_completed_at: string | null;
 }
@@ -75,6 +77,8 @@ export function AuditDetail() {
     global: '',
   });
 
+  const [refreshTick, setRefreshTick] = useState(0);
+
   useEffect(() => {
     if (!id) return;
     let cancelled = false;
@@ -114,7 +118,11 @@ export function AuditDetail() {
     return () => {
       cancelled = true;
     };
-  }, [id, navigate]);
+  }, [id, navigate, refreshTick]);
+
+  function refetch() {
+    setRefreshTick((t) => t + 1);
+  }
 
   function setTab(id: AuditTabId) {
     const next = new URLSearchParams(params);
@@ -156,6 +164,14 @@ export function AuditDetail() {
         approvedAt={audit.approved_at}
         deliveredAt={audit.delivered_at}
         reviewedBy={audit.reviewed_by}
+        actions={
+          <AuditActions
+            auditId={audit.id}
+            status={audit.status}
+            publicReportToken={audit.public_report_token}
+            onChanged={refetch}
+          />
+        }
       />
 
       <AuditTabs active={activeTab} onChange={setTab} />
