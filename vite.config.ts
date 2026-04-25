@@ -15,6 +15,79 @@ import {
   signAdminSession,
   verifyAdminPassword,
 } from './api/_adminAuth';
+import auditsListHandler from './api/admin/audits/list';
+
+/**
+ * Adapte un handler Vercel (req: VercelRequest, res: VercelResponse) sur
+ * Connect (Vite). Greffe les méthodes manquantes (.status, .json, .query)
+ * pour que les handlers s'exécutent tels quels en dev.
+ */
+function vercelAdapter(
+  handler: (req: any, res: any) => unknown | Promise<unknown>,
+): Connect.NextHandleFunction {
+  return async (req, res, next) => {
+    try {
+      const url = new URL(req.url ?? '/', 'http://localhost');
+      const query: Record<string, string | string[]> = {};
+      for (const [k, v] of url.searchParams.entries()) {
+        const existing = query[k];
+        if (existing == null) query[k] = v;
+        else if (Array.isArray(existing)) existing.push(v);
+        else query[k] = [existing, v];
+      }
+      // Body parsing pour POST/PUT/PATCH JSON
+      let body: unknown = undefined;
+      if (req.method && ['POST', 'PUT', 'PATCH', 'DELETE'].includes(req.method)) {
+        const chunks: Buffer[] = [];
+        for await (const chunk of req) chunks.push(chunk as Buffer);
+        const raw = Buffer.concat(chunks).toString('utf8');
+        if (raw) {
+          try {
+            body = JSON.parse(raw);
+          } catch {
+            body = raw;
+          }
+        }
+      }
+      const enrichedReq = Object.assign(req, { query, body });
+
+      // Shim Vercel-style res
+      const enrichedRes: any = res;
+      enrichedRes.status = (code: number) => {
+        res.statusCode = code;
+        return enrichedRes;
+      };
+      enrichedRes.json = (payload: unknown) => {
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify(payload));
+        return enrichedRes;
+      };
+      enrichedRes.send = (payload: unknown) => {
+        if (typeof payload === 'string' || Buffer.isBuffer(payload)) {
+          res.end(payload);
+        } else {
+          enrichedRes.json(payload);
+        }
+        return enrichedRes;
+      };
+
+      await handler(enrichedReq, enrichedRes);
+    } catch (err) {
+      console.error('[vercelAdapter] error:', err);
+      if (!res.headersSent) {
+        res.statusCode = 500;
+        res.setHeader('Content-Type', 'application/json');
+        res.end(
+          JSON.stringify({
+            error: err instanceof Error ? err.message : 'Erreur interne',
+          }),
+        );
+      } else {
+        next(err);
+      }
+    }
+  };
+}
 
 /**
  * Middleware dev qui expose POST /api/embed, en miroir de api/embed.ts
@@ -202,6 +275,29 @@ function devApiAdminAuth(): PluginOption {
   };
 }
 
+/**
+ * Mirror dev pour /api/admin/audits/* — délègue aux handlers Vercel via adapter.
+ */
+function devApiAdminAudits(): PluginOption {
+  return {
+    name: 'dev-api-admin-audits',
+    configureServer(server) {
+      const listAdapted = vercelAdapter(auditsListHandler);
+      server.middlewares.use((req, res, next) => {
+        const url = (req.url ?? '').split('?')[0];
+        if (url === '/api/admin/audits/list') return listAdapted(req, res, next);
+        return next();
+      });
+    },
+  };
+}
+
 export default defineConfig({
-  plugins: [react(), tailwindcss(), devApiEmbed(), devApiAdminAuth()],
+  plugins: [
+    react(),
+    tailwindcss(),
+    devApiEmbed(),
+    devApiAdminAuth(),
+    devApiAdminAudits(),
+  ],
 });

@@ -14,6 +14,7 @@ import { AuditProgress } from './pages/audit/AuditProgress';
 import { AdminLogin } from './pages/admin/Login';
 import { RequireAdmin } from './components/admin/RequireAdmin';
 import { AdminLayout } from './layouts/AdminLayout';
+import { AuditsList } from './pages/admin/AuditsList';
 import { Navigate } from 'react-router-dom';
 
 function App() {
@@ -63,15 +64,7 @@ function App() {
       <Route element={<RequireAdmin />}>
         <Route element={<AdminLayout />}>
           <Route path="/admin" element={<Navigate to="/admin/audits" replace />} />
-          <Route
-            path="/admin/audits"
-            element={
-              <Placeholder
-                title="Liste des audits"
-                description="À venir — Étape 4 de la Session 2C."
-              />
-            }
-          />
+          <Route path="/admin/audits" element={<AuditsList />} />
         </Route>
       </Route>
     </Routes>
