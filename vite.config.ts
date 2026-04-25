@@ -4,6 +4,17 @@ import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 // @ts-expect-error — module JS sans types
 import { embedQuery } from './api/_embedCore.mjs';
+import {
+  checkLoginRateLimit,
+  clearAdminSessionCookie,
+  getAdminEmail,
+  getClientIp,
+  requireAdmin,
+  resetLoginRateLimit,
+  setAdminSessionCookie,
+  signAdminSession,
+  verifyAdminPassword,
+} from './api/_adminAuth';
 
 /**
  * Middleware dev qui expose POST /api/embed, en miroir de api/embed.ts
@@ -70,6 +81,127 @@ function devApiEmbed(): PluginOption {
   };
 }
 
+/**
+ * Middleware dev qui expose les endpoints admin auth, en miroir de
+ * api/admin/auth/{login,logout,check}.ts (qui tournent en Vercel
+ * serverless en prod). Permet de tester l'auth admin avec `npm run dev`
+ * sans avoir à utiliser `vercel dev`.
+ */
+function devApiAdminAuth(): PluginOption {
+  return {
+    name: 'dev-api-admin-auth',
+    configureServer(server) {
+      // Cast req/res en VercelRequest/Response : les types Vercel étendent
+      // les types Node natifs, donc l'usage runtime est compatible.
+      type AnyReq = Parameters<typeof requireAdmin>[0];
+      type AnyRes = Parameters<typeof setAdminSessionCookie>[0];
+
+      async function readJsonBody(req: Connect.IncomingMessage): Promise<unknown> {
+        const chunks: Buffer[] = [];
+        for await (const chunk of req) chunks.push(chunk as Buffer);
+        const raw = Buffer.concat(chunks).toString('utf8');
+        if (!raw) return {};
+        try {
+          return JSON.parse(raw);
+        } catch {
+          return {};
+        }
+      }
+
+      const handler: Connect.NextHandleFunction = async (req, res, next) => {
+        const url = req.url ?? '';
+        if (!url.startsWith('/api/admin/auth/')) return next();
+
+        res.setHeader('Content-Type', 'application/json');
+        const route = url.split('?')[0];
+
+        try {
+          if (route === '/api/admin/auth/check') {
+            if (req.method !== 'GET') {
+              res.statusCode = 405;
+              res.setHeader('Allow', 'GET');
+              return res.end(JSON.stringify({ error: 'Method not allowed' }));
+            }
+            const result = requireAdmin(req as unknown as AnyReq);
+            return res.end(
+              JSON.stringify(
+                result.ok
+                  ? { authenticated: true, email: result.email }
+                  : { authenticated: false },
+              ),
+            );
+          }
+
+          if (route === '/api/admin/auth/logout') {
+            if (req.method !== 'POST') {
+              res.statusCode = 405;
+              res.setHeader('Allow', 'POST');
+              return res.end(JSON.stringify({ error: 'Method not allowed' }));
+            }
+            clearAdminSessionCookie(res as unknown as AnyRes);
+            return res.end(JSON.stringify({ ok: true }));
+          }
+
+          if (route === '/api/admin/auth/login') {
+            if (req.method !== 'POST') {
+              res.statusCode = 405;
+              res.setHeader('Allow', 'POST');
+              return res.end(JSON.stringify({ error: 'Method not allowed' }));
+            }
+            const ip = getClientIp(req as unknown as AnyReq);
+            const limit = checkLoginRateLimit(ip);
+            if (!limit.allowed) {
+              res.statusCode = 429;
+              res.setHeader('Retry-After', String(limit.retryAfterSeconds ?? 60));
+              return res.end(
+                JSON.stringify({ error: 'Trop de tentatives. Réessaie plus tard.' }),
+              );
+            }
+            const body = (await readJsonBody(req)) as { password?: unknown };
+            const password = typeof body.password === 'string' ? body.password : '';
+            if (!password) {
+              res.statusCode = 400;
+              return res.end(JSON.stringify({ error: 'Mot de passe requis.' }));
+            }
+            let valid = false;
+            try {
+              valid = verifyAdminPassword(password);
+            } catch (err) {
+              console.error('[dev /api/admin/auth/login] config error:', err);
+              res.statusCode = 500;
+              return res.end(
+                JSON.stringify({ error: 'Configuration serveur invalide.' }),
+              );
+            }
+            if (!valid) {
+              res.statusCode = 401;
+              return res.end(JSON.stringify({ error: 'Mot de passe incorrect.' }));
+            }
+            resetLoginRateLimit(ip);
+            const email = getAdminEmail();
+            const { token } = signAdminSession(email);
+            setAdminSessionCookie(res as unknown as AnyRes, token);
+            return res.end(JSON.stringify({ ok: true, email }));
+          }
+
+          res.statusCode = 404;
+          return res.end(JSON.stringify({ error: 'Not found' }));
+        } catch (err) {
+          console.error('[dev /api/admin/auth] error:', err);
+          res.statusCode = 500;
+          return res.end(
+            JSON.stringify({
+              error: err instanceof Error ? err.message : 'Erreur interne',
+            }),
+          );
+        }
+      };
+
+      server.middlewares.use(handler);
+    },
+  };
+}
+
 export default defineConfig({
-  plugins: [react(), tailwindcss(), devApiEmbed()],
+  plugins: [react(), tailwindcss(), devApiEmbed(), devApiAdminAuth()],
 });
