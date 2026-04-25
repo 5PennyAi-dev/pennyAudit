@@ -14,6 +14,8 @@ interface InlineNoteEditorProps {
   auditId: string;
   section: NoteSection;
   initialValue: string;
+  /** Notifié à chaque save réussi avec la valeur enregistrée. */
+  onSaved?: (value: string) => void;
   /** Texte du label affiché au-dessus du textarea. */
   label?: string;
   /** Hauteur min/max en lignes (rows). Défaut 3 / 12. */
@@ -34,6 +36,7 @@ export function InlineNoteEditor({
   auditId,
   section,
   initialValue,
+  onSaved,
   label = 'Notes de révision',
   minRows = 3,
   maxRows = 12,
@@ -67,6 +70,7 @@ export function InlineNoteEditor({
         const body = await res.text();
         throw new Error(`HTTP ${res.status} ${body}`);
       }
+      onSaved?.(next);
     },
     { initialValue: initialValue ?? '' },
   );

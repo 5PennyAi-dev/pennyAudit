@@ -58,13 +58,21 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const supabase = getSupabaseAdmin();
 
   if (section === 'global') {
-    const { error } = await supabase
+    const { data: updated, error } = await supabase
       .from('audits')
       .update({ admin_notes_global: content })
-      .eq('id', id);
+      .eq('id', id)
+      .select('id, admin_notes_global');
     if (error) {
       console.error('[notes/save] update global error:', error);
       return res.status(500).json({ error: error.message });
+    }
+    console.log('[notes/save] update global ok, rows:', updated?.length ?? 0, 'id:', id);
+    if (!updated || updated.length === 0) {
+      return res.status(404).json({
+        error: 'Audit introuvable ou aucune ligne modifiée.',
+        debug: { id },
+      });
     }
   } else {
     const column = SECTION_TO_COLUMN[section];

@@ -64,6 +64,16 @@ export function AuditDetail() {
   const [data, setData] = useState<GetResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  // Cache local des notes — évite de perdre la dernière valeur sauvegardée
+  // au remontage de l'éditeur (changement d'onglet).
+  const [notesCache, setNotesCache] = useState<Record<NoteSection, string>>({
+    context: '',
+    opportunities: '',
+    risks: '',
+    stack: '',
+    report: '',
+    global: '',
+  });
 
   useEffect(() => {
     if (!id) return;
@@ -82,7 +92,17 @@ export function AuditDetail() {
         return (await res.json()) as GetResponse;
       })
       .then((payload) => {
-        if (!cancelled) setData(payload);
+        if (!cancelled) {
+          setData(payload);
+          setNotesCache({
+            context: extractReviewerNotes(payload.audit.skill_1_output),
+            opportunities: extractReviewerNotes(payload.audit.skill_2_output),
+            risks: extractReviewerNotes(payload.audit.skill_3_output),
+            stack: extractReviewerNotes(payload.audit.skill_4_output),
+            report: extractReviewerNotes(payload.audit.skill_5_output),
+            global: payload.audit.admin_notes_global ?? '',
+          });
+        }
       })
       .catch((err) => {
         if (!cancelled) setError(err instanceof Error ? err.message : 'Erreur réseau');
@@ -122,6 +142,10 @@ export function AuditDetail() {
   const firstName = getStringField(audit.intake_data, 'first_name');
   const email = getStringField(audit.intake_data, 'email');
 
+  function handleNoteSaved(section: NoteSection, value: string) {
+    setNotesCache((prev) => ({ ...prev, [section]: value }));
+  }
+
   return (
     <div className="flex flex-col gap-6">
       <AuditDetailHeader
@@ -136,7 +160,13 @@ export function AuditDetail() {
 
       <AuditTabs active={activeTab} onChange={setTab} />
 
-      <TabContent tab={activeTab} audit={audit} reviewEvents={review_events} />
+      <TabContent
+        tab={activeTab}
+        audit={audit}
+        reviewEvents={review_events}
+        notesCache={notesCache}
+        onNoteSaved={handleNoteSaved}
+      />
     </div>
   );
 }
@@ -145,65 +175,45 @@ interface TabContentProps {
   tab: AuditTabId;
   audit: AuditRow;
   reviewEvents: ReviewEvent[];
+  notesCache: Record<NoteSection, string>;
+  onNoteSaved: (section: NoteSection, value: string) => void;
 }
 
-function TabContent({ tab, audit, reviewEvents }: TabContentProps) {
+function TabContent({ tab, audit, reviewEvents, notesCache, onNoteSaved }: TabContentProps) {
+  const wrap = (section: NoteSection, view: React.ReactNode) => (
+    <SectionWithEditor
+      auditId={audit.id}
+      section={section}
+      initialValue={notesCache[section]}
+      onSaved={(v) => onNoteSaved(section, v)}
+    >
+      {view}
+    </SectionWithEditor>
+  );
+
   switch (tab) {
     case 'intake':
       // Pas de reviewer_notes pour l'intake — c'est la donnée brute du client
       return <IntakeView data={audit.intake_data} />;
     case 'context':
-      return (
-        <SectionWithEditor
-          auditId={audit.id}
-          section="context"
-          output={audit.skill_1_output}
-        >
-          <ContextView data={audit.skill_1_output} />
-        </SectionWithEditor>
-      );
+      return wrap('context', <ContextView data={audit.skill_1_output} />);
     case 'opportunities':
-      return (
-        <SectionWithEditor
-          auditId={audit.id}
-          section="opportunities"
-          output={audit.skill_2_output}
-        >
-          <OpportunitiesView data={audit.skill_2_output} />
-        </SectionWithEditor>
-      );
+      return wrap('opportunities', <OpportunitiesView data={audit.skill_2_output} />);
     case 'risks':
-      return (
-        <SectionWithEditor
-          auditId={audit.id}
-          section="risks"
-          output={audit.skill_3_output}
-        >
-          <RisksView data={audit.skill_3_output} />
-        </SectionWithEditor>
-      );
+      return wrap('risks', <RisksView data={audit.skill_3_output} />);
     case 'stack':
-      return (
-        <SectionWithEditor
-          auditId={audit.id}
-          section="stack"
-          output={audit.skill_4_output}
-        >
-          <StackView data={audit.skill_4_output} />
-        </SectionWithEditor>
-      );
+      return wrap('stack', <StackView data={audit.skill_4_output} />);
     case 'report':
-      return (
-        <SectionWithEditor
-          auditId={audit.id}
-          section="report"
-          output={audit.skill_5_output}
-        >
-          <ReportView data={audit.skill_5_output} />
-        </SectionWithEditor>
-      );
+      return wrap('report', <ReportView data={audit.skill_5_output} />);
     case 'notes':
-      return <NotesTabContent audit={audit} reviewEvents={reviewEvents} />;
+      return (
+        <NotesTabContent
+          audit={audit}
+          reviewEvents={reviewEvents}
+          globalNote={notesCache.global}
+          onSaved={(v) => onNoteSaved('global', v)}
+        />
+      );
   }
 }
 
@@ -218,22 +228,24 @@ function extractReviewerNotes(output: unknown): string {
 function SectionWithEditor({
   auditId,
   section,
-  output,
+  initialValue,
+  onSaved,
   children,
 }: {
   auditId: string;
   section: NoteSection;
-  output: unknown;
+  initialValue: string;
+  onSaved?: (value: string) => void;
   children: React.ReactNode;
 }) {
-  const initial = extractReviewerNotes(output);
   return (
     <div className="flex flex-col gap-4">
       {children}
       <InlineNoteEditor
         auditId={auditId}
         section={section}
-        initialValue={initial}
+        initialValue={initialValue}
+        onSaved={onSaved}
       />
     </div>
   );
@@ -242,9 +254,13 @@ function SectionWithEditor({
 function NotesTabContent({
   audit,
   reviewEvents,
+  globalNote,
+  onSaved,
 }: {
   audit: AuditRow;
   reviewEvents: ReviewEvent[];
+  globalNote: string;
+  onSaved: (value: string) => void;
 }) {
   return (
     <SectionShell
@@ -255,7 +271,8 @@ function NotesTabContent({
         <InlineNoteEditor
           auditId={audit.id}
           section="global"
-          initialValue={audit.admin_notes_global ?? ''}
+          initialValue={globalNote}
+          onSaved={onSaved}
           label="Note globale de révision"
           minRows={4}
           maxRows={16}
