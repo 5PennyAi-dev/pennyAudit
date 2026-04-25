@@ -7,7 +7,7 @@
 //   3. Évaluation risques et stack (skills 3 + 4 en parallèle)
 //   4. Rédaction du rapport personnalisé (skill 5)
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useState } from 'react';
 
 export type UiStepId = 1 | 2 | 3 | 4;
 export type UiStepState = 'pending' | 'running' | 'done';
@@ -80,22 +80,14 @@ function consumeBuffer(buffer: string): {
   return { messages, rest };
 }
 
+// Verrou module-level : survit au remount StrictMode (dev) qui sinon
+// déclenche deux fois POST /api/audit/run et double le coût en tokens.
+const startedAudits = new Set<string>();
+
 export function useAuditProgress(auditId: string | undefined): UseAuditProgressResult {
   const [status, setStatus] = useState<PipelineStatus>('idle');
   const [steps, setSteps] = useState<UiStep[]>(INITIAL_STEPS);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  // Évite de lancer deux fois le pipeline sur un re-render. Réinitialisé
-  // quand auditId change (cas d'un nouveau audit dans la même session).
-  // PAS d'AbortController : la promesse côté serveur que « fermer l'onglet
-  // ne perd pas la progression » suppose que le pipeline tourne jusqu'au
-  // bout côté backend, indépendamment du client. Abort côté client casserait
-  // ça en dev (StrictMode mount/unmount/remount) sans bénéfice en prod.
-  const startedRef = useRef(false);
-
-  // Reset du verrou si auditId change : permet de relancer pour un nouvel audit.
-  useEffect(() => {
-    startedRef.current = false;
-  }, [auditId]);
 
   const applyEvent = useCallback((event: string) => {
     switch (event) {
@@ -128,8 +120,8 @@ export function useAuditProgress(auditId: string | undefined): UseAuditProgressR
   }, []);
 
   const start = useCallback(() => {
-    if (!auditId || startedRef.current) return;
-    startedRef.current = true;
+    if (!auditId || startedAudits.has(auditId)) return;
+    startedAudits.add(auditId);
     setStatus('starting');
     setErrorMessage(null);
 
