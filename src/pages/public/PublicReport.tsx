@@ -200,7 +200,7 @@ export function PublicReport() {
           }
           html, body {
             background: white !important;
-            color: #0F2744 !important;
+            color: var(--color-navy-600) !important;
             font-size: 11pt;
           }
           main {
@@ -224,7 +224,7 @@ export function PublicReport() {
             page-break-inside: avoid;
           }
           a {
-            color: #0F2744 !important;
+            color: var(--color-navy-600) !important;
             text-decoration: none !important;
           }
         }

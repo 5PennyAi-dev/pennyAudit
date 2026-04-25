@@ -266,11 +266,31 @@ export function AuditsList() {
             </thead>
             <tbody>
               {loading && !data && (
-                <tr>
-                  <td colSpan={6} className="px-4 py-10 text-center text-muted">
-                    Chargement…
-                  </td>
-                </tr>
+                <>
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <tr key={i} className="border-b border-line/50 last:border-b-0 animate-pulse">
+                      <td className="px-4 py-4">
+                        <span className="block h-4 w-20 rounded-full bg-cream" />
+                      </td>
+                      <td className="px-4 py-4">
+                        <span className="block h-3 w-32 rounded bg-cream" />
+                        <span className="block h-3 w-44 rounded bg-cream mt-1.5" />
+                      </td>
+                      <td className="px-4 py-4">
+                        <span className="block h-3 w-24 rounded bg-cream" />
+                      </td>
+                      <td className="px-4 py-4">
+                        <span className="block h-3 w-28 rounded bg-cream" />
+                      </td>
+                      <td className="px-4 py-4">
+                        <span className="block h-3 w-20 rounded bg-cream" />
+                      </td>
+                      <td className="px-4 py-4 text-right">
+                        <span className="inline-block h-3 w-12 rounded bg-cream" />
+                      </td>
+                    </tr>
+                  ))}
+                </>
               )}
               {!loading && data && data.audits.length === 0 && (
                 <tr>

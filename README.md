@@ -44,6 +44,38 @@ Nouvelles en Session 2B :
 - `INTERNAL_HOOK_SECRET` — bearer des appels internes orchestrateur →
   `/api/audit/send-completion-emails` ; fallback sur `CRON_SECRET`
 
+Nouvelles en Session 2C :
+- `ADMIN_PASSWORD` — mot de passe d'accès à `/admin/*` (long, jamais commit)
+- `ADMIN_SESSION_SECRET` — secret HMAC pour signer le cookie admin
+  (32+ caractères, distinct des autres secrets)
+- `ADMIN_SESSION_DURATION_HOURS` — durée du cookie (défaut 12 h)
+- `REPORT_TOKEN_SECRET` — secret HMAC pour les tokens de rapport public
+  (fallback `RESUME_TOKEN_SECRET` puis `SUPABASE_SERVICE_ROLE_KEY`)
+
+## Réviser un audit (Session 2C)
+
+1. Aller sur `/admin/audits` → page de login → saisir `ADMIN_PASSWORD`.
+2. La liste affiche par défaut les audits en `pending_review`. Filtres :
+   multi-statut, recherche par prénom/courriel, tri par colonne, persistance
+   dans le querystring.
+3. Cliquer « Réviser → » sur un audit. La page détail expose 7 onglets :
+   Intake, Contexte, Opportunités, Risques, Stack, Rapport final, Notes &
+   historique. Chaque onglet de section a un éditeur de note inline en bas
+   (auto-save 1.5 s, indicateur d'état).
+4. Trois actions sur le bandeau :
+   - **Approuver et envoyer** → modal de confirmation → génère un JWT
+     (90 jours), update `status='delivered'`, envoie courriel client (ou
+     log console en mode dev sans `RESEND_API_KEY`).
+   - **Demander des modifications** → modal avec raison → `status` →
+     `changes_requested`. Le bouton « Relancer le pipeline » apparaît
+     ensuite : backup automatique des outputs précédents dans un event,
+     puis déclenche `/api/audit/run` en fire-and-forget.
+   - **Rejeter** → modal avec checkbox de confirmation → `status='rejected'`.
+5. La page rapport publique `/rapport/:token` est accessible sans auth via
+   le lien envoyé au client. Bouton « Imprimer » sur la page → PDF
+   navigateur (CSS print A4 dédié, en attendant la génération DOCX en
+   Session 2D).
+
 ## Migrations SQL
 
 Les migrations versionnées vivent dans `sql/migrations/`. À exécuter dans
@@ -66,6 +98,14 @@ Supabase SQL Editor par ordre chronologique.
   avant d'appliquer.
 - `2026-04-23_audit_logs_tokens.sql` — colonnes `model_used`, `input_tokens`,
   `output_tokens` + index composite pour l'endpoint `/api/admin/costs`.
+
+**Session 2C** :
+- `2026-04-25_admin_review_fields.sql` — étend le CHECK statut pour inclure
+  `changes_requested` et `rejected`, ajoute 7 colonnes admin sur `audits`
+  (`admin_notes_global`, `reviewed_at`, `reviewed_by`, `approved_at`,
+  `delivered_at`, `public_report_token`, `public_report_token_expires_at`),
+  crée la table `audit_review_events` avec son index et une policy
+  service-role-only.
 
 ## Cron : relance des formulaires abandonnés
 

@@ -35,13 +35,71 @@ personnalisation du contenu.
 
 ---
 
-## Prochaine session : Session 2C (interface admin de révision)
+## Session 2C — terminée ✅
 
-**Objectif** : permettre à Christian de réviser, annoter et approuver les
-audits en attente avant l'envoi au client.
+**Objectif atteint** : Christian peut réviser, annoter et approuver les
+audits en attente, puis livrer un rapport HTML stylé au client par
+courriel (fallback console en dev).
 
-**Travaux prévus** : liste + détail des audits en attente, approbation,
-courriel de livraison post-approbation, authentification basique.
+**Livrables** :
+
+- Migration SQL `2026-04-25_admin_review_fields.sql` (colonnes admin sur
+  `audits` + table `audit_review_events` + extension du CHECK statut pour
+  `changes_requested` et `rejected`).
+- Auth admin : mot de passe + cookie HMAC signé (`api/_adminAuth.ts`),
+  rate limiting 5/IP/15min, comparaison constant-time.
+- Layout admin : sidebar Navy 600, header Paper, indicateur d'environnement
+  LOCAL/PREVIEW/PROD, drawer responsive mobile.
+- Liste `/admin/audits` : filtres multi-statut, recherche debounced, tri par
+  colonne, pagination 25/page, persistance dans le querystring, skeletons.
+- Détail `/admin/audits/:id` avec 7 onglets (Intake, Contexte, Opportunités,
+  Risques, Stack, Rapport final, Notes & historique). Onglet actif persisté
+  dans l'URL.
+- 7 vues dédiées par section (`src/components/admin/sections/*`) :
+  rendu humain des outputs JSON denses (callouts cream, badges sourcés,
+  scores en bulles, opportunités en cartes numérotées).
+- Édition inline des `reviewer_notes` par section + note globale (hook
+  `useAutoSave` debounce 1500ms, indicateur d'état, cache local pour
+  éviter la perte au changement d'onglet).
+- Actions admin : `request-changes`, `reject` (modals avec confirmation),
+  `rerun` (backup automatique des outputs précédents dans un event,
+  déclenche `/api/audit/run` en fire-and-forget). `/api/audit/run` accepte
+  désormais `changes_requested` comme statut d'entrée.
+- `approve-and-send` : génère un JWT `report-token` (90 jours), update DB,
+  envoie courriel client (fallback console si `RESEND_API_KEY` absent),
+  émet events `approved` + `sent_to_client`.
+- Page rapport publique `/rapport/:token` (hors auth) : composant
+  `PublicReportView` dédié (distinct de l'admin), opportunités avec
+  `adapted_title` au lieu du slug, livrables actionnables développés
+  intégralement par type, print CSS A4 propre.
+- Mirrors Vite pour tous les nouveaux endpoints (login/logout/check, list,
+  detail, notes/save, request-changes, reject, rerun, approve-and-send,
+  public/report, audit/run). `npm run dev` suffit, pas besoin de
+  `vercel dev`.
+- `.env.example` : `ADMIN_PASSWORD`, `ADMIN_SESSION_SECRET`,
+  `ADMIN_SESSION_DURATION_HOURS`, `REPORT_TOKEN_SECRET`.
+
+**Décisions structurantes prises pendant la session** :
+
+- Colonnes `skill_N_output` conservées (pas de renommage en `context_output`
+  etc.). Le mapping vers libellés humains est fait côté UI.
+- Migrations dans `sql/migrations/` (cohérent avec l'existant).
+- Note globale : la « raison de modifs » n'est PAS injectée dans les prompts
+  au rerun. Le rerun est une réexécution non-déterministe ; pour des
+  corrections ciblées, utiliser les `reviewer_notes` ou éditer le JSON
+  directement en SQL. Une amélioration v3 raisonnable serait d'injecter
+  cette raison dans les prompts.
+- `RESEND_API_KEY` volontairement vide en dev → tous les modules de courriel
+  doivent dégrader en `console.log` (audit-delivery, send-completion-emails,
+  send-resume).
+
+**Hors scope reporté** :
+
+- Génération DOCX (Session 2D).
+- Édition manuelle des `*_output` depuis l'UI admin.
+- Injection de la raison `request-changes` dans les prompts au rerun.
+- Préservation des outputs précédents en colonnes pendant un rerun (la
+  préservation se fait actuellement via event `pipeline_rerun_backup`).
 
 ---
 
@@ -106,10 +164,8 @@ positionnement choisi.
 
 ## Sessions suivantes planifiées
 
-- **Session 2C** : Interface admin de révision (liste + détail des audits en
-  attente, approbation, courriel de livraison au client post-approbation,
-  authentification basique).
-- **Session 2D** : Export DOCX/PDF du rapport final.
+- **Session 2D** : Export DOCX/PDF du rapport final (la Session 2C livre
+  déjà une page HTML imprimable propre comme contournement temporaire).
 - **Session 2E** : Stripe / paiement (déplacement du CTA derrière paywall).
 - **Session 3** : Ajout patterns #006 (devis/factures) et #007 (transcription
   réunions) avant élargissement sectoriel.
