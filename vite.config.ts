@@ -16,6 +16,7 @@ import {
   verifyAdminPassword,
 } from './api/_adminAuth';
 import auditsListHandler from './api/admin/audits/list';
+import auditGetHandler from './api/admin/audits/[id]/get';
 
 /**
  * Adapte un handler Vercel (req: VercelRequest, res: VercelResponse) sur
@@ -283,9 +284,21 @@ function devApiAdminAudits(): PluginOption {
     name: 'dev-api-admin-audits',
     configureServer(server) {
       const listAdapted = vercelAdapter(auditsListHandler);
+      // Pour les routes dynamiques [id], on injecte l'id dans la query du handler.
+      const detailGetAdapted = vercelAdapter(auditGetHandler);
+
       server.middlewares.use((req, res, next) => {
-        const url = (req.url ?? '').split('?')[0];
-        if (url === '/api/admin/audits/list') return listAdapted(req, res, next);
+        const path = (req.url ?? '').split('?')[0];
+        if (path === '/api/admin/audits/list') return listAdapted(req, res, next);
+
+        const detailGetMatch = path.match(/^\/api\/admin\/audits\/([0-9a-f-]{36})\/get$/i);
+        if (detailGetMatch) {
+          // Suffixe l'URL avec l'id pour que vercelAdapter le mette dans query.id
+          const sep = req.url?.includes('?') ? '&' : '?';
+          req.url = `${req.url}${sep}id=${encodeURIComponent(detailGetMatch[1])}`;
+          return detailGetAdapted(req, res, next);
+        }
+
         return next();
       });
     },
