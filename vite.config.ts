@@ -21,6 +21,7 @@ import notesSaveHandler from './api/admin/audits/[id]/notes/save';
 import requestChangesHandler from './api/admin/audits/[id]/request-changes';
 import rejectHandler from './api/admin/audits/[id]/reject';
 import rerunHandler from './api/audit/[id]/rerun';
+import auditRunHandler from './api/audit/run';
 
 /**
  * Adapte un handler Vercel (req: VercelRequest, res: VercelResponse) sur
@@ -342,6 +343,25 @@ function devApiAdminAudits(): PluginOption {
   };
 }
 
+/**
+ * Mirror dev pour /api/audit/run (orchestrateur SSE du pipeline 5 skills).
+ * Permet aux endpoints admin (rerun) de déclencher le pipeline en local
+ * sans avoir besoin de `vercel dev`.
+ */
+function devApiAuditRun(): PluginOption {
+  return {
+    name: 'dev-api-audit-run',
+    configureServer(server) {
+      const adapted = vercelAdapter(auditRunHandler);
+      server.middlewares.use((req, res, next) => {
+        const path = (req.url ?? '').split('?')[0];
+        if (path === '/api/audit/run') return adapted(req, res, next);
+        return next();
+      });
+    },
+  };
+}
+
 export default defineConfig({
   plugins: [
     react(),
@@ -349,5 +369,6 @@ export default defineConfig({
     devApiEmbed(),
     devApiAdminAuth(),
     devApiAdminAudits(),
+    devApiAuditRun(),
   ],
 });
