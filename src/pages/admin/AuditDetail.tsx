@@ -9,7 +9,8 @@ import { RisksView } from '../../components/admin/sections/RisksView';
 import { StackView } from '../../components/admin/sections/StackView';
 import { ReportView } from '../../components/admin/sections/ReportView';
 import { ReviewEventsTimeline } from '../../components/admin/sections/ReviewEventsTimeline';
-import { SectionShell, Subsection, EmptyHint } from '../../components/admin/sections/_shared';
+import { SectionShell, Subsection } from '../../components/admin/sections/_shared';
+import { InlineNoteEditor, type NoteSection } from '../../components/admin/InlineNoteEditor';
 
 interface ReviewEvent {
   id: string;
@@ -149,20 +150,93 @@ interface TabContentProps {
 function TabContent({ tab, audit, reviewEvents }: TabContentProps) {
   switch (tab) {
     case 'intake':
+      // Pas de reviewer_notes pour l'intake — c'est la donnée brute du client
       return <IntakeView data={audit.intake_data} />;
     case 'context':
-      return <ContextView data={audit.skill_1_output} />;
+      return (
+        <SectionWithEditor
+          auditId={audit.id}
+          section="context"
+          output={audit.skill_1_output}
+        >
+          <ContextView data={audit.skill_1_output} />
+        </SectionWithEditor>
+      );
     case 'opportunities':
-      return <OpportunitiesView data={audit.skill_2_output} />;
+      return (
+        <SectionWithEditor
+          auditId={audit.id}
+          section="opportunities"
+          output={audit.skill_2_output}
+        >
+          <OpportunitiesView data={audit.skill_2_output} />
+        </SectionWithEditor>
+      );
     case 'risks':
-      return <RisksView data={audit.skill_3_output} />;
+      return (
+        <SectionWithEditor
+          auditId={audit.id}
+          section="risks"
+          output={audit.skill_3_output}
+        >
+          <RisksView data={audit.skill_3_output} />
+        </SectionWithEditor>
+      );
     case 'stack':
-      return <StackView data={audit.skill_4_output} />;
+      return (
+        <SectionWithEditor
+          auditId={audit.id}
+          section="stack"
+          output={audit.skill_4_output}
+        >
+          <StackView data={audit.skill_4_output} />
+        </SectionWithEditor>
+      );
     case 'report':
-      return <ReportView data={audit.skill_5_output} />;
+      return (
+        <SectionWithEditor
+          auditId={audit.id}
+          section="report"
+          output={audit.skill_5_output}
+        >
+          <ReportView data={audit.skill_5_output} />
+        </SectionWithEditor>
+      );
     case 'notes':
       return <NotesTabContent audit={audit} reviewEvents={reviewEvents} />;
   }
+}
+
+function extractReviewerNotes(output: unknown): string {
+  if (output && typeof output === 'object' && !Array.isArray(output)) {
+    const v = (output as Record<string, unknown>).reviewer_notes;
+    if (typeof v === 'string') return v;
+  }
+  return '';
+}
+
+function SectionWithEditor({
+  auditId,
+  section,
+  output,
+  children,
+}: {
+  auditId: string;
+  section: NoteSection;
+  output: unknown;
+  children: React.ReactNode;
+}) {
+  const initial = extractReviewerNotes(output);
+  return (
+    <div className="flex flex-col gap-4">
+      {children}
+      <InlineNoteEditor
+        auditId={auditId}
+        section={section}
+        initialValue={initial}
+      />
+    </div>
+  );
 }
 
 function NotesTabContent({
@@ -175,16 +249,17 @@ function NotesTabContent({
   return (
     <SectionShell
       title="Notes & historique"
-      subtitle="Note globale (édition à l'Étape 7) et journal des décisions"
+      subtitle="Note globale et journal complet des décisions"
     >
       <Subsection title="Note globale">
-        {audit.admin_notes_global ? (
-          <div className="rounded-lg border border-line bg-cream p-4 text-sm text-navy-600 whitespace-pre-wrap">
-            {audit.admin_notes_global}
-          </div>
-        ) : (
-          <EmptyHint>Aucune note pour l'instant. L'édition arrive à l'Étape 7.</EmptyHint>
-        )}
+        <InlineNoteEditor
+          auditId={audit.id}
+          section="global"
+          initialValue={audit.admin_notes_global ?? ''}
+          label="Note globale de révision"
+          minRows={4}
+          maxRows={16}
+        />
       </Subsection>
       <Subsection title={`Historique (${reviewEvents.length})`}>
         <ReviewEventsTimeline events={reviewEvents} />
