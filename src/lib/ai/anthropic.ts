@@ -2,7 +2,7 @@
 // Côté serveur uniquement (lit ANTHROPIC_API_KEY depuis process.env).
 
 import Anthropic from '@anthropic-ai/sdk';
-import { ANTHROPIC_MODEL_DEFAULT } from './config';
+import { ANTHROPIC_MODEL_DEFAULT, type SkillTool } from './config';
 
 export class InvalidJsonResponseError extends Error {
   readonly rawResponse: string;
@@ -20,6 +20,10 @@ export interface CallClaudeJsonParams {
   userInput: string;
   model?: string;
   maxTokens: number;
+  // Outils server-side Anthropic (ex. web_search_20250305 pour Skill 1).
+  // Quand fournis, les content blocks de type non-text (server_tool_use,
+  // web_search_tool_result) sont filtrés à l'extraction du JSON final.
+  tools?: SkillTool[];
   // Note : Claude Opus 4.7+ n'accepte plus temperature/top_p/top_k.
   // Toute valeur non-défaut renvoie 400. On ne les passe donc plus du tout.
   // Voir : https://platform.claude.com/docs/en/about-claude/models/whats-new-claude-4-7
@@ -84,6 +88,9 @@ export async function callClaudeJSON<T = unknown>(
       max_tokens: params.maxTokens,
       system: params.systemPrompt,
       messages: [{ role: 'user', content: params.userInput }],
+      ...(params.tools && params.tools.length > 0
+        ? { tools: params.tools as unknown as Anthropic.Messages.ToolUnion[] }
+        : {}),
     });
 
     const raw = extractTextFromResponse(response.content);
