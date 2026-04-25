@@ -13,6 +13,8 @@ import { IntakeForm, IntakeSubmitted, ResumeFromToken } from './pages/intake';
 import { AuditProgress } from './pages/audit/AuditProgress';
 import { AdminLogin } from './pages/admin/Login';
 import { RequireAdmin } from './components/admin/RequireAdmin';
+import { AdminLayout } from './layouts/AdminLayout';
+import { Navigate } from 'react-router-dom';
 
 function App() {
   return (
@@ -47,18 +49,20 @@ function App() {
           />
         </Route>
 
-        {/* Admin (auth séparée par mot de passe + cookie signé — Session 2C) */}
-        <Route path="/admin/login" element={<AdminLogin />} />
-        <Route element={<RequireAdmin />}>
-          <Route
-            path="/admin"
-            element={
-              <Placeholder
-                title="Admin"
-                description="Redirection vers la liste des audits…"
-              />
-            }
-          />
+        <Route
+          path="*"
+          element={
+            <Placeholder title="404" description="Cette page n'existe pas." />
+          }
+        />
+      </Route>
+
+      {/* Admin (auth séparée par mot de passe + cookie signé — Session 2C) */}
+      {/* Hors PublicLayout : pas de Nav/Footer publics */}
+      <Route path="/admin/login" element={<AdminLogin />} />
+      <Route element={<RequireAdmin />}>
+        <Route element={<AdminLayout />}>
+          <Route path="/admin" element={<Navigate to="/admin/audits" replace />} />
           <Route
             path="/admin/audits"
             element={
@@ -69,13 +73,6 @@ function App() {
             }
           />
         </Route>
-
-        <Route
-          path="*"
-          element={
-            <Placeholder title="404" description="Cette page n'existe pas." />
-          }
-        />
       </Route>
     </Routes>
   );
