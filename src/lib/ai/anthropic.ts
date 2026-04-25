@@ -56,34 +56,69 @@ function getClient(): Anthropic {
 function extractTextFromResponse(
   content: Anthropic.Messages.ContentBlock[],
 ): string {
-  // Quand un tool serveur (ex. web_search) est utilisé, la réponse contient
-  // plusieurs text blocks entrelacés avec les server_tool_use et
-  // web_search_tool_result : un texte de raisonnement avant chaque recherche,
-  // puis le text block final qui porte le JSON. On prend uniquement le
-  // dernier text block. Sans tool, il n'y en a qu'un de toute façon.
-  const textBlocks = content.filter(
-    (block): block is Anthropic.Messages.TextBlock => block.type === 'text',
-  );
-  if (textBlocks.length === 0) return '';
-  return textBlocks[textBlocks.length - 1].text;
+  // Concatène tous les text blocks. Avec un tool serveur (ex. web_search),
+  // Claude entrelace text blocks de raisonnement et server_tool_use. Le
+  // JSON final peut être splitté sur plusieurs text blocks (notamment si
+  // Claude reprend la rédaction après une recherche). On filtre les blocs
+  // server_tool_use / web_search_tool_result et on garde tout le texte.
+  return content
+    .filter(
+      (block): block is Anthropic.Messages.TextBlock => block.type === 'text',
+    )
+    .map((block) => block.text)
+    .join('\n');
 }
 
-// Les skills sont instruits de ne pas utiliser de fences ni de prose
-// autour du JSON, mais avec web_search activé Claude introduit parfois
-// son JSON par une phrase ("Voici le JSON final :"). On tolère :
-// - les fences ```json ... ```
-// - du texte avant/après le JSON, en extrayant le premier `{` jusqu'au
-//   dernier `}` correspondant.
-function stripJsonFences(raw: string): string {
+// Extrait l'objet JSON top-level depuis le texte brut produit par Claude.
+// Avec web_search activé, le texte contient du raisonnement intercalé
+// (introductions, énumérations de sources). On parcourt en gérant les
+// strings (et leurs échappements) pour identifier les frontières d'un
+// objet `{...}` de niveau racine. On retourne le DERNIER objet trouvé,
+// qui est typiquement le JSON final demandé.
+function extractJsonObject(raw: string): string {
   const trimmed = raw.trim();
   const fenceMatch = trimmed.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
-  if (fenceMatch) return fenceMatch[1].trim();
-  const firstBrace = trimmed.indexOf('{');
-  const lastBrace = trimmed.lastIndexOf('}');
-  if (firstBrace !== -1 && lastBrace > firstBrace) {
-    return trimmed.slice(firstBrace, lastBrace + 1);
+  const text = fenceMatch ? fenceMatch[1].trim() : trimmed;
+
+  let inString = false;
+  let escape = false;
+  let depth = 0;
+  let start = -1;
+  let lastStart = -1;
+  let lastEnd = -1;
+
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (escape) {
+      escape = false;
+      continue;
+    }
+    if (inString) {
+      if (c === '\\') escape = true;
+      else if (c === '"') inString = false;
+      continue;
+    }
+    if (c === '"') {
+      inString = true;
+      continue;
+    }
+    if (c === '{') {
+      if (depth === 0) start = i;
+      depth++;
+    } else if (c === '}') {
+      depth--;
+      if (depth === 0 && start !== -1) {
+        lastStart = start;
+        lastEnd = i;
+        start = -1;
+      }
+    }
   }
-  return trimmed;
+
+  if (lastStart !== -1 && lastEnd !== -1) {
+    return text.slice(lastStart, lastEnd + 1);
+  }
+  return text;
 }
 
 export async function callClaudeJSON<T = unknown>(
@@ -113,7 +148,7 @@ export async function callClaudeJSON<T = unknown>(
     lastRaw = raw;
 
     try {
-      const cleaned = stripJsonFences(raw);
+      const cleaned = extractJsonObject(raw);
       const parsed = JSON.parse(cleaned) as T;
       return {
         parsedJson: parsed,
