@@ -169,6 +169,8 @@ export function AuditDetail() {
             auditId={audit.id}
             status={audit.status}
             publicReportToken={audit.public_report_token}
+            clientFirstName={firstName}
+            clientEmail={email}
             onChanged={refetch}
           />
         }

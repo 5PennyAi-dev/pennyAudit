@@ -16,6 +16,7 @@ import { RequireAdmin } from './components/admin/RequireAdmin';
 import { AdminLayout } from './layouts/AdminLayout';
 import { AuditsList } from './pages/admin/AuditsList';
 import { AuditDetail } from './pages/admin/AuditDetail';
+import { PublicReport } from './pages/public/PublicReport';
 import { Navigate } from 'react-router-dom';
 
 function App() {
@@ -58,6 +59,9 @@ function App() {
           }
         />
       </Route>
+
+      {/* Rapport public — accès via JWT, pas d'auth requise */}
+      <Route path="/rapport/:token" element={<PublicReport />} />
 
       {/* Admin (auth séparée par mot de passe + cookie signé — Session 2C) */}
       {/* Hors PublicLayout : pas de Nav/Footer publics */}

@@ -22,6 +22,8 @@ import requestChangesHandler from './api/admin/audits/[id]/request-changes';
 import rejectHandler from './api/admin/audits/[id]/reject';
 import rerunHandler from './api/audit/[id]/rerun';
 import auditRunHandler from './api/audit/run';
+import approveAndSendHandler from './api/admin/audits/[id]/approve-and-send';
+import publicReportHandler from './api/public/report/[token]';
 
 /**
  * Adapte un handler Vercel (req: VercelRequest, res: VercelResponse) sur
@@ -295,6 +297,7 @@ function devApiAdminAudits(): PluginOption {
       const requestChangesAdapted = vercelAdapter(requestChangesHandler);
       const rejectAdapted = vercelAdapter(rejectHandler);
       const rerunAdapted = vercelAdapter(rerunHandler);
+      const approveAndSendAdapted = vercelAdapter(approveAndSendHandler);
 
       function injectId(req: any, id: string) {
         const sep = req.url?.includes('?') ? '&' : '?';
@@ -337,6 +340,37 @@ function devApiAdminAudits(): PluginOption {
           return rerunAdapted(req, res, next);
         }
 
+        const approveSendMatch = path.match(
+          /^\/api\/admin\/audits\/([0-9a-f-]{36})\/approve-and-send$/i,
+        );
+        if (approveSendMatch) {
+          injectId(req, approveSendMatch[1]);
+          return approveAndSendAdapted(req, res, next);
+        }
+
+        return next();
+      });
+    },
+  };
+}
+
+/**
+ * Mirror dev pour /api/public/report/<token>.
+ */
+function devApiPublicReport(): PluginOption {
+  return {
+    name: 'dev-api-public-report',
+    configureServer(server) {
+      const adapted = vercelAdapter(publicReportHandler);
+      server.middlewares.use((req, res, next) => {
+        const path = (req.url ?? '').split('?')[0];
+        const match = path.match(/^\/api\/public\/report\/(.+)$/i);
+        if (match) {
+          // Le token peut contenir des caractères url-safe — on le passe en query param
+          const sep = req.url?.includes('?') ? '&' : '?';
+          req.url = `${req.url}${sep}token=${encodeURIComponent(match[1])}`;
+          return adapted(req, res, next);
+        }
         return next();
       });
     },
@@ -370,5 +404,6 @@ export default defineConfig({
     devApiAdminAuth(),
     devApiAdminAudits(),
     devApiAuditRun(),
+    devApiPublicReport(),
   ],
 });
