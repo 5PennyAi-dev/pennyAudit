@@ -68,12 +68,22 @@ function extractTextFromResponse(
   return textBlocks[textBlocks.length - 1].text;
 }
 
-// Les skills sont instruits de ne pas utiliser de fences, mais on tolère
-// ```json ... ``` au cas où.
+// Les skills sont instruits de ne pas utiliser de fences ni de prose
+// autour du JSON, mais avec web_search activé Claude introduit parfois
+// son JSON par une phrase ("Voici le JSON final :"). On tolère :
+// - les fences ```json ... ```
+// - du texte avant/après le JSON, en extrayant le premier `{` jusqu'au
+//   dernier `}` correspondant.
 function stripJsonFences(raw: string): string {
   const trimmed = raw.trim();
-  const fenceMatch = trimmed.match(/^```(?:json)?\s*([\s\S]*?)\s*```$/);
-  return fenceMatch ? fenceMatch[1].trim() : trimmed;
+  const fenceMatch = trimmed.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
+  if (fenceMatch) return fenceMatch[1].trim();
+  const firstBrace = trimmed.indexOf('{');
+  const lastBrace = trimmed.lastIndexOf('}');
+  if (firstBrace !== -1 && lastBrace > firstBrace) {
+    return trimmed.slice(firstBrace, lastBrace + 1);
+  }
+  return trimmed;
 }
 
 export async function callClaudeJSON<T = unknown>(
