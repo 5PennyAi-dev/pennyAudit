@@ -42,7 +42,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const { data: audit, error } = await supabase
     .from('audits')
     .select(
-      'id, status, intake_data, skill_5_output, public_report_token, public_report_token_expires_at, delivered_at',
+      'id, status, intake_data, skill_2_output, skill_5_output, public_report_token, public_report_token_expires_at, delivered_at',
     )
     .eq('id', payload.auditId)
     .maybeSingle();
@@ -65,6 +65,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const firstName = typeof intake.first_name === 'string' ? intake.first_name : null;
   const businessName = typeof intake.business_name === 'string' ? intake.business_name : null;
 
+  // Mapping pattern_id → adapted_title pour rendre les opportunités lisibles
+  const opportunityTitles: Record<string, string> = {};
+  const skill2 = audit.skill_2_output as Record<string, unknown> | null;
+  const opps = Array.isArray(skill2?.selected_opportunities)
+    ? (skill2!.selected_opportunities as Array<Record<string, unknown>>)
+    : [];
+  for (const o of opps) {
+    const pid = typeof o.pattern_id === 'string' ? o.pattern_id : null;
+    const title = typeof o.adapted_title === 'string' ? o.adapted_title : null;
+    if (pid && title) opportunityTitles[pid] = title;
+  }
+
   // Cache léger côté client (révision périodique)
   res.setHeader('Cache-Control', 'private, max-age=60');
 
@@ -75,6 +87,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       business_name: businessName,
       delivered_at: audit.delivered_at,
       report: audit.skill_5_output,
+      opportunity_titles: opportunityTitles,
     },
   });
 }
