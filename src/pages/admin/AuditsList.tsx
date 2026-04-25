@@ -154,7 +154,11 @@ export function AuditsList() {
   );
 
   const resetFilters = useCallback(() => {
-    setParams(new URLSearchParams(), { replace: true });
+    // « Tout afficher » : status= explicite (vide) pour désactiver le défaut
+    // pending_review et montrer tous les statuts.
+    const next = new URLSearchParams();
+    next.set('status', '');
+    setParams(next, { replace: true });
   }, [setParams]);
 
   const setSort = useCallback(
