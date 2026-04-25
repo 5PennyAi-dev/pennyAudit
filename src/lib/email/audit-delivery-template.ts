@@ -20,12 +20,13 @@ export function buildAuditDeliveryEmail(
 Votre rapport d'audit IA est maintenant prêt. Je l'ai personnellement
 révisé pour m'assurer qu'il est concret et adapté à votre situation.
 
-Consultez-le ici :
+Vous trouverez votre rapport en pièce jointe (.docx) et également
+accessible en ligne ici :
 ${params.publicReportUrl}
 
-Le lien restera valide pendant 90 jours. Vous pouvez aussi imprimer le
-rapport directement depuis votre navigateur (bouton « Imprimer » au bas
-de la page) si vous voulez en garder une copie PDF.
+Le lien web restera valide pendant 90 jours. Vous pouvez aussi imprimer
+le rapport directement depuis votre navigateur (bouton « Imprimer » au
+bas de la page) si vous voulez en garder une copie PDF.
 
 Si vous avez des questions ou voulez aller plus loin sur l'une des
 opportunités identifiées, répondez simplement à ce courriel.
@@ -47,13 +48,16 @@ Fondateur, 5PennyAi`;
           <p style="font-size:15px;line-height:1.65;color:#0F2744;margin:0 0 16px;">
             Votre rapport d'audit IA est maintenant prêt. Je l'ai personnellement révisé pour m'assurer qu'il est <strong>concret et adapté à votre situation</strong>.
           </p>
+          <p style="font-size:15px;line-height:1.65;color:#0F2744;margin:0 0 16px;">
+            Vous trouverez votre rapport <strong>en pièce jointe (.docx)</strong> et également accessible en ligne :
+          </p>
           <table role="presentation" cellpadding="0" cellspacing="0" style="margin:24px 0;">
             <tr><td>
-              <a href="${params.publicReportUrl}" style="display:inline-block;background:#F57D20;color:#ffffff;text-decoration:none;font-weight:600;font-size:15px;padding:14px 24px;border-radius:8px;">Consulter mon rapport →</a>
+              <a href="${params.publicReportUrl}" style="display:inline-block;background:#F57D20;color:#ffffff;text-decoration:none;font-weight:600;font-size:15px;padding:14px 24px;border-radius:8px;">Consulter mon rapport en ligne →</a>
             </td></tr>
           </table>
           <p style="font-size:14px;line-height:1.65;color:#5B6B7E;margin:0 0 16px;">
-            Le lien restera valide pendant <strong>90 jours</strong>. Vous pouvez aussi imprimer le rapport directement depuis votre navigateur (bouton « Imprimer » au bas de la page).
+            Le lien web restera valide pendant <strong>90 jours</strong>. Vous pouvez aussi imprimer le rapport directement depuis votre navigateur (bouton « Imprimer » au bas de la page).
           </p>
           <p style="font-size:14px;line-height:1.65;color:#5B6B7E;margin:0 0 24px;">
             Si vous avez des questions ou voulez aller plus loin sur l'une des opportunités identifiées, répondez simplement à ce courriel.

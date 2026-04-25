@@ -15,6 +15,15 @@ import { getSupabaseAdmin } from '../../../_supabaseAdmin';
 import { requireAdmin } from '../../../_adminAuth';
 import { signReportToken } from '../../../_reportToken';
 import { buildAuditDeliveryEmail } from '../../../../src/lib/email/audit-delivery-template';
+import {
+  buildAuditDocx,
+  clientFileSlug,
+  type AuditForDocx,
+} from '../../../../src/lib/report/docx-builder';
+import {
+  buildDocxStoragePath,
+  uploadDocx,
+} from '../../../_storageAuditReports';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') {
@@ -33,7 +42,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   const { data: audit, error: fetchErr } = await supabase
     .from('audits')
-    .select('id, status, intake_data')
+    .select(
+      'id, status, intake_data, skill_1_output, skill_2_output, skill_5_output, admin_notes_global, reviewed_at, delivered_at, created_at',
+    )
     .eq('id', id)
     .maybeSingle();
   if (fetchErr || !audit) {
@@ -42,6 +53,43 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (audit.status !== 'pending_review') {
     return res.status(409).json({
       error: `Statut incompatible : ${audit.status}. Attendu : pending_review.`,
+    });
+  }
+  if (!audit.skill_5_output) {
+    return res.status(409).json({
+      error: "Audit sans skill_5_output — pipeline non terminé, impossible de livrer.",
+    });
+  }
+
+  // ─────────── Génération du DOCX AVANT changement de statut ───────────
+  // Si la génération ou l'upload échoue, on n'envoie ni courriel ni
+  // changement d'état : l'audit reste en pending_review et l'admin peut
+  // réessayer après diagnostic.
+  const auditForDocx = audit as unknown as AuditForDocx;
+  let docxBuffer: Buffer;
+  let docxStoragePath: string;
+  try {
+    docxBuffer = await buildAuditDocx(auditForDocx);
+  } catch (err) {
+    console.error('[approve-and-send] docx build error:', err);
+    return res.status(500).json({
+      error:
+        "La génération du DOCX a échoué. Vérifie les logs serveur. " +
+        "Aucun courriel n'a été envoyé.",
+      details: err instanceof Error ? err.message : String(err),
+    });
+  }
+
+  try {
+    docxStoragePath = buildDocxStoragePath(id, clientFileSlug(auditForDocx));
+    await uploadDocx(docxStoragePath, docxBuffer);
+  } catch (err) {
+    console.error('[approve-and-send] docx upload error:', err);
+    return res.status(500).json({
+      error:
+        "L'upload du DOCX dans Storage a échoué. Vérifie les logs serveur. " +
+        "Aucun courriel n'a été envoyé.",
+      details: err instanceof Error ? err.message : String(err),
     });
   }
 
@@ -79,6 +127,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       reviewed_by: auth.email,
       public_report_token: tokenInfo.token,
       public_report_token_expires_at: tokenInfo.expiresAt.toISOString(),
+      docx_storage_path: docxStoragePath,
+      docx_generated_at: now.toISOString(),
     })
     .eq('id', id);
   if (updErr) {
@@ -90,6 +140,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const insertEvents = supabase.from('audit_review_events').insert([
     {
       audit_id: id,
+      event_type: 'docx_generated',
+      actor_email: auth.email,
+      payload: { storage_path: docxStoragePath, size_bytes: docxBuffer.length },
+    },
+    {
+      audit_id: id,
       event_type: 'approved',
       actor_email: auth.email,
       payload: null,
@@ -98,7 +154,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       audit_id: id,
       event_type: 'sent_to_client',
       actor_email: auth.email,
-      payload: { client_email: clientEmail, token_expires_at: tokenInfo.expiresAt.toISOString() },
+      payload: {
+        client_email: clientEmail,
+        token_expires_at: tokenInfo.expiresAt.toISOString(),
+        docx_path: docxStoragePath,
+        docx_size_bytes: docxBuffer.length,
+      },
     },
   ]);
   void insertEvents.then(({ error }) => {
@@ -109,11 +170,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   let emailSent = false;
   let emailError: string | null = null;
   const email = buildAuditDeliveryEmail({ firstName, publicReportUrl: publicUrl });
+  const attachmentFilename = `audit-${clientFileSlug(auditForDocx)}.docx`;
+  const attachmentSizeKb = (docxBuffer.length / 1024).toFixed(1);
 
   if (!clientEmail) {
     emailError = 'Adresse courriel client absente dans intake_data.';
     console.warn('[approve-and-send] no client email — only logging:', email.subject);
     console.log('[approve-and-send] public_url:', publicUrl);
+    console.log(`[approve-and-send] DOCX joint (${attachmentFilename}, ${attachmentSizeKb} Ko) stocké dans Storage : ${docxStoragePath}`);
   } else {
     const resendKey = process.env.RESEND_API_KEY;
     const fromAddress =
@@ -126,6 +190,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       console.log('[approve-and-send] to=', clientEmail);
       console.log('[approve-and-send] subject=', email.subject);
       console.log('[approve-and-send] public_url=', publicUrl);
+      console.log(`[approve-and-send] pièce jointe (mode dev) : ${attachmentFilename} (${attachmentSizeKb} Ko)`);
+      console.log(`[approve-and-send] DOCX stocké dans Storage : ${docxStoragePath}`);
       console.log(email.text);
     } else {
       try {
@@ -141,6 +207,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             subject: email.subject,
             html: email.html,
             text: email.text,
+            attachments: [
+              {
+                filename: attachmentFilename,
+                content: docxBuffer.toString('base64'),
+              },
+            ],
           }),
         });
         if (resp.ok) {
@@ -162,5 +234,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     public_url: publicUrl,
     email_sent: emailSent,
     email_error: emailError,
+    docx_storage_path: docxStoragePath,
+    docx_size_bytes: docxBuffer.length,
   });
 }
