@@ -38,8 +38,8 @@ export function Screen4Challenges() {
           ref={firstRef}
           id="time_consuming_tasks"
           label="Quelles tâches prennent le plus de temps à vous ou à votre équipe ?"
-          placeholder="Exemple : Je passe environ 2 heures par jour à répondre aux mêmes questions de clients au téléphone et par courriel, surtout pour les prises de rendez-vous et les questions sur les tarifs."
-          helperText="⚡ Astuce : plus votre réponse est précise et détaillée (exemples concrets, temps passé, fréquence), plus votre audit sera pertinent."
+          placeholder="Exemple : Je passe environ 2 heures par jour à répondre aux mêmes questions de clients au téléphone et par courriel, surtout pour les prises de rendez-vous et les questions sur les tarifs. Je reçois à peu près 30-40 appels par semaine, et je dirais qu'une bonne moitié sont des demandes d'info répétitives qu'un bon système pourrait traiter."
+          helperText="⚡ Astuce : les chiffres rendent votre audit beaucoup plus concret. Essayez d'inclure des ordres de grandeur — heures par semaine passées sur la tâche, nombre de clients, dossiers ou transactions traités par mois, montants moyens si pertinent. Des estimations « à la louche » suffisent (ex. « environ 5 h/semaine », « entre 20 et 30 dossiers par mois »)."
           required
           minLength={50}
           maxLength={2000}
