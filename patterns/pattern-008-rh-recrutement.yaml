@@ -1,0 +1,1526 @@
+# ═══════════════════════════════════════════════════════════════
+# Pattern 008 — Automatisation RH et recrutement par IA
+# Format hybride : structure machine + prose humaine
+# Trois voies d'implémentation (self-serve, accompagné, custom)
+# ═══════════════════════════════════════════════════════════════
+
+id: ai-hr-recruitment-automation
+title_fr: Automatisation RH et recrutement par IA (tri CV, présélection, entrevues)
+category: ressources-humaines-recrutement
+version: 1.0
+last_updated: 2026-04-26
+language: fr
+
+# ───── RÉSUMÉS (prose narrative pour livrable client) ─────
+
+summary_short_fr: >
+  Utilisation d'un SIRH québécois (Folks RH, Agendrix) combiné à des
+  outils IA pour automatiser la rédaction d'offres d'emploi, le tri
+  des CV, la présélection conversationnelle, la programmation
+  d'entrevues et l'onboarding, le tout en respectant la Loi 25 et les
+  obligations anti-discrimination.
+
+summary_long_fr: |
+  L'automatisation RH par IA couvre cinq fonctions principales :
+  (1) rédiger des offres d'emploi inclusives et optimisées en quelques
+  minutes, (2) trier et classer les CV selon les exigences réelles du
+  poste, (3) présélectionner les candidats via un chatbot conversationnel
+  (questions clés, disponibilités, salaire attendu), (4) programmer les
+  entrevues automatiquement et les transcrire/résumer, (5) automatiser
+  l'onboarding administratif. Selon SHRM 2025, 51 % des organisations
+  utilisent déjà l'IA en recrutement et 89 % des professionnels RH
+  utilisant l'IA rapportent des gains de temps. Les top usages sont la
+  rédaction d'offres (66 %), le screening de CV (44 %), et l'automatisation
+  des recherches (32 %). Au Canada, deux nouvelles obligations légales
+  rendent ce pattern à la fois attrayant et délicat : (a) la Loi 25 du
+  Québec, en vigueur depuis 2022, exige depuis sa section 12.1 que
+  toute décision « exclusivement automatisée » soit divulguée au candidat,
+  avec droit de révision humaine, (b) l'Ontario Bill 149 (Working for
+  Workers Four Act) exige depuis le 1er janvier 2026 que les employeurs
+  de 25+ employés divulguent l'usage d'IA dans les offres d'emploi
+  publiques. À cela s'ajoute la responsabilité anti-discrimination
+  (17 critères protégés au Canada) qui ne s'efface pas parce que l'IA
+  a pris la décision. Le rôle de 5PennyAi : aider à automatiser sans
+  faire dérailler la conformité.
+
+# ───── COMPLÉMENTARITÉ AVEC AUTRES PATTERNS ─────
+
+complementary_patterns:
+  - pattern_id: ai-meeting-transcription-summary
+    relation_fr: |
+      Les entrevues d'embauche sont des réunions à enjeu fort. Le
+      pattern 007 (Noota notamment, spécialisé recrutement) gère la
+      transcription, l'évaluation structurée, la comparaison de
+      candidats. Les deux patterns s'enchaînent naturellement dans
+      le processus de recrutement.
+
+  - pattern_id: ai-appointment-scheduling
+    relation_fr: |
+      La programmation d'entrevues est un sous-cas de prise de RDV.
+      Cal.com, Calendly et GoodTime peuvent gérer la coordination de
+      panels d'entrevue complexes (multiple intervieweurs, fuseaux
+      horaires, salles). Pattern 003 fournit la couche scheduling.
+
+  - pattern_id: ai-text-chatbot-multichannel
+    relation_fr: |
+      Les chatbots de présélection (Paradox Olivia, Humanly) sont une
+      spécialisation des chatbots multi-canal. Pattern 002 fournit
+      la base technique; ce pattern ajoute la couche métier RH.
+
+# ───── CIBLAGE (tags structurés pour recherche vectorielle) ─────
+
+target_industries:
+  - restauration
+  - hotellerie
+  - traiteur
+  - commerce-detail
+  - epicerie
+  - centre-appels
+  - construction
+  - renovation
+  - manufacturier-petit
+  - manufacturier-moyen
+  - distribution-b2b
+  - logistique
+  - menage-residentiel
+  - menage-commercial
+  - paysagement
+  - entretien-paysager
+  - sante-clinique
+  - pharmacie
+  - garderie-cpe
+  - residence-aines
+  - bureau-tete-pme
+  - cabinet-comptable
+  - cabinet-rh
+  - agence-recrutement
+  - agence-placement
+  - agence-marketing
+  - agence-evenementielle
+  - dirigeant-pme
+  - chef-rh
+  - obnl
+  - cooperative
+
+target_business_sizes:
+  - micro-2-9
+  - petite-10-49
+  - moyenne-50-249
+
+tech_comfort_required: faible-a-moyen
+requires_existing_hr_tools: false
+high_priority_segments:
+  - restaurants-et-retail-avec-roulement-eleve-30-plus-postes-par-an
+  - manufacturiers-et-construction-avec-recrutement-saisonnier
+  - cabinets-de-recrutement-et-agences-de-placement
+  - pme-25-49-employes-soumises-au-bill-149-ontario-si-pancanadiennes
+  - secteurs-en-penurie-main-doeuvre-cuisine-soins-construction
+
+# ───── PROBLÈME (voix du client pour narratif) ─────
+
+pain_point_fr: |
+  Je gère trois restaurants. Tous les mois, je reçois des dizaines de
+  CV pour des postes de cuisinier ou de serveur, et la moitié des
+  candidats ne se présentent même pas à l'entrevue. Je passe mes
+  soirées à lire des CV, à appeler des gens qui ne rappellent pas, à
+  reprogrammer des entrevues qui sautent. Pendant ce temps, mes équipes
+  manquent de bras pour le service du soir. Je sais qu'il y a des outils
+  d'IA pour aider, mais j'ai entendu parler de cas d'IA qui « rejette
+  des candidats à cause d'erreurs » et de nouvelles lois au Québec et
+  en Ontario qui obligent à divulguer quand on utilise l'IA. Je ne
+  veux ni perdre du temps, ni me retrouver devant la Commission des
+  droits de la personne.
+
+problem_facts:
+  - claim_fr: "L'adoption de l'IA en recrutement a augmenté de 428 % depuis 2023 selon iHire 2025"
+    source_id: sitepoint-ai-sourcing
+  - claim_fr: "51 % des organisations utilisent l'IA pour le recrutement et 89 % des pros RH rapportent des gains de temps selon SHRM 2025"
+    source_id: pin-ai-recruitment-comparison
+  - claim_fr: "Le coût moyen d'embauche aux États-Unis est de 4 700 $ selon SHRM 2025 Recruiting Benchmarking Report"
+    source_id: pin-ai-recruitment-comparison
+  - claim_fr: "Les top usages IA en recrutement : rédaction d'offres (66 %), screening de CV (44 %), automation des recherches (32 %) selon SHRM 2025"
+    source_id: pin-ai-recruitment-comparison
+  - claim_fr: "Le temps moyen pour pourvoir un poste est d'environ 6 semaines, certains outils d'IA réduisent ce délai à 2 semaines selon SitePoint"
+    source_id: sitepoint-ai-sourcing
+  - claim_fr: "L'Ontario Bill 149, en vigueur depuis le 1er janvier 2026, oblige les employeurs de 25+ employés à divulguer l'usage de l'IA dans les offres d'emploi publiques"
+    source_id: osler-employment-considerations
+  - claim_fr: "La Loi 25 du Québec, section 12.1, exige depuis 2022 d'informer toute personne sujette à une décision exclusivement automatisée et de lui offrir un mécanisme de révision humaine"
+    source_id: ogletree-ai-job-postings
+
+# ───── SOLUTION (prose + structure) ─────
+
+solution_summary_fr: |
+  On déploie une combinaison ciblée selon le profil. Pour une PME
+  québécoise standard avec recrutement régulier, le coeur est un SIRH
+  québécois (Folks RH ou Agendrix selon le profil) qui inclut un ATS
+  natif et gère nativement la conformité Loi 25 / CNESST / CCQ. On
+  ajoute une couche IA légère : assistant Claude ou ChatGPT pour
+  rédiger les offres d'emploi inclusives, fonctions IA natives du SIRH
+  pour le tri préliminaire des CV, et possiblement un chatbot de
+  présélection (Paradox, Humanly) pour les secteurs à haut volume
+  (resto, retail, manufacturier). Pour les entrevues, Noota (français,
+  spécialisations recrutement) transcrit, génère des rapports candidats
+  structurés et alimente l'ATS. La pièce critique souvent oubliée :
+  un protocole de gouvernance qui (1) divulgue l'usage IA dans les
+  offres, (2) maintient un humain dans la boucle pour toute décision
+  finale, (3) audit périodique de biais. Cette gouvernance est aussi
+  importante que les outils.
+
+deployment_modes:
+  - id: sirh-quebecois-tout-en-un
+    name_fr: SIRH québécois tout-en-un avec ATS intégré
+    description_fr: |
+      Folks RH, Agendrix, Collage RH, Humi. Centralise dossiers
+      employés, ATS, paie, congés, performance. Conformité Loi 25,
+      CNESST, normes du travail provinciales. Bilingue français-anglais.
+      Approche recommandée par défaut pour PME québécoise.
+
+  - id: ats-international-ia-native
+    name_fr: ATS international avec IA native
+    description_fr: |
+      Workable, Manatal, Zoho Recruit, Greenhouse, Lever. ATS
+      sophistiqués avec parsing de CV, matching de candidats, analytics.
+      Plus profond fonctionnellement que les SIRH québécois sur la
+      partie recrutement, mais souvent en anglais d'abord et hébergement
+      USA.
+
+  - id: chatbot-screening-conversationnel
+    name_fr: Chatbot de présélection conversationnel
+    description_fr: |
+      Paradox (Olivia), Humanly. Discute avec les candidats par SMS,
+      chat ou WhatsApp pour qualifier, programmer entrevues, répondre
+      aux questions. Idéal pour secteurs à haut volume (resto, retail,
+      hôtellerie, centres d'appels).
+
+  - id: video-interview-asynchrone
+    name_fr: Entrevue vidéo asynchrone IA
+    description_fr: |
+      HireVue, Hirevire, Interviewer.ai. Le candidat enregistre des
+      réponses à des questions standardisées; l'IA analyse et score.
+      Réduit le temps de premières entrevues. Attention : usage à risque
+      de biais et de contestation; à utiliser avec garde-fous.
+
+  - id: ia-generative-redaction
+    name_fr: IA générative pour rédaction RH
+    description_fr: |
+      Claude, ChatGPT, Textio. Rédiger des offres d'emploi inclusives,
+      anti-bias dans le langage, des courriels de réponse aux candidats,
+      des trames d'entrevue. Couche complémentaire à n'importe quel
+      ATS.
+
+  - id: sourcing-passif
+    name_fr: Sourcing IA de candidats passifs
+    description_fr: |
+      hireEZ, Gem, LinkedIn Recruiter. Cherche dans les bases de
+      données publiques et LinkedIn pour identifier des candidats qui
+      ne postulent pas. Outils plus B2B / pour cabinets de recrutement
+      ou postes hautement qualifiés.
+
+  - id: custom-agent
+    name_fr: Agent IA custom RH
+    description_fr: |
+      Pipeline custom (Claude API + Make/n8n + ATS) pour cas spécifiques :
+      logique métier propre à l'entreprise (ex: matching technicien
+      construction selon RBQ, expertise spécifique), intégration à un
+      ERP ou système de paie maison, ou exigence de conformité Loi 25
+      stricte avec hébergement Canada.
+
+typical_capabilities:
+  - Rédaction d'offres d'emploi en quelques minutes (avec IA générative)
+  - Optimisation anti-bias du langage des offres (Textio)
+  - Distribution automatique sur multiples sites d'emploi
+  - Parsing de CV et extraction structurée des données
+  - Matching candidats vs exigences du poste avec scoring
+  - Présélection conversationnelle (chatbot 24/7)
+  - Programmation d'entrevues (intégration calendriers)
+  - Transcription et résumé d'entrevues
+  - Évaluations de compétences automatisées
+  - Génération de rapports candidats comparatifs
+  - Onboarding automatisé (formulaires, signatures, accès)
+  - Suivi de performance et engagement employés
+  - Gestion des congés et absences
+  - Conformité TPS/TVQ/CNESST/CCQ (outils québécois)
+  - Disclosure automatique d'usage de l'IA (conformité Bill 149 + Loi 25)
+
+# ───── VOIES D'IMPLÉMENTATION (core du pattern) ─────
+
+implementation_paths:
+
+  - id: self-serve
+    name_fr: Voie A — Self-serve (autonomie)
+    ideal_profile_fr: |
+      PME 5-25 employés, recrutement modéré (3-15 embauches/an), pas de
+      département RH dédié (souvent le propriétaire ou l'adjoint qui
+      s'en occupe). Budget serré. Souvent : restaurants indépendants,
+      petits commerces de détail, agences créatives, cabinets
+      professionnels en croissance. Veut moderniser sans projet lourd.
+    description_fr: |
+      Le client active un SIRH abordable (Folks RH plan d'entrée ~5 $/
+      employé/mois ou Agendrix ~5 $/utilisateur/mois) ou un ATS
+      international léger (Manatal 15 $/utilisateur/mois, Zoho Recruit
+      25 $). Pour la rédaction d'offres et de courriels candidats, il
+      utilise Claude ou ChatGPT (gratuit ou 20 $/mois). 5PennyAi fournit
+      un audit qui recommande les bons outils, les modèles d'offres
+      d'emploi conformes Bill 149 (incluant la mention IA), un guide
+      des prompts utiles (rédiger une offre, comparer 5 CV, préparer
+      une trame d'entrevue), et un protocole de gouvernance simple
+      (qui revoit les décisions IA, comment documenter).
+    setup_duration: 4-10-heures
+    client_time_required_hours:
+      min: 4
+      max: 12
+    total_cost_cad:
+      setup_range:
+        min: 0
+        max: 400
+      monthly_min: 30
+      monthly_max: 200
+      first_year: "360 à 2 800 $"
+    recommended_tools_priority:
+      - tool_id: folks-rh
+        reason_fr: SIRH québécois, ATS inclus, conformité native, à partir de 4-7 $/employé/mois
+      - tool_id: agendrix
+        reason_fr: Si équipe à horaires variables (resto, retail, services)
+      - tool_id: manatal
+        reason_fr: Si focus pur ATS international, 15 $/utilisateur/mois
+      - tool_id: claude-ai
+        reason_fr: Pour rédiger offres inclusives, comparer CV, préparer trames d'entrevue
+      - tool_id: zoho-recruit
+        reason_fr: Si déjà dans l'écosystème Zoho
+    fivepennyai_service_fr: |
+      Audit payant (199-399 $) : analyse du profil de recrutement,
+      choix d'outil, configuration de base, modèles d'offres conformes
+      Bill 149, guide de prompts IA personnalisés, protocole de
+      gouvernance simple (1-2 pages), formation 1-2 h.
+    fivepennyai_revenue_potential: faible-a-moyen-par-client
+
+  - id: accompanied
+    name_fr: Voie B — Accompagnement hybride (setup + formation + gouvernance)
+    ideal_profile_fr: |
+      PME 25-100 employés, recrutement régulier (15-50 embauches/an),
+      souvent département RH d'une à trois personnes débordées. Volume
+      qui justifie un chatbot de présélection ou des automatisations
+      profondes. Souvent : restaurants à plusieurs locations, retail
+      multi-magasins, manufacturiers, centres d'appels, agences de
+      service, cabinets en croissance.
+    description_fr: |
+      5PennyAi configure une stack complète : SIRH québécois (Folks RH
+      Pro ou Agendrix Plus), ATS international si besoin de profondeur
+      (Workable Standard ou Greenhouse pour postes professionnels),
+      chatbot de présélection (Paradox ou Humanly pour secteurs haut
+      volume), Noota pour transcription des entrevues, Claude pour
+      rédaction. Inclut : (1) audit complet du processus de recrutement
+      actuel, (2) configuration multi-utilisateurs, (3) modèles d'offres
+      d'emploi inclusives et conformes Bill 149 + Loi 25, (4) intégration
+      au calendrier et au courriel, (5) chatbot de présélection
+      configuré pour les rôles types, (6) protocole de gouvernance
+      détaillé (clauses contractuelles, qui revoit, comment documenter
+      les décisions IA, audit de biais semestriel), (7) formation
+      équipe 3-4 h avec module éthique IA, (8) support 30 jours.
+    setup_duration: 1-3-semaines
+    client_time_required_hours:
+      min: 8
+      max: 25
+    total_cost_cad:
+      setup_range:
+        min: 2500
+        max: 6000
+      monthly_tool_range:
+        min: 200
+        max: 1000
+      first_year: "4 900 à 18 000 $"
+    recommended_tools_priority:
+      - tool_id: folks-rh
+        reason_fr: Première brique pour PME québécoise standard
+      - tool_id: workable
+        reason_fr: ATS profond pour postes professionnels et qualifiés
+      - tool_id: paradox-olivia
+        reason_fr: Chatbot de présélection pour resto, retail, hôtellerie haut volume
+      - tool_id: humanly
+        reason_fr: Alternative chatbot mid-market plus accessible que Paradox
+      - tool_id: noota
+        reason_fr: Transcription d'entrevues en français, sync ATS, analyses candidats
+      - tool_id: textio
+        reason_fr: Optimisation anti-bias des descriptions de poste
+      - tool_id: hireez
+        reason_fr: Sourcing passif si besoin de profils qualifiés rares
+    fivepennyai_service_fr: |
+      Forfait « Recrutement IA Conforme » : audit + setup multi-outils
+      + chatbot configuré + intégrations + formation équipe + protocole
+      de gouvernance + support 30 jours + audit de biais initial.
+      Différenciation 5PennyAi : on inclut TOUJOURS la gouvernance,
+      pas seulement l'outil.
+    fivepennyai_revenue_potential: moyen-a-eleve-par-client
+
+  - id: custom
+    name_fr: Voie C — Solution sur mesure / souveraine
+    ideal_profile_fr: |
+      PME 100+ employés ou grande organisation avec exigences spécifiques :
+      logique métier propre (ex: matching technicien construction selon
+      RBQ + CCQ + permis spécifiques), intégration à un système métier
+      propriétaire, volume élevé (200+ embauches/an), exigence Loi 25
+      stricte avec hébergement Canada, ou besoin de bias audit formel
+      avec documentation pour défense légale.
+    description_fr: |
+      5PennyAi déploie un agent IA custom : pipeline Claude API +
+      Make/n8n + ATS de marché + stockage AWS Canada Central. L'agent
+      peut : générer des offres ciblées par profil de candidat, scorer
+      les CV selon une rubrique métier propre, déclencher des workflows
+      de présélection multi-étapes, intégrer au système de paie québécois
+      (Nethris, Employeur D), produire des rapports d'audit de biais
+      mensuels avec déclencheurs de revue humaine. Inclut documentation
+      complète de conformité Loi 25 et Bill 149 prête pour défense en
+      cas de plainte.
+    setup_duration: 6-14-semaines
+    client_time_required_hours:
+      min: 30
+      max: 80
+    total_cost_cad:
+      setup_range:
+        min: 18000
+        max: 50000
+      monthly_hosting_range:
+        min: 200
+        max: 1500
+      first_year: "20 400 à 68 000 $"
+    recommended_tools_priority:
+      - tool_id: anthropic-api
+        reason_fr: Claude pour qualité française et raisonnement explicable
+      - tool_id: make-zapier
+        reason_fr: Orchestration des workflows multi-systèmes
+      - tool_id: nethris-employeur-d
+        reason_fr: Intégration au système de paie québécois pour onboarding
+    fivepennyai_service_fr: |
+      AI Sprint 8-14 semaines : audit conformité légale, conception,
+      développement, intégration ERP/SIRH/paie, déploiement, formation,
+      documentation conformité Loi 25 + Bill 149. Idéal pour grandes
+      PME québécoises ou agences de placement avec volume soutenu.
+    fivepennyai_revenue_potential: tres-eleve-par-client-mais-volume-faible
+    honest_note_fr: |
+      La voie custom est rarement nécessaire pour la majorité des PME
+      québécoises. À réserver aux cas avec volume élevé, logique métier
+      vraiment unique, ou risque légal réel justifiant un investissement
+      important en gouvernance documentée. Pour 80 % des clients, la
+      voie B avec Folks RH + Workable + chatbot couvre amplement.
+
+# ───── OUTILS DU MARCHÉ (HIÉRARCHISÉS) ─────
+
+tools:
+
+  # ── TIER 1 : SIRH québécois (cœur de la recommandation) ──
+
+  - id: folks-rh
+    tier: 1
+    name: Folks RH
+    origin: Québec
+    url: https://folksrh.com
+    interface_fr: oui
+    starting_price_cad_monthly: 4.73
+    currency: CAD
+    target_segment_fr: PME canadiennes 25-500 employés voulant SIRH tout-en-un local et bilingue
+    strength_fr: |
+      SIRH 100 % québécois conçu pour les PME canadiennes. Modules :
+      dossiers employés, ATS intégré, onboarding, gestion des congés,
+      évaluation de performance, paie canadienne (via Folks Paie),
+      tableaux de bord. Bilingue français-anglais. Conformité native
+      aux normes du travail provinciales (CNESST au Québec, etc.).
+      Folks rapporte que ses clients réalisent des gains d'environ une
+      journée par semaine selon leurs cas documentés.
+    plans:
+      - name: Plans modulaires
+        price_cad: 4.73
+        per_unit: "utilisateur/mois (annuel, point d'entrée)"
+        note_fr: Tarification basée sur nombre d'employés et modules sélectionnés
+    affiliate_potential: a-verifier
+    source_id: agendrix-meilleurs-sirh
+    used_in_paths: [self-serve, accompanied]
+    recommended_priority: 1
+    note_fr: |
+      Premier choix par défaut pour PME québécoise. À mettre en avant
+      systématiquement comme « SIRH d'ici » : entreprise québécoise,
+      données au Canada, conformité native. Module ATS suffisant pour
+      la majorité des besoins; on ajoute Workable seulement si profondeur
+      requise.
+
+  - id: agendrix
+    tier: 1
+    name: Agendrix
+    origin: Québec (Sherbrooke)
+    url: https://www.agendrix.com
+    interface_fr: oui
+    starting_price_cad_monthly: 5.25
+    currency: CAD
+    target_segment_fr: PME québécoises avec employés à horaires variables (restaurants, commerces, services, soins)
+    strength_fr: |
+      Logiciel québécois (Sherbrooke) qui combine planification des
+      horaires, suivi du temps, outils RH essentiels et intégrations à
+      la paie canadienne (Nethris, Employeur D, ADP, Ceridian, Payworks,
+      QuickBooks, Acomba, Sage 50). Bilingue. Support basé au Québec.
+      Particulièrement adapté aux quarts de travail variables.
+    plans:
+      - name: Free
+        price_cad: 0
+        note_fr: Plan d'entrée pour très petites équipes
+      - name: Plans payants
+        price_cad: 5.25
+        per_unit: "utilisateur/mois (Plus)"
+        note_fr: Plan Plus inclut toutes fonctions RH
+    weakness_fr: |
+      Module ATS limité — pas idéal pour le recrutement complexe de
+      profils qualifiés. Se concentre sur la planification opérationnelle.
+    affiliate_potential: a-verifier
+    source_id: agendrix-meilleurs-sirh
+    used_in_paths: [self-serve, accompanied]
+    recommended_priority: 2
+    note_fr: |
+      Choix complémentaire à Folks RH, pas substitut. Idéal pour
+      restaurants, retail, services à domicile où la planification
+      domine sur le recrutement. À combiner avec un ATS dédié si
+      recrutement intensif.
+
+  - id: collage-rh
+    tier: 1
+    name: Collage RH
+    origin: Canada (Toronto, propriété de People Corporation)
+    url: https://collage.co
+    interface_fr: oui
+    starting_price_monthly: null
+    currency: CAD
+    target_segment_fr: PME canadiennes voulant SIRH + paie + avantages sociaux intégrés
+    strength_fr: |
+      SIRH avec paie canadienne native et gestion des avantages sociaux
+      (collabore avec assureurs canadiens). ATS, congés, performance,
+      annuaire employés. Acquis par People Corporation, gros joueur
+      en services de paie au Canada.
+    affiliate_potential: a-verifier
+    source_id: rise-paie-canada
+    used_in_paths: [self-serve, accompanied]
+    recommended_priority: 3
+    note_fr: |
+      Choix solide si client veut paie + RH + avantages chez le même
+      fournisseur. Moins « 100 % québécois » que Folks RH mais
+      l'intégration paie est mieux développée.
+
+  - id: humi
+    tier: 1
+    name: Humi (par Employment Hero)
+    origin: Canada
+    url: https://www.humi.ca
+    interface_fr: oui
+    starting_price_monthly: null
+    currency: CAD
+    target_segment_fr: PME canadiennes voulant SIRH avec paie canadienne intégrée
+    strength_fr: |
+      Plateforme SIRH avec paie canadienne, congés, dossiers employés,
+      onboarding, performance. Acquis par Employment Hero (groupe
+      australien). Bilingue français-anglais.
+    affiliate_potential: a-verifier
+    source_id: agendrix-meilleurs-sirh
+    used_in_paths: [self-serve, accompanied]
+    recommended_priority: 4
+    note_fr: |
+      Alternative à Folks RH et Collage. À considérer si comparatif
+      souhaité. Acquis par groupe étranger (perte de l'angle « local »).
+
+  - id: sigma-rh
+    tier: 1
+    name: SIGMA-RH
+    origin: Québec
+    url: https://www.sigma-rh.com
+    interface_fr: oui
+    starting_price_monthly: null
+    currency: CAD
+    target_segment_fr: Moyennes entreprises québécoises 500+ employés avec besoins RH complexes
+    strength_fr: |
+      SIRH québécois avec IA générative intégrée (mention récente dans
+      leur communication). Modulaire, personnalisable. Adapté aux
+      grandes structures avec besoins de personnalisation.
+    affiliate_potential: a-verifier
+    source_id: sigma-rh-officiel
+    used_in_paths: [accompanied, custom]
+    recommended_priority: 5
+    note_fr: |
+      Pour grandes PME / moyennes entreprises. Hors cible standard 5PennyAi
+      mais à connaître pour orientations rares.
+
+  # ── TIER 1 bis : ATS internationaux avec IA native ──
+
+  - id: workable
+    tier: 1
+    name: Workable
+    origin: USA / Grèce
+    url: https://www.workable.com
+    interface_fr: oui
+    starting_price_usd_monthly: 149
+    currency: USD
+    target_segment_fr: PME 25-500 employés voulant ATS profond avec sourcing, screening, et entrevues vidéo
+    strength_fr: |
+      Plateforme tout-en-un de recrutement : distribution sur 200+ sites
+      d'emploi, sourcing, screening IA, planification d'entrevues,
+      assessments, génération d'offres. 30 000+ entreprises clientes.
+      Plus profond que les modules ATS de Folks RH ou Agendrix pour
+      recrutement professionnel.
+    plans:
+      - name: Starter
+        price_usd: 149
+        per_unit: "mois (2 postes actifs)"
+      - name: Standard
+        price_usd: 299
+        per_unit: "mois"
+      - name: Premier
+        price_usd: 599
+        per_unit: "mois"
+    weakness_fr: |
+      Prix en USD. Gros pour une micro-entreprise. Hébergement USA.
+    affiliate_potential: a-verifier
+    source_id: selectsoft-ai-recruiting
+    used_in_paths: [accompanied]
+    recommended_priority: 1
+    note_fr: |
+      À recommander en complément de Folks RH ou Agendrix pour clients
+      qui ont besoin de sourcing avancé et de gestion de pipeline pour
+      postes professionnels. Pour resto/retail haut volume, préférer
+      Paradox + SIRH québécois.
+
+  - id: manatal
+    tier: 1
+    name: Manatal
+    origin: Thaïlande / Singapour
+    url: https://www.manatal.com
+    interface_fr: limitee
+    starting_price_usd_monthly: 15
+    currency: USD
+    target_segment_fr: SMB et agences de recrutement avec budget serré
+    strength_fr: |
+      ATS abordable (15 $/utilisateur/mois) avec IA pour matching
+      candidats, parsing CV, enrichissement social (LinkedIn, Facebook,
+      etc.). Sourcing à partir de 2 500+ canaux. UI propre et
+      intuitive.
+    plans:
+      - name: Starter
+        price_usd: 15
+        per_unit: "utilisateur/mois"
+      - name: Premier
+        price_usd: 628
+        per_unit: "mois pour 20 employés"
+    weakness_fr: |
+      Interface principalement anglaise. Pas d'intégrations préfabriquées
+      majeures (API ouverte mais demande compétence technique). Pas de
+      plan gratuit.
+    affiliate_potential: a-verifier
+    source_id: peoplemanaging-ai-ats
+    used_in_paths: [self-serve, accompanied]
+    recommended_priority: 2
+    note_fr: |
+      Bon choix pour cabinets de recrutement et agences avec budget
+      limité. Pour PME québécoise standard, Folks RH couvre mieux le
+      besoin (et inclut compta + congés).
+
+  - id: zoho-recruit
+    tier: 1
+    name: Zoho Recruit
+    origin: Inde / USA
+    url: https://www.zoho.com/recruit/
+    interface_fr: oui
+    starting_price_usd_monthly: 25
+    currency: USD
+    target_segment_fr: PME déjà dans l'écosystème Zoho
+    strength_fr: |
+      ATS avec IA pour parsing CV, matching candidats, automatisations.
+      Intégration profonde à l'écosystème Zoho (CRM, Mail, Books,
+      etc.). Bilingue.
+    plans:
+      - name: Standard
+        price_usd: 25
+        per_unit: "utilisateur/mois"
+    affiliate_potential: a-verifier
+    source_id: juicebox-ai-recruiting
+    used_in_paths: [self-serve, accompanied]
+    recommended_priority: 3
+    note_fr: |
+      À recommander seulement si le client est déjà dans Zoho. Sinon,
+      Folks RH ou Workable sont plus pertinents pour le marché
+      québécois.
+
+  - id: greenhouse
+    tier: 1
+    name: Greenhouse
+    origin: USA
+    url: https://www.greenhouse.io
+    interface_fr: limitee
+    starting_price_monthly: null
+    currency: USD
+    target_segment_fr: Entreprises 100+ employés avec processus de recrutement structurés (scorecards, DE&I)
+    strength_fr: |
+      Référence enterprise pour structured hiring. Marketplace
+      d'intégrations avec Paradox, HireVue, Textio, etc. Reporting
+      DE&I (diversité, équité, inclusion) avancé. Acquis Interseller
+      en 2024.
+    pricing_note_fr: "Prix non publié, contact ventes"
+    affiliate_potential: a-verifier
+    source_id: hiretruffle-ai-recruiting
+    used_in_paths: [accompanied, custom]
+    recommended_priority: 4
+    note_fr: |
+      Probablement trop lourd pour PME québécoises typiques, mais à
+      considérer pour clients en croissance rapide ou orientation
+      enterprise.
+
+  - id: pin
+    tier: 1
+    name: Pin
+    origin: USA
+    url: https://www.pin.com
+    interface_fr: limitee
+    starting_price_usd_monthly: 100
+    currency: USD
+    target_segment_fr: Cabinets de recrutement et équipes TA voulant tout-en-un AI
+    strength_fr: |
+      Plateforme tout-en-un AI : sourcing, outreach, scheduling,
+      pipeline. Construit par les fondateurs d'Interseller (acquis par
+      Greenhouse). Plan Starter à 100 $/mois flat (pas par utilisateur).
+    affiliate_potential: a-verifier
+    source_id: pin-ai-recruitment-comparison
+    used_in_paths: [accompanied]
+    recommended_priority: 5
+
+  # ── TIER 2 : Chatbots de présélection conversationnels ──
+
+  - id: paradox-olivia
+    tier: 2
+    name: Paradox (Olivia)
+    origin: USA
+    url: https://www.paradox.ai
+    interface_fr: oui
+    starting_price_usd_monthly: 1000
+    currency: USD
+    target_segment_fr: Entreprises avec recrutement à haut volume horaire (resto, hôtellerie, retail, santé, logistique)
+    strength_fr: |
+      Olivia, le chatbot conversationnel, gère screening, scheduling,
+      réponses FAQ via SMS, web chat, WhatsApp. Peut gérer des milliers
+      de conversations simultanées. 100+ intégrations ATS. Études de
+      cas montrent réductions importantes du time-to-fill pour clients
+      haut volume.
+    pricing_note_fr: "À partir d'environ 1 000 $/mois USD avec contrats enterprise customisés"
+    weakness_fr: |
+      Pricing enterprise (peu accessible aux micro-entreprises). Ne
+      fait pas le sourcing — uniquement gestion des inbound applicants.
+    affiliate_potential: a-verifier
+    source_id: pin-ai-recruitment-comparison
+    used_in_paths: [accompanied]
+    recommended_priority: 1
+    note_fr: |
+      Idéal pour chaînes de restaurants, hôtels, magasins multi-sites
+      au Québec. Pour micro-entreprise, alternative Humanly ou
+      simplement chatbot Tidio/Crisp avec scripts de présélection.
+
+  - id: humanly
+    tier: 2
+    name: Humanly
+    origin: USA
+    url: https://humanly.io
+    interface_fr: limitee
+    starting_price_monthly: null
+    currency: USD
+    target_segment_fr: Mid-market companies cherchant chatbot de présélection accessible
+    strength_fr: |
+      Chatbot AI co-pilot pour automatiser screening, scheduling,
+      participer aux entrevues live (notes, transcriptions, insights).
+      Plus accessible que Paradox. Intégrations faciles avec la majorité
+      des ATS.
+    affiliate_potential: a-verifier
+    source_id: selectsoft-ai-recruiting
+    used_in_paths: [accompanied]
+    recommended_priority: 2
+    note_fr: |
+      Bon compromis entre Paradox (trop cher) et chatbot générique
+      (pas spécialisé RH). À privilégier pour PME 25-100 employés.
+
+  # ── TIER 2 bis : Spécialisés entrevues / sourcing / writing ──
+
+  - id: noota
+    tier: 2
+    name: Noota
+    origin: France
+    url: https://www.noota.io/fr
+    interface_fr: oui
+    starting_price_eur_monthly: 0
+    currency: EUR
+    target_segment_fr: Recruteurs francophones et cabinets RH faisant des entrevues (déjà dans pattern 007)
+    strength_fr: |
+      Spécialisations recrutement : transcription d'entrevues en
+      français de qualité, génération automatique de rapports candidats
+      structurés, mise à jour ATS, analyse compétences/soft skills,
+      identification de signaux verbaux. Centres de données UE,
+      conformité RGPD/SOC2/ISO 27001.
+    affiliate_potential: a-verifier
+    source_id: noota-officiel
+    used_in_paths: [accompanied]
+    recommended_priority: 1
+    note_fr: |
+      Pièce maîtresse pour cabinets RH québécois et équipes de
+      recrutement faisant des entrevues en français. Combine pattern
+      007 et 008.
+
+  - id: hireez
+    tier: 2
+    name: hireEZ
+    origin: USA
+    url: https://hireez.com
+    interface_fr: limitee
+    starting_price_monthly: null
+    currency: USD
+    target_segment_fr: Équipes TA et cabinets de recrutement faisant du sourcing passif
+    strength_fr: |
+      Plateforme de sourcing IA qui recherche dans plus de 800 millions
+      de profils (LinkedIn, GitHub, sites publics). Outreach automatisé
+      multi-canaux. Pour postes qualifiés et tech notamment.
+    affiliate_potential: a-verifier
+    source_id: hiretruffle-ai-recruiting
+    used_in_paths: [accompanied]
+    recommended_priority: 2
+    note_fr: |
+      À recommander pour cabinets de recrutement spécialisés et postes
+      hautement qualifiés. Hors cible PME québécoise standard.
+
+  - id: gem
+    tier: 2
+    name: Gem
+    origin: USA
+    url: https://www.gem.com
+    interface_fr: limitee
+    starting_price_monthly: null
+    currency: USD
+    target_segment_fr: Équipes TA voulant CRM de candidats + sourcing LinkedIn
+    strength_fr: |
+      Sourcing + CRM construit autour de LinkedIn. Sequences d'outreach
+      automatiques. Tracking complet du pipeline candidats. Spécialisé
+      pour le sourcing de talents passifs.
+    affiliate_potential: a-verifier
+    source_id: hiretruffle-recruiting-automation
+    used_in_paths: [accompanied]
+    recommended_priority: 3
+
+  - id: textio
+    tier: 2
+    name: Textio
+    origin: USA
+    url: https://textio.com
+    interface_fr: limitee
+    starting_price_monthly: null
+    currency: USD
+    target_segment_fr: Entreprises voulant améliorer le langage des offres d'emploi (anti-bias, inclusivité, performance)
+    strength_fr: |
+      Plateforme d'augmented writing pour offres d'emploi : détecte le
+      langage biaisé (gender-coded words, jargon excluant certains
+      groupes), suggère des reformulations, analyse la performance
+      historique. Intégrations ATS multiples.
+    affiliate_potential: a-verifier
+    source_id: hiretruffle-ai-recruiting
+    used_in_paths: [accompanied]
+    recommended_priority: 4
+    note_fr: |
+      Outil intéressant pour conformité Bill 149 + droits de la
+      personne (réduit le risque de biais dans les offres). Anglais
+      surtout — utilité limitée pour offres en français.
+
+  - id: hirevue
+    tier: 2
+    name: HireVue
+    origin: USA
+    url: https://www.hirevue.com
+    interface_fr: limitee
+    starting_price_usd_yearly: 35000
+    currency: USD
+    target_segment_fr: Grandes entreprises 1000+ employés avec gros volume de premières entrevues
+    strength_fr: |
+      Plateforme d'entrevues vidéo asynchrones avec analyse IA. Game-
+      based assessments pour évaluer compétences cognitives. Forte
+      adoption enterprise. Études de cas réduction time-to-hire.
+    plans:
+      - name: Plan d'entrée
+        price_usd: 35000
+        per_unit: "an (2 500-5 000 employés)"
+        note_fr: Tarification enterprise sur devis
+    weakness_fr: |
+      Coût enterprise prohibitif pour PME. Risque de biais documenté
+      par class actions aux USA — à utiliser avec audit rigoureux.
+    affiliate_potential: a-verifier
+    source_id: juicebox-ai-recruiting
+    used_in_paths: [custom]
+    recommended_priority: 5
+    note_fr: |
+      Hors cible 5PennyAi standard mais à connaître. À utiliser avec
+      EXTRÊME prudence : analyse vidéo IA est le segment le plus
+      contesté en termes de biais et de conformité légale.
+
+  # ── TIER 3 : IA générative et infrastructure custom ──
+
+  - id: claude-ai
+    tier: 3
+    name: Claude (Anthropic)
+    origin: USA
+    url: https://claude.ai
+    interface_fr: oui
+    starting_price_monthly: 0
+    currency: USD
+    target_segment_fr: Toute taille d'entreprise pour rédaction d'offres, courriels candidats, trames d'entrevue
+    strength_fr: |
+      Excellence en français pour rédaction RH : offres d'emploi
+      inclusives, courriels personnalisés aux candidats, trames
+      d'entrevue, comparaison de CV. Plus naturel que ChatGPT en
+      français nuancé.
+    plans:
+      - name: Free
+        price_usd: 0
+      - name: Pro
+        price_usd: 20
+        per_unit: mois
+    affiliate_potential: non-applicable
+    source_id: null
+    used_in_paths: [self-serve, accompanied, custom]
+    recommended_priority: 1
+    note_fr: |
+      À recommander à tous les profils. Outil le plus polyvalent et
+      le moins cher pour augmenter la productivité RH au quotidien.
+
+  - id: chatgpt
+    tier: 3
+    name: ChatGPT (OpenAI)
+    origin: USA
+    url: https://chat.openai.com
+    interface_fr: oui
+    starting_price_monthly: 0
+    currency: USD
+    target_segment_fr: Alternative à Claude pour utilisateurs OpenAI ou avec Custom GPTs
+    strength_fr: Très polyvalent, base d'utilisateurs énorme, Custom GPTs.
+    plans:
+      - name: Free
+        price_usd: 0
+      - name: Plus
+        price_usd: 20
+        per_unit: mois
+    affiliate_potential: non-applicable
+    source_id: null
+    used_in_paths: [self-serve, accompanied]
+    recommended_priority: 2
+
+  - id: anthropic-api
+    tier: 3
+    name: Anthropic API (Claude)
+    origin: USA
+    url: https://docs.anthropic.com
+    interface_fr: documentation-en
+    starting_price_monthly: 0
+    currency: USD
+    target_segment_fr: Développement custom d'agents RH
+    strength_fr: |
+      Claude Sonnet 4 pour qualité française et raisonnement explicable
+      sur décisions RH (atout conformité Loi 25 section 12.1 qui exige
+      explicabilité). Compatible AWS Canada via Bedrock.
+    pricing_note_fr: "Facturation à l'usage, 30-300 $/mois selon volume"
+    affiliate_potential: non-applicable
+    source_id: null
+    used_in_paths: [custom]
+    recommended_priority: 1
+
+  - id: make-zapier
+    tier: 3
+    name: Make ou Zapier (ou n8n)
+    origin: USA / international
+    url: https://www.make.com
+    interface_fr: oui
+    starting_price_monthly: 0
+    currency: USD
+    target_segment_fr: Orchestration workflows RH multi-systèmes
+    strength_fr: |
+      Pour automatiser : nouveau CV reçu → parse → match poste →
+      programmer entrevue → envoyer courriel personnalisé → ajouter
+      au CRM. Make typiquement moins cher que Zapier. n8n
+      auto-hébergeable pour conformité Loi 25 stricte.
+    pricing_note_fr: "Gratuit à 50 $/mois selon volume"
+    affiliate_potential: confirme
+    source_id: null
+    used_in_paths: [accompanied, custom]
+    recommended_priority: 2
+
+  - id: nethris-employeur-d
+    tier: 3
+    name: Nethris ou Employeur D
+    origin: Québec
+    url: https://www.nethris.com
+    interface_fr: oui
+    starting_price_monthly: null
+    currency: CAD
+    target_segment_fr: PME québécoises voulant paie 100 % conforme aux normes locales (CCQ, CNESST)
+    strength_fr: |
+      Nethris (Montréal, 40+ ans) et Employeur D sont les références
+      québécoises pour la paie. Gestion CCQ, CNESST, RRQ, RQAP, jours
+      fériés Québec. Souvent intégrés à Folks RH, Agendrix, Collage
+      pour le volet recrutement.
+    affiliate_potential: a-verifier
+    source_id: rise-paie-canada
+    used_in_paths: [accompanied, custom]
+    recommended_priority: 1
+    note_fr: |
+      Pas de l'IA en soi, mais infrastructure paie indispensable pour
+      onboarding automatisé (création des dossiers paie après embauche).
+
+# ───── INTÉGRATEURS IA QUÉBÉCOIS (CONCURRENCE DIRECTE) ─────
+
+quebec_competitors:
+  - name: Folks (services + plateforme)
+    url: https://folksrh.com
+    positioning_fr: Plateforme + accompagnement RH; concurrent à 5PennyAi sur la voie B
+    note_fr: |
+      Concurrent indirect : Folks vend sa propre plateforme et offre
+      du conseil sur son déploiement. 5PennyAi peut se positionner
+      comme l'auditeur indépendant qui recommande Folks ou un autre
+      outil selon le profil — vs Folks qui pousse toujours sa solution.
+
+  - name: Cabinets-conseil RH québécois (Iris, Pratus, etc.)
+    url: null
+    positioning_fr: Conseil RH traditionnel sans focus IA
+    note_fr: |
+      Concurrents indirects : ils font du conseil RH sans expertise
+      IA forte. 5PennyAi peut s'intégrer en complémentarité ou en
+      partenariat pour la dimension automatisation/IA.
+
+  - name: Cabinets de recrutement (Bedard, Adecco, Randstad, etc.)
+    url: null
+    positioning_fr: Recrutement externalisé classique
+    note_fr: |
+      Pas la même prestation. 5PennyAi aide le client à recruter
+      lui-même mieux; les cabinets recrutent à sa place. Complémentaires
+      pour postes critiques.
+
+  - name: FloatAI
+    url: https://www.floatai.ca
+    positioning_fr: Automatisation pour PME québécoises; pourrait inclure RH
+    note_fr: Concurrent indirect; pas spécialisé RH mais peut en faire partie.
+
+  - name: Gestisoft
+    url: https://www.gestisoft.com
+    positioning_fr: Microsoft Dynamics et solutions ERP/CRM, possiblement RH
+    note_fr: Concurrent sur clients Microsoft.
+
+strategic_note_fr: |
+  L'automatisation RH par IA est un domaine où 5PennyAi a un angle
+  différenciateur exceptionnel : la conformité légale canadienne
+  2026 (Loi 25 + Bill 149 + droits de la personne). Aucun intégrateur
+  québécois ne semble structurer son offre autour de cet angle, alors
+  que les cabinets d'avocats canadiens (Osler, Torys, Boughton, Ogletree)
+  publient régulièrement sur les risques. Différenciation 5PennyAi :
+  (1) audit indépendant qui recommande l'outil selon le profil (pas
+  vendor-locked sur Folks ou Workable), (2) gouvernance toujours
+  incluse (clauses de divulgation, protocole de revue humaine, audit
+  de biais), (3) priorité aux outils québécois pour SIRH (Folks,
+  Agendrix) — ce qui résonne avec les valeurs locales et simplifie la
+  conformité Loi 25 par construction.
+
+# ───── COÛTS (RÉSUMÉ TROIS VOIES) ─────
+
+cost_summary_cad:
+  voie_a_self_serve:
+    first_year: "360 à 2 800 $"
+    recurring_monthly: "30 à 200 $"
+  voie_b_accompanied:
+    first_year: "4 900 à 18 000 $"
+    recurring_monthly: "200 à 1 000 $"
+  voie_c_custom:
+    first_year: "20 400 à 68 000 $"
+    recurring_monthly: "200 à 1 500 $"
+
+# ───── VALEUR DOCUMENTÉE ─────
+
+documented_benefits:
+  ai_adoption_recruiting_growth_percent_since_2023: 428  # iHire 2025
+  organizations_using_ai_recruiting_percent: 51  # SHRM 2025
+  hr_pros_reporting_time_savings_percent: 89  # SHRM 2025
+  top_use_cases_percent:
+    job_descriptions: 66
+    resume_screening: 44
+    automated_search: 32
+  average_time_to_fill_weeks: 6  # industry average
+  ai_optimized_time_to_fill_weeks: 2  # SitePoint claim
+  average_cost_per_hire_usd: 4700  # SHRM 2025
+  typical_payback_months:
+    min: 2
+    max: 6
+  note_fr: |
+    Le ROI vient principalement de trois leviers : (1) heures de RH
+    libérées (rédaction d'offres, tri de CV, programmation entrevues),
+    (2) réduction du time-to-fill qui réduit les coûts d'opportunité
+    et de surcharge sur les équipes en place, (3) amélioration de la
+    qualité du matching qui réduit le turnover des nouvelles embauches.
+    Pour une PME embauchant 20 personnes/an, économiser 5 heures de
+    RH par embauche = 100 heures/an, soit environ 5 000 à 8 000 $
+    selon le taux horaire.
+
+customer_cases:
+  - company: SMBs adopting AI recruiting (synthèse SHRM 2025)
+    industry: pme-multiples
+    segment_fr: PME ayant adopté des outils AI en recrutement
+    result_fr: "89 % rapportent des gains de temps ou efficacité accrue selon SHRM 2025"
+    source_id: pin-ai-recruitment-comparison
+    relevance_for_micro: elevee
+    confidence: medium-high
+    note_fr: Source SHRM, agrégation de plusieurs études
+
+  - company: Clients haut volume de Paradox (Olivia)
+    industry: retail-hotellerie-sante
+    segment_fr: Chaînes retail et hôtellerie avec recrutement à fort volume
+    result_fr: "Études de cas Paradox montrent réductions importantes du time-to-fill, de plusieurs semaines à quelques jours pour postes horaires"
+    source_id: hiretruffle-recruiting-automation
+    relevance_for_micro: faible-pertinent-moyennes-pme
+    confidence: medium
+
+  - company: Clients Folks RH (cas auto-déclarés)
+    industry: pme-canadiennes-multiples
+    segment_fr: PME canadiennes utilisant Folks RH pour automatisation RH
+    result_fr: "Folks rapporte que ses clients réalisent des gains d'environ une journée par semaine sur les tâches RH"
+    source_id: capterra-hr-software
+    relevance_for_micro: tres-elevee
+    confidence: medium
+    note_fr: Source vendeur, à présenter avec mention « selon Folks RH »
+
+# ───── RISQUES ─────
+
+risks:
+  - type: reglementaire-qc
+    title_fr: Loi 25 section 12.1 — décisions automatisées et droit à révision humaine
+    severity: important
+    description_fr: |
+      Au Québec, depuis 2022, toute décision « exclusivement automatisée »
+      qui affecte un individu doit être divulguée à la personne
+      concernée, qui a le droit de connaître les principaux facteurs
+      ayant mené à la décision et de demander une révision humaine.
+      S'applique aux décisions de tri de CV, de présélection automatique,
+      de scoring de candidats, etc. dès qu'elles sont prises sans
+      intervention humaine significative.
+    mitigation_fr: |
+      Règle absolue : maintenir un « humain dans la boucle » pour toute
+      décision finale (rejet de candidat, invitation à entrevue, embauche).
+      L'IA recommande, l'humain décide et documente. Inclure dans le
+      protocole de gouvernance : qui revoit, comment, dans quel délai,
+      où est documentée la décision. Préparer une procédure de révision
+      sur demande du candidat (clause type dans les communications RH).
+
+  - type: reglementaire-on-can
+    title_fr: Bill 149 Ontario — divulgation de l'usage d'IA dans offres d'emploi
+    severity: moyen
+    description_fr: |
+      Effective depuis le 1er janvier 2026, l'Ontario Working for
+      Workers Four Act exige que tout employeur de 25+ employés
+      divulgue dans ses offres d'emploi publiques s'il utilise l'IA
+      pour screener, évaluer ou sélectionner les candidats. Sanctions
+      jusqu'à 100 000 $ par infraction.
+    mitigation_fr: |
+      Pour clients pan-canadiens ou ayant des employés en Ontario :
+      ajouter une mention type dans toutes les offres publiques
+      (« Cette annonce est publiée par un employeur qui utilise des
+      outils d'IA dans le processus de présélection des candidatures »).
+      Documenter quels outils sont utilisés à quelle étape pour pouvoir
+      répondre à une demande de précision.
+
+  - type: reglementaire-droits-personne
+    title_fr: Discrimination — 17 critères protégés (Code des droits)
+    severity: important
+    description_fr: |
+      L'IA reproduit les biais des données d'entraînement. Une décision
+      d'embauche discriminatoire reste illégale même si prise par un
+      algorithme — l'employeur reste responsable. Cas documentés aux
+      USA : class actions contre HireVue, Amazon (algo qui pénalisait
+      les CV avec mots associés au féminin), etc. Au Canada, motifs
+      protégés incluent : race, origine, ethnicité, citoyenneté,
+      religion, sexe, orientation, identité de genre, âge, état civil,
+      situation de famille, handicap, casier judiciaire, etc.
+    mitigation_fr: |
+      (1) Audit de biais initial avant déploiement (analyser les
+      résultats du tri sur un échantillon historique pour détecter des
+      biais); (2) audit semestriel pour détecter les dérives; (3)
+      formation des équipes RH à reconnaître les biais; (4) éviter les
+      outils opaques (HireVue analyse vidéo notamment) si on ne peut
+      pas expliquer les décisions; (5) privilégier des outils avec
+      bias controls documentés (Greenhouse Blind Recruitment, Textio,
+      etc.).
+
+  - type: technique
+    title_fr: Hallucinations et erreurs de tri
+    severity: moyen
+    description_fr: |
+      L'IA peut rejeter des candidats qualifiés sur base d'erreurs de
+      parsing (CV non standard, formats inhabituels) ou
+      d'« hallucinations » sur les compétences. Cas anecdotiques
+      rapportés par Koskie Minsky et plusieurs publications légales.
+    mitigation_fr: |
+      Maintenir une revue humaine systématique des rejets IA pour les
+      premiers 3-6 mois. Tester l'outil avec un échantillon de CV
+      historiques (incluant des CV de personnes embauchées avec succès)
+      pour valider la précision. Documenter les faux négatifs et
+      ajuster les règles.
+
+  - type: technique
+    title_fr: Exclusivité linguistique
+    severity: faible-a-moyen
+    description_fr: |
+      Plusieurs outils IA (Manatal, HireVue, certains modules de
+      Workable) sont moins performants en français qu'en anglais. Au
+      Québec, où la majorité des candidats postulent en français,
+      cela peut désavantager systématiquement certains profils.
+    mitigation_fr: |
+      Pour les clients québécois francophones : tester en français
+      avant déploiement. Privilégier les outils bilingues (Folks RH,
+      Agendrix, Noota) ou Claude/ChatGPT pour la rédaction qui gèrent
+      bien le français. Pour les outils anglais-first, ajouter une
+      étape humaine pour les CV en français.
+
+  - type: business
+    title_fr: Expérience candidat dégradée par excès d'automatisation
+    severity: moyen
+    description_fr: |
+      Si tout le processus est automatisé (chatbot, vidéo asynchrone,
+      scoring), le candidat peut se sentir « processé » plutôt que
+      considéré, et choisir un concurrent qui offre un contact humain.
+      Sur un marché en pénurie de main-d'œuvre (cuisine, soins,
+      construction au Québec), c'est un vrai risque de désengagement.
+    mitigation_fr: |
+      Garder un contact humain à au moins une étape du processus
+      (idéalement la première vraie entrevue). Configurer les chatbots
+      avec un ton chaleureux et la possibilité d'« parler à un humain »
+      à tout moment. Mesurer le taux d'abandon en cours de processus
+      et ajuster.
+
+  - type: business
+    title_fr: Perception interne et résistance des équipes RH
+    severity: faible-a-moyen
+    description_fr: |
+      Les équipes RH peuvent percevoir l'IA comme une menace pour
+      leurs emplois, ou comme une dévalorisation de leur expertise.
+      Résistance silencieuse possible dans la mise en œuvre.
+    mitigation_fr: |
+      Positionner l'IA comme un assistant qui libère du temps pour
+      les activités à plus forte valeur (entrevues, culture, conseil
+      stratégique). Inclure les RH dans la conception du protocole
+      de gouvernance — ils sont les garants de la conformité.
+
+# ───── PRÉREQUIS ─────
+
+prerequisites:
+  - Volume minimum de recrutement justifiant l'investissement (3+ embauches/an pour voie A, 15+ pour voie B)
+  - Consensus interne sur l'usage de l'IA en RH (direction + RH alignés)
+  - Comptes employés bien tenus (pour bénéficier du SIRH au-delà du recrutement)
+  - Politique de protection des renseignements personnels à jour (Loi 25)
+  - Pour Bill 149 : volonté d'ajouter une clause type dans toutes les offres publiques
+  - Pour clients sensibles : revue de la politique de confidentialité du fournisseur (utilisation des données pour entraîner l'IA notamment)
+  - Identification d'un responsable RH ou propriétaire pour la gouvernance IA continue
+  - Compréhension de base que l'IA recommande mais l'humain décide (philosophie « human in the loop »)
+
+# ───── SOURCES (référentiel central) ─────
+
+sources:
+  - id: agendrix-meilleurs-sirh
+    type: comparison-article
+    title: "Agendrix — Meilleurs logiciels SIRH pour PME au Québec 2026"
+    url: https://www.agendrix.com/fr/blogue/meilleurs-logiciels-sirh-quebec
+    accessed: 2026-04-26
+    reliability: medium
+    note_fr: Source vendeur (Agendrix) qui se compare à concurrents. Données factuelles fiables.
+    key_facts_fr: |
+      Folks RH 4,73 $/utilisateur/mois (annuel), Agendrix 5,25 $/utilisateur/
+      mois (Plus). Folks RH 100 % québécois bilingue. Conformité CNESST.
+
+  - id: capterra-hr-software
+    type: vendor-marketplace
+    title: "Capterra Canada — Logiciels de ressources humaines 2026"
+    url: https://fr.capterra.ca/directory/5/human-resource/software
+    accessed: 2026-04-26
+    reliability: medium
+    key_facts_fr: |
+      Folks RH aide ses clients à réaliser des gains d'une journée
+      par semaine selon leurs cas documentés.
+
+  - id: rise-paie-canada
+    type: vendor-article
+    title: "Rise People — Quel est le meilleur logiciel de paie au Canada"
+    url: https://risepeople.com/fr/blog/quel-est-le-meilleur-logiciel-de-paie-au-canada-comparaison-des-meilleures-solutions-de-paie-pour-les-entreprises-canadiennes/
+    accessed: 2026-04-26
+    reliability: medium
+    key_facts_fr: |
+      Nethris : Montréal, 40+ ans, conformité QC complète (CCQ, CNESST,
+      RRQ). Payworks support QC. Collage SIRH avec paie externalisée.
+
+  - id: sigma-rh-officiel
+    type: vendor-official
+    title: "SIGMA-RH — SIRH global développé au Québec avec IA générative"
+    url: https://www.sigma-rh.com/fr-ca/
+    accessed: 2026-04-26
+    reliability: high
+    key_facts_fr: SIRH québécois pour entreprises 500+ employés, IA générative intégrée.
+
+  - id: selectsoft-ai-recruiting
+    type: comparison-article
+    title: "Select Software Reviews — 10+ Best AI Recruiting Software 2026"
+    url: https://www.selectsoftwarereviews.com/buyer-guide/ai-recruiting
+    accessed: 2026-04-26
+    reliability: medium-high
+    key_facts_fr: |
+      Workable Standard 299 $/mois, Premier 599 $/mois. Humanly chatbot
+      mid-market avec join live interviews.
+
+  - id: hiretruffle-ai-recruiting
+    type: vendor-article
+    title: "Truffle — 12 best AI recruiting software tools for 2026"
+    url: https://www.hiretruffle.com/blog/ai-recruiting-software
+    accessed: 2026-04-26
+    reliability: medium
+    key_facts_fr: |
+      Paradox pour high-volume hourly/frontline. Manatal SMB ATS abordable.
+      Greenhouse pour structured hiring + DE&I.
+
+  - id: hiretruffle-recruiting-automation
+    type: vendor-article
+    title: "Truffle — 15 best recruiting automation tools for 2026"
+    url: https://www.hiretruffle.com/blog/best-recruiting-automation-software
+    accessed: 2026-04-26
+    reliability: medium
+    key_facts_fr: |
+      Workable Starter 149 $/mois 2 jobs. Paradox réductions importantes
+      time-to-fill pour clients haut volume documentés.
+
+  - id: pin-ai-recruitment-comparison
+    type: vendor-article
+    title: "Pin — AI Recruitment Platforms Compared 2026 Buyer's Matrix"
+    url: https://www.pin.com/blog/ai-recruitment-platform-comparison/
+    accessed: 2026-04-26
+    reliability: medium
+    key_facts_fr: |
+      SHRM 2025 : 51 % organisations utilisent IA recrutement, 89 %
+      time savings. Top use cases : descriptions postes 66 %, screening
+      CV 44 %, automation 32 %. Cost per hire moyen 4 700 $ USD.
+
+  - id: sitepoint-ai-sourcing
+    type: comparison-article
+    title: "SitePoint — 12 Best AI Recruiting Sourcing Tools for 2026"
+    url: https://www.sitepoint.com/12-best-ai-recruiting-sourcing-tools-for-2026/
+    accessed: 2026-04-26
+    reliability: medium
+    key_facts_fr: |
+      AI adoption recruiting +428 % depuis 2023 (iHire 2025). Time-to-fill
+      6 semaines moyenne, 2 semaines avec AI sourcing.
+
+  - id: peoplemanaging-ai-ats
+    type: comparison-article
+    title: "People Managing People — 29 Best AI ATS Software 2026"
+    url: https://peoplemanagingpeople.com/tools/best-ai-ats/
+    accessed: 2026-04-26
+    reliability: medium
+
+  - id: juicebox-ai-recruiting
+    type: comparison-article
+    title: "Juicebox — 16 Best AI Recruiting Tools 2026"
+    url: https://juicebox.ai/blog/ai-recruiting-tools
+    accessed: 2026-04-26
+    reliability: medium
+    key_facts_fr: |
+      HireVue plan d'entrée 35 000 $/an pour 2 500-5 000 employés.
+      Workable, Manatal, Zoho Recruit benchmarks.
+
+  - id: noota-officiel
+    type: vendor-official
+    title: "Noota — Plateforme transcription IA française"
+    url: https://www.noota.io/fr
+    accessed: 2026-04-26
+    reliability: high
+    key_facts_fr: |
+      Spécialisations recrutement : transcription entrevues, rapports
+      candidats, sync ATS, analyse compétences/soft skills.
+
+  - id: ogletree-ai-job-postings
+    type: legal-publication
+    title: "Ogletree Deakins — AI in Job Postings: What Employers in Canada Need to Know"
+    url: https://ogletree.com/insights-resources/blog-posts/ai-in-job-postings-what-employers-in-canada-need-to-know/
+    accessed: 2026-04-26
+    reliability: high
+    key_facts_fr: |
+      Bill 149 Ontario en vigueur 1er janvier 2026. Ne s'applique pas
+      aux employeurs <25 employés ni recrutement interne. Loi 25 QC
+      section 12.1 : décisions automatisées doivent être divulguées,
+      droit à révision humaine.
+
+  - id: osler-employment-considerations
+    type: legal-publication
+    title: "Osler — Employment considerations: AI in Canada"
+    url: https://www.osler.com/en/insights/reports/ai-in-canada/employment-considerations/
+    accessed: 2026-04-26
+    reliability: high
+    key_facts_fr: |
+      Bill 149 ESA s.8.1+ amendments. Définition AI dans l'ESA. Risques :
+      bias, discrimination, constructive dismissal claims. Sanctions
+      jusqu'à 100 000 $.
+
+  - id: torys-ai-hr-canada
+    type: legal-publication
+    title: "Torys LLP — Can HR use AI to recruit, manage, and evaluate employees?"
+    url: https://www.torys.com/en/our-latest-thinking/resources/forging-your-ai-path/can-hr-use-ai-to-recruit-manage-and-evaluate-employees
+    accessed: 2026-04-26
+    reliability: high
+    key_facts_fr: |
+      AIDA fédéral en cours : oversight humain obligatoire. Loi 25 QC :
+      transparence sur décisions automatisées et profilage. Recommandations :
+      human in the loop, bias audits.
+
+  - id: boughton-ai-recruitment
+    type: legal-publication
+    title: "Boughton Law — Navigating AI in Recruitment Legal Considerations"
+    url: https://www.boughtonlaw.com/2025/07/navigating-ai-in-recruitment-legal-considerations-and-best-practices-for-employers/
+    accessed: 2026-04-26
+    reliability: high
+
+  - id: iapp-ai-hr
+    type: legal-publication
+    title: "IAPP — AI for HR in Canada and the US: What's new for 2026"
+    url: https://iapp.org/news/a/ai-for-hr-in-canada-and-the-us-what-s-new-for-2026-and-what-employers-are-doing
+    accessed: 2026-04-26
+    reliability: high
+    key_facts_fr: |
+      Convergence des principes : transparence, prevention discrimination,
+      human oversight, accountability. Recommandation : inventory et
+      classification des AI use cases.
+
+  - id: ceolaw-bill-149
+    type: legal-publication
+    title: "CEO Law — Navigating Ontario's New AI Employment Rules Bill 149"
+    url: https://blog.ceolawcanada.com/2025/11/06/navigating-ontarios-new-ai-employment-rules-what-every-business-needs-to-know-about-bill-149/
+    accessed: 2026-04-26
+    reliability: high
+    key_facts_fr: |
+      17 motifs protégés au Code droits personne Ontario. Bill 149 plus
+      large que disclosure : implique HR practices, bias prevention,
+      compliance strategies. Loi 25 QC plus large que Bill 149 ON.
+
+  - id: koskie-minsky-job-postings
+    type: legal-publication
+    title: "Koskie Minsky LLP — New Job Posting Requirements ESA 2026"
+    url: https://kmlaw.ca/new-job-posting-requirements-under-the-employment-standards-act-2000/
+    accessed: 2026-04-26
+    reliability: high
+    key_facts_fr: |
+      Sanctions jusqu'à 100 000 $. AI rejette parfois des candidats
+      qualifiés sur erreurs/hallucinations — humain doit superviser.
+
+  - id: canada-employment-ai-hiring
+    type: legal-publication
+    title: "Canada Employment Human Rights Law — AI Hiring Tools"
+    url: https://www.canadaemploymenthumanrightslaw.com/2026/01/ai-hiring-tools-law/
+    accessed: 2026-04-26
+    reliability: high
+
+  - id: shrm-2025
+    type: government-research
+    title: "SHRM 2025 Recruiting Benchmarking Report et Talent Trends"
+    url: null
+    accessed: 2026-04-26
+    reliability: high
+    note_fr: Référence sectorielle reconnue (Society for Human Resource Management).
+
+  - id: ihire-2025
+    type: industry-publication
+    title: "iHire 2025 Talent Trends — AI adoption in recruiting"
+    url: null
+    accessed: 2026-04-26
+    reliability: medium
+
+# ───── MÉTADONNÉES INTERNES ─────
+
+confidence_level: high
+source_diversity: vendor-officials + comparison-articles + legal-publications + industry-publications
+
+adaptation_needed_for_qc:
+  - Privilégier Folks RH ou Agendrix comme première brique (québécois, conformes Loi 25)
+  - Toujours inclure dans le livrable une clause type Bill 149 et Loi 25 pour les offres d'emploi
+  - Expliquer la responsabilité résiduelle de l'employeur même avec IA (motifs protégés)
+  - Documenter le « human in the loop » dans le protocole de gouvernance
+  - Auditer les outils en français — beaucoup d'outils anglo-saxons (Manatal, HireVue) sont moins performants
+  - Pour secteurs CCQ (construction) : intégration Nethris ou Employeur D obligatoire
+  - Pour OBNL et coopératives : conformité accrue au respect des principes d'inclusion
+  - Mentionner la certification Bonjour-démarche pour entreprises faisant affaires en français au Québec
+
+# ───── NOTES HONNÊTES (usage interne uniquement) ─────
+
+internal_notes_fr: |
+  ANGLE DIFFÉRENCIATEUR PRINCIPAL : CONFORMITÉ LÉGALE 2026
+  Aucun intégrateur québécois ne semble structurer son offre RH autour
+  de la conformité Loi 25 (section 12.1) + Bill 149 + droits de la
+  personne. Pourtant, les cabinets d'avocats canadiens (Osler, Torys,
+  Boughton, Ogletree, Koskie Minsky) publient régulièrement sur les
+  risques. C'est un angle commercial puissant pour 5PennyAi : « on
+  vous installe l'IA RH ET on vous protège juridiquement ».
+
+  ANGLE COMPLÉMENTAIRE : SIRH QUÉBÉCOIS PAR DÉFAUT
+  Folks RH est québécois (Sherbrooke), Agendrix aussi. À pousser
+  systématiquement comme première recommandation. Le marché est riche
+  en alternatives locales (Folks, Agendrix, Collage, SIGMA-RH) — c'est
+  rare et précieux.
+
+  FORCE DE CE PATTERN :
+  Pattern à fort ROI mesurable (heures RH économisées × taux horaire),
+  mais aussi à risque légal réel. La gouvernance N'EST PAS optionnelle —
+  elle protège le client ET 5PennyAi. Toujours inclure le protocole
+  de gouvernance dans la voie B.
+
+  ATTENTION AUX OUTILS « ANALYSE VIDÉO IA » :
+  HireVue, Hirevire, Interviewer.ai font de l'analyse de vidéo
+  asynchrone (ton de voix, expressions faciales, etc.). C'est le segment
+  LE PLUS contesté légalement (class actions aux USA). À ne PAS
+  recommander aux clients québécois sans audit légal préalable.
+  Risque réputationnel pour 5PennyAi.
+
+  POSITIONNEMENT 5PENNYAI :
+  - Voie A : audit + setup outil léger + protocole simple (199-399 $)
+  - Voie B : forfait complet conformité + multi-outils + formation,
+    2 500-5 000 $ (cher mais justifié par la gouvernance)
+  - Voie C : réservée aux grandes PME ou cas haute complexité,
+    18 000-50 000 $
+
+  CROSS-SELL :
+  Client qui adopte la voie B sur RH = excellent prospect pour :
+  - Pattern 007 (transcription d'entrevues avec Noota) → s'enchaîne
+    naturellement
+  - Pattern 003 (prise de RDV) → pour scheduling d'entrevues complexes
+  - Pattern 002 (chatbot) → pour FAQ candidats et présélection
+  - Pattern 005 (gestion courriels) → pour communications candidats
+    automatisées
+  Pattern 008 est central dans la « stack RH » d'une PME en croissance.
+
+  PIÈGES À ÉVITER :
+  - Ne JAMAIS proposer de l'IA RH sans gouvernance claire — risque
+    légal direct pour le client.
+  - Ne PAS recommander Workable + Folks RH simultanément à une micro-
+    entreprise — c'est trop. Choisir l'un ou l'autre selon le profil.
+  - Ne PAS sous-estimer le risque de discrimination algorithmique —
+    le client est responsable même si l'IA décide.
+  - Ne JAMAIS proposer des outils d'analyse vidéo IA (HireVue) sans
+    audit légal. Risque réputationnel.
+
+  CHIFFRES À NUANCER :
+  - « 51 % des organisations utilisent l'IA en recrutement » (SHRM
+    2025) inclut des usages très basiques (filtres mots-clés). Ne pas
+    présenter comme « tout le monde fait du tri IA avancé ».
+  - « Time-to-fill réduit de 6 sem à 2 sem » est un best case (claims
+    de SitePoint), à présenter avec prudence (« certaines entreprises
+    rapportent jusqu'à... »).
+  - Les économies de coût per hire (4 700 $ moyen US) ne se transposent
+    pas tel quel au Québec, où les salaires et coûts sont différents.
+
+  TENDANCE 2026 À SURVEILLER :
+  L'AIDA fédéral pourrait passer dans les 12-24 mois et imposer de
+  nouvelles obligations (oversight humain, signalement d'incidents).
+  Les SIRH québécois (Folks RH notamment) intègrent progressivement
+  plus d'IA — surveiller les évolutions pour ajuster les recommandations.
+  La concurrence pourrait s'éveiller à l'angle conformité, donc 5PennyAi
+  doit y aller vite.
+
+# ───── EMBEDDING (généré automatiquement au seed Supabase) ─────
+
+embedding: null

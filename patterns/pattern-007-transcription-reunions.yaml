@@ -1,0 +1,1539 @@
+# ═══════════════════════════════════════════════════════════════
+# Pattern 007 — Transcription et résumé automatisés de réunions
+# Format hybride : structure machine + prose humaine
+# Trois voies d'implémentation (self-serve, accompagné, custom)
+# ═══════════════════════════════════════════════════════════════
+
+id: ai-meeting-transcription-summary
+title_fr: Transcription et résumé automatisés de réunions par IA
+category: productivite-collaboration
+version: 1.0
+last_updated: 2026-04-26
+language: fr
+
+# ───── RÉSUMÉS (prose narrative pour livrable client) ─────
+
+summary_short_fr: >
+  Utilisation d'outils IA qui rejoignent les réunions Zoom, Teams ou
+  Google Meet, transcrivent automatiquement, identifient les locuteurs,
+  produisent un résumé structuré avec décisions et actions, et permettent
+  de chercher dans toutes les discussions passées comme dans un moteur
+  de recherche.
+
+summary_long_fr: |
+  La transcription et le résumé automatisés de réunions couvrent quatre
+  fonctions principales : (1) capturer la voix de tous les participants
+  d'une réunion virtuelle ou en personne, (2) la convertir en texte avec
+  identification des locuteurs (généralement 90 à 98 % de précision en
+  anglais, 90 à 95 % en français avec un outil optimisé), (3) produire
+  un résumé structuré (décisions, actions à suivre, points clés, sujets
+  abordés) en quelques secondes, (4) rendre l'ensemble cherchable et
+  partageable. Le professionnel moyen passe environ 15 heures par
+  semaine en réunion selon les données compilées par Taskade, dont
+  quatre à huit heures consacrées à la prise de notes manuelle ; les
+  outils IA matures éliminent quasi totalement cette charge. Pour le
+  Québec, deux particularités sont déterminantes : la qualité de la
+  transcription en français (Otter atteint seulement 70-75 % en
+  français selon AudiosTranscribe, vs 90-95 % pour des outils optimisés
+  français), et la conformité Loi 25 — surtout critique pour les
+  professions assujetties au secret professionnel (avocats, notaires,
+  comptables, médecins, psychothérapeutes).
+
+# ───── COMPLÉMENTARITÉ AVEC AUTRES PATTERNS ─────
+
+complementary_patterns:
+  - pattern_id: ai-email-management
+    relation_fr: |
+      Le résumé d'une réunion alimente naturellement le suivi par
+      courriel : envoi automatique du compte rendu et des actions à
+      tous les participants, brouillon d'un courriel de suivi pour
+      relancer un point. Les deux patterns s'enchaînent dans la
+      gestion administrative quotidienne.
+
+  - pattern_id: ai-appointment-scheduling
+    relation_fr: |
+      La prise de RDV automatisée alimente le calendrier de réunions;
+      ce pattern documente ce qui s'y dit. Pour les consultants,
+      coachs et professionnels qui vivent de leurs appels client, les
+      deux patterns forment un duo naturel.
+
+  - pattern_id: ai-quote-invoice-automation
+    relation_fr: |
+      Les actions discutées en réunion (changement de scope, nouveaux
+      livrables) doivent souvent se traduire en avenants au devis ou
+      en facturation supplémentaire. Le résumé structuré facilite ce
+      passage de la discussion au document commercial.
+
+# ───── CIBLAGE (tags structurés pour recherche vectorielle) ─────
+
+target_industries:
+  - consultant-solo
+  - consultant-strategie
+  - coach-business
+  - coach-vie
+  - coach-cadres
+  - therapie
+  - psychotherapie
+  - psychologie
+  - droit-avocats
+  - notaire
+  - comptabilite
+  - cabinet-comptable
+  - architecte
+  - ingenieur-conseil
+  - agence-marketing
+  - agence-evenementielle
+  - agence-rh
+  - recrutement
+  - vente-b2b
+  - dirigeant-pme
+  - chef-projet
+  - immobilier
+  - agent-immobilier
+  - courtier-immobilier
+  - courtier-assurance
+  - courtier-hypothecaire
+  - traducteur
+  - journaliste
+  - chercheur-academique
+  - formateur
+  - educateur
+  - consultant-construction
+  - dirigeant-organisme-bnl
+
+target_business_sizes:
+  - solopreneur
+  - micro-2-9
+  - petite-10-49
+  - moyenne-50-249
+
+tech_comfort_required: faible-a-moyen
+requires_existing_meetings: true
+high_priority_segments:
+  - consultants-solo-faisant-15-plus-appels-client-par-semaine
+  - cabinets-professionnels-avec-secret-professionnel-loi-25
+  - equipes-vente-b2b-faisant-discovery-calls-reguliers
+  - cadres-pme-en-meetings-15-heures-plus-par-semaine
+  - recruteurs-faisant-entrevues-multiples
+  - therapeutes-prenant-notes-cliniques-apres-seances
+
+# ───── PROBLÈME (voix du client pour narratif) ─────
+
+pain_point_fr: |
+  Je suis consultante. Je fais entre 15 et 20 appels client par semaine.
+  Pendant l'appel, je gribouille des notes sur mon iPad en essayant
+  d'écouter en même temps. Après chaque appel, je passe 20-30 minutes
+  à mettre mes notes au propre, à extraire les décisions, à envoyer
+  un courriel de suivi avec les prochaines étapes. Quand un client me
+  rappelle deux mois plus tard pour reprendre un dossier, je suis
+  obligée de fouiller dans des notes manuscrites pour me rappeler ce
+  qu'on s'était dit. Si une décision a été prise et que je ne l'ai pas
+  notée, c'est ma parole contre la sienne. Pour mes appels confidentiels
+  (clients en détresse, dossiers sensibles), je ne peux pas juste
+  utiliser n'importe quel outil — la confidentialité, c'est non
+  négociable.
+
+problem_facts:
+  - claim_fr: "Le professionnel moyen passe environ 15 heures par semaine en réunion selon les données compilées par Taskade"
+    source_id: taskade-meeting-summarizers
+  - claim_fr: "Les tech managers consacrent typiquement plus de quatre heures par semaine à résumer leurs appels selon Index"
+    source_id: index-otter-fireflies-fathom
+  - claim_fr: "Selon Till Freitag, sur 31 heures mensuelles en réunion, environ 8 à 12 heures sont consacrées à la prise de notes et au suivi"
+    source_id: till-freitag-comparison
+  - claim_fr: "Otter atteint 70-75 % de précision en français vs 90-95 % pour des outils optimisés français selon AudiosTranscribe"
+    source_id: audiostranscribe-comparison
+  - claim_fr: "La majorité des décisions et actions issues d'une réunion s'évaporent dans les 24 heures qui suivent en l'absence de notes structurées"
+    source_id: taskade-meeting-summarizers
+
+# ───── SOLUTION (prose + structure) ─────
+
+solution_summary_fr: |
+  On déploie un outil de transcription/résumé adapté au profil et aux
+  contraintes de confidentialité. Pour la majorité des PME, un outil
+  cloud grand public (Fathom gratuit, Fireflies, tl;dv) couvre les
+  besoins essentiels avec une qualité acceptable et des intégrations
+  riches (Zoom, Teams, Meet, CRM). Pour les utilisateurs qui veulent
+  éviter qu'un bot soit visible dans la liste des participants —
+  notamment lors d'appels client B2B où l'optique compte — un outil
+  local sans bot (Granola, Jamie, Meetily) capture l'audio directement
+  depuis l'appareil. Pour les francophones exigeants ou les contextes
+  multilingues, un outil optimisé français (Happy Scribe, Noota,
+  AudiosTranscribe) produit des transcriptions sensiblement plus
+  précises que les outils anglo-saxons. Pour les professions soumises
+  au secret professionnel (avocats, notaires, comptables, médecins,
+  psychothérapeutes), la conformité Loi 25 impose des choix spécifiques :
+  outil européen RGPD (Noota, Dicte.AI), traitement local (Meetily
+  open source), ou voie custom avec hébergement Canada.
+
+deployment_modes:
+  - id: bot-cloud
+    name_fr: Bot IA qui rejoint la réunion
+    description_fr: |
+      Fathom, Fireflies, Otter, tl;dv. Un participant nommé « Notetaker »
+      ou similaire rejoint la réunion via le calendrier (Zoom, Teams,
+      Meet) et capture l'audio. Setup le plus simple. Le bot étant
+      visible, à proscrire pour appels confidentiels ou contextes où
+      l'optique compte.
+
+  - id: bot-free-local
+    name_fr: Capture locale sans bot
+    description_fr: |
+      Granola, Jamie, Meetily. L'application capte l'audio directement
+      depuis l'appareil (microphone et son système). Aucun participant
+      additionnel dans la réunion. Idéal pour appels client, contextes
+      B2B exigeants, et professions sensibles.
+
+  - id: native-platform
+    name_fr: IA native de la plateforme
+    description_fr: |
+      Zoom AI Companion, Microsoft Copilot dans Teams, Google Meet
+      Gemini. Inclus dans l'abonnement de la plateforme (selon plan).
+      Pas d'outil tiers à installer. Qualité progressivement comparable
+      aux solutions dédiées en 2026.
+
+  - id: hardware-portable
+    name_fr: Dispositif d'enregistrement portable
+    description_fr: |
+      Plaud NotePin, Limitless AI Pendant. Petit dispositif porté ou
+      posé qui enregistre les conversations en personne (réunions
+      physiques, déplacements, terrain). Pour professionnels qui ont
+      autant de réunions hors écran qu'à l'écran.
+
+  - id: rgpd-eu-tools
+    name_fr: Outils européens conformes RGPD
+    description_fr: |
+      Happy Scribe (Barcelone), Noota (France), Dicte.AI (France),
+      Tixeo (France). Conformité RGPD native, hébergement UE, parfois
+      certification SOC 2 et ISO 27001. Pertinent pour cibles québécoises
+      sensibles à la Loi 25.
+
+  - id: self-hosted-open-source
+    name_fr: Auto-hébergé / open source
+    description_fr: |
+      Meetily, Whisper d'OpenAI déployé en local. Traitement 100 %
+      local sur l'ordinateur du client. Aucune donnée ne quitte
+      l'appareil. Pour cabinets professionnels avec exigences extrêmes
+      ou clients qui veulent zéro dépendance cloud.
+
+  - id: custom-agent
+    name_fr: Agent IA custom pour transcription
+    description_fr: |
+      Pipeline custom Whisper + Claude API + stockage Canada. Pour
+      cabinets ayant besoin de logique métier spécifique : extraction
+      automatique de termes juridiques vers un dossier, intégration
+      à un dossier patient électronique, génération de notes cliniques
+      structurées, conformité ordre professionnel.
+
+typical_capabilities:
+  - Transcription verbatim avec horodatage par phrase
+  - Identification automatique des différents locuteurs
+  - Résumé structuré (décisions, actions à suivre, sujets abordés)
+  - Extraction des points clés et des questions soulevées
+  - Recherche en langage naturel dans toutes les réunions passées
+  - Export vers CRM, gestionnaire de projet, prise de notes (Notion, Slack)
+  - Traduction du résumé entre français et anglais
+  - Création de clips vidéo de moments clés à partager
+  - Support des réunions en personne via micro local
+  - Coaching de communication (tl;dv, Avoma) pour équipes vente
+  - Posage automatique des actions dans Asana, ClickUp, Jira
+  - Génération de courriels de suivi à partir des décisions
+
+# ───── VOIES D'IMPLÉMENTATION (core du pattern) ─────
+
+implementation_paths:
+
+  - id: self-serve
+    name_fr: Voie A — Self-serve (autonomie)
+    ideal_profile_fr: |
+      Solopreneur ou micro-équipe (1-5 personnes), 5 à 20 réunions par
+      semaine, budget minimal. Anglais ou bilingue. Confidentialité
+      standard (pas de secret professionnel). Veut tester avant
+      d'investir. Souvent : consultants, freelances, équipes vente B2B
+      petite échelle, dirigeants PME modernes.
+    description_fr: |
+      Le client active Fathom (gratuit, illimité pour individus) ou
+      Fireflies (plan gratuit 800 minutes/mois) sur son calendrier.
+      Configuration prend 30 minutes : connexion calendrier, choix
+      des réunions à transcrire automatiquement, configuration des
+      résumés à envoyer. 5PennyAi fournit un audit qui recommande
+      l'outil selon le profil, les bons paramètres de confidentialité,
+      les modèles de prompts pour personnaliser les résumés (par
+      exemple : « pour mes appels de coaching, focus sur les blocages
+      identifiés et les engagements pris »), et la routine de revue
+      hebdomadaire.
+    setup_duration: 1-3-heures
+    client_time_required_hours:
+      min: 1
+      max: 3
+    total_cost_cad:
+      setup_range:
+        min: 0
+        max: 200
+      monthly_min: 0
+      monthly_max: 50
+      first_year: "0 à 800 $"
+    recommended_tools_priority:
+      - tool_id: fathom
+        reason_fr: Plan gratuit illimité pour individus, summaries en 30 secondes, qualité reconnue
+      - tool_id: fireflies
+        reason_fr: 800 min gratuites/mois, plus d'intégrations CRM et automatisations
+      - tool_id: granola
+        reason_fr: Bot-free pour utilisateurs Mac qui veulent éviter le bot dans réunions client
+      - tool_id: zoom-ai-companion
+        reason_fr: Inclus si client a déjà Zoom Pro+, pas d'outil additionnel à gérer
+    fivepennyai_service_fr: |
+      Audit payant (99-199 $) : analyse du profil de réunions, choix
+      d'outil, configuration, modèles de prompts personnalisés selon le
+      métier, intégrations basiques (calendrier, courriel), routine de
+      revue. Pour francophones purs, ajustement vers Happy Scribe ou
+      Noota recommandé.
+    fivepennyai_revenue_potential: faible-par-client-mais-volume-eleve
+
+  - id: accompanied
+    name_fr: Voie B — Accompagnement hybride (setup + formation)
+    ideal_profile_fr: |
+      PME 5-50 employés, ou cabinet professionnel (avocat, comptable,
+      consultant) avec contraintes de confidentialité réelles, ou
+      équipe vente B2B avec besoin de coaching et CRM sync. Volume
+      souvent 30+ réunions/semaine cumulés sur l'équipe. Souvent
+      francophones exigeants, ou multilingues (FR/EN/ES).
+    description_fr: |
+      5PennyAi configure une plateforme adaptée : Fireflies Business
+      ou tl;dv pour équipes B2B avec CRM sync, Granola pour cabinets
+      sensibles à la confidentialité, Happy Scribe ou Noota pour
+      francophones exigeants ou cabinets professionnels. Inclut :
+      audit des contraintes de confidentialité, configuration multi-
+      utilisateurs avec contrôles d'accès, modèles de comptes rendus
+      par type de réunion (1:1, vente, RH, brief client), intégration
+      CRM (Salesforce, HubSpot, Pipedrive) et gestionnaire de projet
+      (Asana, ClickUp), formation 2-3 heures (incluant éthique du
+      consentement), document de politique interne sur l'usage de la
+      transcription IA, support 30 jours.
+    setup_duration: 3-7-jours
+    client_time_required_hours:
+      min: 6
+      max: 15
+    total_cost_cad:
+      setup_range:
+        min: 1500
+        max: 4500
+      monthly_tool_range:
+        min: 50
+        max: 500
+      first_year: "2 100 à 10 500 $"
+    recommended_tools_priority:
+      - tool_id: fireflies
+        reason_fr: Meilleure intégration CRM (Salesforce, HubSpot, 40+ apps)
+      - tool_id: tldv
+        reason_fr: Conforme RGPD (Allemagne), partenariat Anthropic, 30+ langues
+      - tool_id: granola
+        reason_fr: Sans bot, qualité de notes premium, cabinets professionnels
+      - tool_id: happy-scribe
+        reason_fr: 150+ langues à 95 %+, transcription de fichiers, hébergé Barcelone
+      - tool_id: noota
+        reason_fr: Français de qualité, EU data centers, RGPD/SOC2/ISO 27001, support entrevues recrutement
+      - tool_id: avoma
+        reason_fr: Pour équipes vente avec besoins de coaching et analyse de deals
+    fivepennyai_service_fr: |
+      Forfait « Réunions IA Clé en Main » : audit confidentialité +
+      configuration outil + 3 à 5 modèles de comptes rendus + intégration
+      CRM/calendrier + formation équipe + politique interne d'usage +
+      30 jours support. Option rétention mensuelle pour ajustement
+      continu des prompts et modèles.
+    fivepennyai_revenue_potential: moyen-par-client
+
+  - id: custom
+    name_fr: Voie C — Solution sur mesure / souveraine
+    ideal_profile_fr: |
+      Cabinet d'avocats, étude de notaires, cabinet comptable, clinique
+      ou pratique professionnelle avec exigences extrêmes : secret
+      professionnel strict, hébergement Canada obligatoire, intégration
+      à un système métier propriétaire (dossier patient électronique,
+      gestionnaire de dossiers juridiques). Ou organisme avec données
+      classifiées et politique de souveraineté forte.
+    description_fr: |
+      5PennyAi déploie une solution custom : pipeline Whisper (auto-
+      hébergé ou OpenAI Whisper API zone canadienne) + Claude API
+      pour résumés + stockage chiffré sur AWS Canada Central ou
+      Supabase région Canada. Alternative auto-hébergée : Meetily
+      open source déployé sur poste de travail ou serveur interne, ce
+      qui fait que les données ne quittent jamais l'organisation.
+      Inclut : intégration au système métier client, modèles de notes
+      structurées par type de dossier, conformité documentée pour
+      l'ordre professionnel applicable, formation, gestion du
+      consentement client (générateur de clauses), audit annuel de
+      conformité.
+    setup_duration: 4-10-semaines
+    client_time_required_hours:
+      min: 25
+      max: 60
+    total_cost_cad:
+      setup_range:
+        min: 12000
+        max: 35000
+      monthly_hosting_range:
+        min: 100
+        max: 800
+      first_year: "13 200 à 44 600 $"
+    recommended_tools_priority:
+      - tool_id: anthropic-api
+        reason_fr: Claude pour qualité française et raisonnement sur contenu sensible
+      - tool_id: whisper-api
+        reason_fr: Transcription Whisper d'OpenAI ou Deepgram (zone canadienne possible)
+      - tool_id: meetily
+        reason_fr: Si client veut zéro dépendance cloud — open source, 100 % local
+      - tool_id: tixeo
+        reason_fr: Pour secteurs critiques avec exigences souverainetée stricte
+    fivepennyai_service_fr: |
+      AI Sprint 6-10 semaines : audit conformité (Loi 25, ordre
+      professionnel), conception architecture, développement, intégration
+      système métier, déploiement, formation, documentation conformité.
+      Idéal pour cabinets professionnels québécois qui veulent l'IA
+      mais ne peuvent pas, légalement ou éthiquement, utiliser un SaaS
+      cloud américain.
+    fivepennyai_revenue_potential: tres-eleve-par-client-mais-volume-faible
+    honest_note_fr: |
+      La voie custom est rarement nécessaire pour la majorité des
+      clients. À réserver aux cabinets professionnels avec contraintes
+      réelles de secret professionnel, organismes avec données
+      classifiées, ou cas où l'ordre professionnel a explicitement
+      restreint l'usage du cloud américain. Pour 80 % des clients
+      sensibles, un outil européen RGPD-compliant (Noota, Happy Scribe)
+      en voie B couvre les besoins à un coût bien moindre.
+
+# ───── OUTILS DU MARCHÉ (HIÉRARCHISÉS) ─────
+
+tools:
+
+  # ── TIER 1 : Outils tout-en-un grand public ──
+
+  - id: fathom
+    tier: 1
+    name: Fathom
+    origin: USA
+    url: https://fathom.video
+    interface_fr: limitee
+    starting_price_monthly: 0
+    currency: USD
+    target_segment_fr: Solopreneurs, freelances, équipes individuelles avec budget limité
+    strength_fr: |
+      Plan gratuit illimité pour individus (transcription, résumés,
+      action items, pas de limite de temps). Cote G2 5,0/5 sur 6 000+
+      avis. Summaries en 30 secondes après la fin de l'appel.
+      Compatible Zoom, Google Meet, Microsoft Teams. Pas d'attrape :
+      l'équipe veut faire connaître l'outil et offre un free tier
+      vraiment généreux.
+    plans:
+      - name: Free
+        price_usd: 0
+        note_fr: Illimité pour individus (transcription, summaries, action items)
+      - name: Team Edition
+        price_usd: 15
+        per_unit: "utilisateur/mois (annuel)"
+        note_fr: Coaching d'équipe, partage avancé
+      - name: Premium
+        price_usd: 29
+        per_unit: "utilisateur/mois"
+        note_fr: Toutes les fonctions avancées
+    weakness_fr: |
+      Précision moins bonne en français qu'en anglais. Bot visible
+      dans la réunion (option bot-free en bêta). Intégrations moins
+      profondes que Fireflies pour CRM.
+    affiliate_potential: a-verifier
+    source_id: zapier-best-meeting-assistants
+    used_in_paths: [self-serve, accompanied]
+    recommended_priority: 1
+    note_fr: |
+      Premier choix pour solopreneurs anglophones ou bilingues qui
+      veulent commencer gratuitement. Pour francophones purs, considérer
+      Happy Scribe ou Noota.
+
+  - id: fireflies
+    tier: 1
+    name: Fireflies.ai
+    origin: USA
+    url: https://fireflies.ai
+    interface_fr: oui
+    starting_price_usd_monthly: 0
+    currency: USD
+    target_segment_fr: Équipes vente B2B et consultants avec besoins CRM et automatisations multiples
+    strength_fr: |
+      Champion des intégrations : 40+ applications dont Salesforce,
+      HubSpot, Pipedrive, Asana, ClickUp, Notion. Plan gratuit avec
+      transcription illimitée (800 min de stockage). Précision tri
+      d'appels, sentiment analysis, AskFred (recherche conversationnelle
+      dans toutes les réunions). Multilangue : 100+ langues supportées
+      (atout pour FR/EN au Québec).
+    plans:
+      - name: Free
+        price_usd: 0
+        note_fr: 800 min stockage, transcription illimitée
+      - name: Pro
+        price_usd: 10
+        per_unit: "utilisateur/mois (annuel)"
+        note_fr: Stockage illimité, intégrations CRM
+      - name: Business
+        price_usd: 19
+        per_unit: "utilisateur/mois"
+        note_fr: Analytics avancé, sécurité enterprise
+    weakness_fr: |
+      Bot visible dans la réunion. Délai de 10-15 minutes parfois pour
+      générer la transcription (vs 30 sec pour Fathom). Mauvaise
+      gestion des accents qui se chevauchent.
+    affiliate_potential: a-verifier
+    source_id: index-otter-fireflies-fathom
+    used_in_paths: [self-serve, accompanied]
+    recommended_priority: 2
+    note_fr: |
+      Choix par défaut pour équipes vente B2B au Québec : meilleur
+      français que beaucoup d'outils anglo-saxons, intégrations
+      profondes, prix raisonnable. AskFred est un atout réel pour la
+      recherche dans les meetings passés.
+
+  - id: otter
+    tier: 1
+    name: Otter.ai
+    origin: USA
+    url: https://otter.ai
+    interface_fr: limitee
+    starting_price_monthly: 0
+    currency: USD
+    target_segment_fr: Anglophones qui valorisent transcription en temps réel et collaboration live sur les notes
+    strength_fr: |
+      Pionnier de la transcription IA. Excelle en transcription temps
+      réel collaborative (utile pour équipes prenant des notes ensemble
+      pendant l'appel). OtterPilot rejoint automatiquement les réunions
+      du calendrier. Cote précision réputée meilleure en anglais.
+    plans:
+      - name: Free
+        price_usd: 0
+        note_fr: 300 min/mois, 30 min par appel
+      - name: Pro
+        price_usd: 16.99
+        per_unit: "mois"
+        note_fr: 1 200 min/mois, fonctions avancées
+      - name: Business
+        price_usd: 30
+        per_unit: "utilisateur/mois"
+        note_fr: 6 000 min/mois, contrôles admin
+    weakness_fr: |
+      Précision en français limitée à 70-75 % selon AudiosTranscribe
+      (vs 90-95 % anglais). Pour le marché québécois francophone,
+      c'est un frein important. Plan gratuit limité (300 min/mois).
+      Notes silotées dans Otter.
+    affiliate_potential: a-verifier
+    source_id: audiostranscribe-comparison
+    used_in_paths: [self-serve, accompanied]
+    recommended_priority: 3
+    note_fr: |
+      À recommander seulement aux clients anglophones ou très majoritairement
+      en anglais. Pour francophones, Fireflies, tl;dv, Happy Scribe ou
+      Noota donnent de meilleurs résultats.
+
+  - id: tldv
+    tier: 1
+    name: tl;dv
+    origin: Allemagne
+    url: https://tldv.io
+    interface_fr: oui
+    starting_price_monthly: 0
+    currency: USD
+    target_segment_fr: Équipes vente et consulting bilingues, cibles européennes RGPD-sensibles
+    strength_fr: |
+      Plan gratuit avec enregistrements illimités. Conforme RGPD
+      (basé en Allemagne), SOC 2 certifié, partenariat Anthropic
+      pour Claude. Promesse explicite de ne pas entraîner les modèles
+      sur les données client. Plus de 30 langues supportées avec
+      traduction de la transcription. Stockage en centres de données
+      ISO 27001 avec chiffrement AES-256.
+    plans:
+      - name: Free
+        price_usd: 0
+        note_fr: Enregistrements illimités, fonctions de base
+      - name: Pro
+        price_usd: 18
+        per_unit: "utilisateur/mois (annuel)"
+        note_fr: Intégrations CRM, fonctions avancées
+      - name: Business
+        price_usd: 45
+        per_unit: "utilisateur/mois"
+        note_fr: Coaching ventes, analytics, contrôles admin
+    weakness_fr: |
+      Bot visible dans la réunion. Moins reconnu en Amérique du Nord
+      que Fireflies ou Otter.
+    affiliate_potential: a-verifier
+    source_id: tldv-officiel
+    used_in_paths: [self-serve, accompanied]
+    recommended_priority: 4
+    note_fr: |
+      Excellent compromis pour clients québécois sensibles à la Loi 25
+      sans aller jusqu'au custom : conformité RGPD vraie + qualité IA
+      Anthropic + plan gratuit généreux. Argument de vente fort :
+      « partenariat Anthropic » (même stack que 5PennyAi).
+
+  - id: granola
+    tier: 1
+    name: Granola
+    origin: Royaume-Uni
+    url: https://www.granola.ai
+    interface_fr: limitee
+    starting_price_monthly: 0
+    currency: USD
+    target_segment_fr: Solopreneurs, cadres et professionnels privacy-conscious qui font des appels client confidentiels
+    strength_fr: |
+      Approche unique : pas de bot dans la réunion. L'app Mac/Windows
+      capture l'audio depuis l'appareil, l'utilisateur prend des notes
+      manuelles pendant l'appel, et Granola enrichit ses notes avec
+      le contexte de la transcription après l'appel. Résultat : notes
+      qui semblent vraiment écrites par l'utilisateur, pas générées.
+      Cote 5/5 sur G2. Ne stocke pas l'audio, seulement les transcripts
+      (atout privacy).
+    plans:
+      - name: Basic
+        price_usd: 0
+        note_fr: Limité aux 30 derniers jours de notes
+      - name: Business
+        price_usd: 14
+        per_unit: "utilisateur/mois (annuel)"
+        note_fr: Notes illimitées, fonctions équipe
+    weakness_fr: |
+      Pas d'audio stocké, donc impossible de revenir écouter en cas
+      de doute. Intégrations moins profondes que Fireflies.
+      Principalement Mac (Windows en cours).
+    affiliate_potential: a-verifier
+    source_id: meetingnotes-best-ai-notetakers
+    used_in_paths: [self-serve, accompanied]
+    recommended_priority: 5
+    note_fr: |
+      Atout différenciateur : invisible pour les autres participants.
+      Idéal pour consultants, coachs, cadres qui ne veulent pas avoir
+      « l'air d'enregistrer » leurs interlocuteurs. À pousser pour
+      cabinets professionnels en complément ou alternative aux outils
+      RGPD européens.
+
+  - id: jamie
+    tier: 1
+    name: Jamie
+    origin: Allemagne
+    url: https://www.meetjamie.ai
+    interface_fr: oui
+    starting_price_monthly: 0
+    currency: USD
+    target_segment_fr: Professionnels privacy-first qui ont aussi des réunions en personne (pas seulement virtuelles)
+    strength_fr: |
+      Bot-free, capture audio local sur l'appareil. Fonctionne offline.
+      Supporte 70+ langues. Conforme RGPD (Allemagne). Particulièrement
+      adapté aux réunions en personne (terrain, client en visite,
+      conférences) où les outils web ne fonctionnent pas.
+    plans:
+      - name: Free
+        price_usd: 0
+        note_fr: 10 résumés par mois
+      - name: Standard
+        price_eur: 24
+        per_unit: "mois"
+        note_fr: Résumés illimités, intégrations
+    affiliate_potential: a-verifier
+    source_id: meetingnotes-best-ai-notetakers
+    used_in_paths: [self-serve, accompanied]
+    recommended_priority: 6
+    note_fr: |
+      À recommander pour professionnels qui font autant de réunions en
+      personne qu'à l'écran (immobilier, conseil terrain, formateurs).
+      RGPD est un atout secondaire pour clients québécois sensibles.
+
+  # ── TIER 1 bis : IA native des plateformes ──
+
+  - id: zoom-ai-companion
+    tier: 1
+    name: Zoom AI Companion
+    origin: USA
+    url: https://www.zoom.com/fr/products/ai-companion/
+    interface_fr: oui
+    starting_price_monthly: 0
+    currency: USD
+    target_segment_fr: Utilisateurs Zoom qui ne veulent pas ajouter d'outil tiers
+    strength_fr: |
+      Inclus dans la plupart des plans Zoom payants en 2026 (Pro,
+      Business, Enterprise). Pas de bot tiers à ajouter, pas de prix
+      additionnel. Résumés, action items, suggestions de réponses live.
+      Intégration native avec calendrier Zoom.
+    pricing_note_fr: "Inclus avec abonnement Zoom Pro et plus (à partir de ~16 $ USD/mois)"
+    weakness_fr: |
+      Qualité française inférieure aux outils dédiés français. Stockage
+      des données chez Zoom (USA). Fonctions IA évoluent rapidement
+      mais restent généralement un cran sous les leaders dédiés.
+    affiliate_potential: non-applicable
+    source_id: krisp-best-meeting-assistants
+    used_in_paths: [self-serve, accompanied]
+    recommended_priority: 1
+    note_fr: |
+      Choix de défaut si client a déjà Zoom Pro+ et n'a pas besoin
+      de profondeur. À évaluer avant de payer pour un outil dédié.
+
+  - id: copilot-teams
+    tier: 1
+    name: Microsoft Copilot dans Teams
+    origin: USA
+    url: https://www.microsoft.com/fr-ca/microsoft-365/business/microsoft-365-copilot-for-business
+    interface_fr: oui
+    starting_price_usd_monthly: 30
+    currency: USD
+    target_segment_fr: Organisations Microsoft 365 avec Teams comme plateforme principale
+    strength_fr: |
+      Intégration profonde dans Teams : résumés en temps réel, action
+      items, recap automatique pour les retardataires. Microsoft
+      affirme ne pas utiliser les données pour entraîner ses modèles.
+      Compatibilité avec Outlook et écosystème complet.
+    plans:
+      - name: Microsoft 365 Copilot
+        price_usd: 30
+        per_unit: "utilisateur/mois"
+        note_fr: Requiert abonnement Microsoft 365 Business ou Enterprise
+    weakness_fr: |
+      Coût élevé (30 $ USD/utilisateur/mois en plus de Microsoft 365).
+      Hébergement USA (à valider conformité Loi 25 selon contexte).
+    affiliate_potential: a-verifier-partenariat-microsoft
+    source_id: krisp-best-meeting-assistants
+    used_in_paths: [accompanied]
+    recommended_priority: 2
+    note_fr: |
+      À recommander si client est lourdement Microsoft 365 et veut
+      l'intégration native. Sinon, outils dédiés moins chers et
+      souvent plus performants.
+
+  # ── TIER 2 : Outils francophones / RGPD européens ──
+
+  - id: happy-scribe
+    tier: 2
+    name: Happy Scribe
+    origin: Espagne (Barcelone)
+    url: https://www.happyscribe.com/fr
+    interface_fr: oui
+    starting_price_eur_monthly: 0
+    currency: EUR
+    target_segment_fr: Clients exigeants en français ou multilingues, professions sensibles à RGPD/Loi 25
+    strength_fr: |
+      150+ langues à 95 %+ de précision (français inclus). Transcription
+      de fichiers audio/vidéo pré-enregistrés sur tous les plans (rare).
+      Bot OU bot-free dans un seul produit. Hébergé Barcelone, conforme
+      RGPD, certifié SOC 2 Type II. Cote G2 élevée.
+    plans:
+      - name: Free trial
+        price_eur: 0
+        note_fr: Essai sans carte de crédit
+      - name: Plans payants
+        price_eur: 17
+        per_unit: "mois (point d'entrée)"
+        note_fr: Volume horaire variable selon plan
+    affiliate_potential: a-verifier
+    source_id: alfred-best-meeting-notetakers
+    used_in_paths: [accompanied]
+    recommended_priority: 1
+    note_fr: |
+      Premier choix pour clients québécois exigeants en français ou
+      cabinets professionnels qui veulent qualité + conformité Loi 25.
+      Différentiateur 5PennyAi : peu d'intégrateurs québécois le
+      connaissent.
+
+  - id: noota
+    tier: 2
+    name: Noota
+    origin: France
+    url: https://www.noota.io/fr
+    interface_fr: oui
+    starting_price_eur_monthly: 0
+    currency: EUR
+    target_segment_fr: Recruteurs, équipes vente B2B, cabinets en français exigeant conformité européenne
+    strength_fr: |
+      50+ langues, fonctionne avec Google Meet, Zoom, Teams, Webex,
+      réunions en personne. Spécialisations recrutement (transcription
+      d'entrevues, rapports candidats, sync ATS), vente (signaux d'achat,
+      objections), suivi automatique par courriel. Centres de données
+      UE. Conforme RGPD, SOC 2, ISO 27001.
+    affiliate_potential: a-verifier
+    source_id: noota-officiel
+    used_in_paths: [accompanied]
+    recommended_priority: 2
+    note_fr: |
+      Excellent pour cabinets RH québécois et équipes vente francophones.
+      Les fonctions spécifiques recrutement (analyse compétences, sync
+      ATS) sont rares dans les outils anglo-saxons.
+
+  - id: audiostranscribe
+    tier: 2
+    name: AudiosTranscribe
+    origin: France
+    url: https://audiostranscribe.com
+    interface_fr: oui
+    starting_price_eur_monthly: 0
+    currency: EUR
+    target_segment_fr: Solopreneurs et PME francophones qui veulent qualité française au meilleur prix
+    strength_fr: |
+      Conçu spécifiquement pour le français : 90-95 % de précision en
+      français (vs 70-75 % pour Otter). Résumés automatiques en
+      français. Conformité RGPD. App desktop pour enregistrer
+      directement. Plan gratuit 60 min/mois. Plan Pro 19 €/mois pour
+      1 000 minutes.
+    plans:
+      - name: Free
+        price_eur: 0
+        note_fr: 60 minutes par mois
+      - name: Pro
+        price_eur: 19
+        per_unit: "mois"
+        note_fr: 1 000 minutes par mois
+    affiliate_potential: a-verifier
+    source_id: audiostranscribe-comparison
+    used_in_paths: [self-serve, accompanied]
+    recommended_priority: 3
+    note_fr: |
+      Bon rapport qualité-prix pour francophones. Encore relativement
+      jeune et moins connu, donc à valider sur volume avant déploiement
+      large.
+
+  - id: dicte-ai
+    tier: 2
+    name: Dicte.AI
+    origin: France
+    url: https://dicte.ai
+    interface_fr: oui
+    starting_price_monthly: null
+    currency: EUR
+    target_segment_fr: Organisations exigeant souveraineté européenne et modèles open source
+    strength_fr: |
+      Transcription précise avec identification locuteurs et capacités
+      d'édition. SKILLS IA pour résumés, plans d'action, analyses,
+      basés sur modèles open source ou européens. Chiffrement,
+      hébergement UE. Option DicteBOX pour contrôle maximal.
+      Spécifiquement RGPD-compliant.
+    affiliate_potential: a-verifier
+    source_id: dicte-ai-medium
+    used_in_paths: [accompanied, custom]
+    recommended_priority: 4
+    note_fr: |
+      Pour cibles très exigeantes (cabinets pro, organismes publics).
+      Différenciateur : modèles IA européens et open source (vs
+      OpenAI/Anthropic américains). Validation auprès de l'ordre
+      professionnel canadien recommandée avant utilisation pour secret
+      professionnel.
+
+  # ── TIER 2 bis : Spécialisés métiers ──
+
+  - id: avoma
+    tier: 2
+    name: Avoma
+    origin: USA
+    url: https://www.avoma.com
+    interface_fr: limitee
+    starting_price_usd_monthly: 0
+    currency: USD
+    target_segment_fr: Équipes vente B2B avec besoins de coaching et conversation intelligence
+    strength_fr: |
+      Alternative type Gong pour PME. Excelle dans la gestion d'agenda,
+      l'analyse conversationnelle, le coaching ventes (BANT/MEDDIC),
+      la détection d'objections. Reporting deals avancé.
+    affiliate_potential: a-verifier
+    source_id: krisp-best-meeting-assistants
+    used_in_paths: [accompanied]
+    recommended_priority: 1
+    note_fr: |
+      Pour équipes vente B2B sérieuses qui veulent du coaching, pas
+      seulement de la transcription. Plus complet mais plus cher que
+      Fireflies pour ce cas spécifique.
+
+  - id: rev
+    tier: 2
+    name: Rev
+    origin: USA
+    url: https://www.rev.com
+    interface_fr: limitee
+    starting_price_monthly: 0
+    currency: USD
+    target_segment_fr: Cabinets juridiques, journalistes, chercheurs avec besoin de précision verbatim et compliance
+    strength_fr: |
+      Combinaison transcription IA + transcription humaine sur demande
+      pour cas critiques. SOC 2 Type II, support attorney-client
+      privilege explicite. Recherche multi-fichiers, identification
+      de contradictions, timeline pour préparation de procès. 99 %+
+      précision avec option humaine.
+    affiliate_potential: a-verifier
+    source_id: rev-legal-transcription
+    used_in_paths: [accompanied, custom]
+    recommended_priority: 2
+    note_fr: |
+      Pour cabinets juridiques avec budget. Combinaison IA + humain
+      donne précision maximale mais coût plus élevé.
+
+  - id: sonix
+    tier: 2
+    name: Sonix
+    origin: USA
+    url: https://sonix.ai
+    interface_fr: oui
+    starting_price_monthly: null
+    currency: USD
+    target_segment_fr: Cabinets juridiques avec gros volumes de dépositions, journalistes, chercheurs
+    strength_fr: |
+      Transcription verbatim avec identification locuteurs, horodatage,
+      formatage légal. 40+ langues. SOC 2 Type II. Rédaction
+      automatique d'informations sensibles. Export Word/PDF facile.
+    affiliate_potential: a-verifier
+    source_id: sonix-lawyers
+    used_in_paths: [accompanied]
+    recommended_priority: 3
+    note_fr: Cas d'usage spécialisé (dépositions, recherche), pas tout-en-un.
+
+  - id: plaud-notepin
+    tier: 2
+    name: Plaud NotePin
+    origin: USA
+    url: https://fr.plaud.ai
+    interface_fr: oui
+    starting_price_one_time: 159
+    currency: USD
+    target_segment_fr: "Professionnels mobiles : conseillers, vendeurs terrain, médecins, journalistes"
+    strength_fr: |
+      Petit dispositif portable (clip ou aimant) qui enregistre les
+      conversations en personne. Transcription et résumé via app.
+      Plusieurs IA disponibles (Claude inclus). Conforme RGPD selon
+      vendeur. Particulièrement pertinent pour médecins (consultations),
+      conseillers (rendez-vous client), journalistes.
+    pricing_note_fr: "Achat unique du dispositif (~159 $ USD), abonnement app pour fonctions IA"
+    affiliate_potential: a-verifier
+    source_id: plaud-officiel
+    used_in_paths: [self-serve, accompanied]
+    recommended_priority: 4
+    note_fr: |
+      Hardware + software, donc différent des autres outils. Idéal
+      pour pros mobiles qui font des réunions en personne pas captées
+      par ordi. Important : sensibiliser au consentement (le dispositif
+      est discret, l'éthique d'enregistrement reste au client).
+
+  # ── TIER 3 : Self-hosted / Souverain ──
+
+  - id: meetily
+    tier: 3
+    name: Meetily
+    origin: Open source (communauté internationale)
+    url: https://meetily.ai
+    interface_fr: oui
+    starting_price_monthly: 0
+    currency: EUR
+    target_segment_fr: Organisations exigeant traitement 100 % local, cabinets professionnels, secteurs critiques
+    strength_fr: |
+      Open source (11 000+ étoiles GitHub, 121 000+ utilisateurs).
+      Traitement 100 % local sur l'appareil — les données ne quittent
+      jamais l'ordinateur. Alternative gratuite à Otter, Granola,
+      Fireflies. Compatible Zoom, Teams, Google Meet. Conforme RGPD/
+      HIPAA par conception.
+    plans:
+      - name: Community
+        price_eur: 0
+        note_fr: Auto-hébergé, gratuit, open source
+      - name: Pro
+        price_eur: 10
+        per_unit: "mois"
+        note_fr: Pour fonctions cloud optionnelles
+    affiliate_potential: non-applicable-open-source
+    source_id: meetily-officiel
+    used_in_paths: [accompanied, custom]
+    recommended_priority: 1
+    note_fr: |
+      Argument de vente fort pour cabinets pro québécois : « zéro
+      donnée envoyée dans le cloud, l'IA roule sur ton ordi ». Demande
+      compétences techniques pour setup, donc voie B ou C.
+
+  - id: tixeo
+    tier: 3
+    name: Tixeo (visioconférence + IA Mistral)
+    origin: France
+    url: https://www.tixeo.com/ia-tixeo/
+    interface_fr: oui
+    starting_price_monthly: null
+    currency: EUR
+    target_segment_fr: Secteurs critiques avec exigences souveraineté maximale (LPM, NIS2)
+    strength_fr: |
+      Visioconférence souveraine française avec assistant IA basé
+      sur Mistral AI. IA déconnectée et sans mémorisation : les
+      données ne sont pas conservées par l'outil. Adapté aux secteurs
+      avec exigences strictes en sécurité et conformité.
+    affiliate_potential: a-verifier
+    source_id: tixeo-officiel
+    used_in_paths: [custom]
+    recommended_priority: 2
+    note_fr: |
+      Cas très spécialisé. À considérer pour clients gouvernementaux
+      ou secteurs critiques (défense, infrastructures). Probablement
+      hors cible 5PennyAi standard.
+
+  # ── TIER 3 : Infrastructure pour voie custom ──
+
+  - id: anthropic-api
+    tier: 3
+    name: Anthropic API (Claude)
+    origin: USA
+    url: https://docs.anthropic.com
+    interface_fr: documentation-en
+    starting_price_monthly: 0
+    currency: USD
+    target_segment_fr: Développement custom de pipeline transcription + résumé
+    strength_fr: |
+      Claude Sonnet 4 pour qualité de résumé en français et
+      raisonnement sur contenu sensible. Compatible avec déploiement
+      AWS Canada Central via Bedrock. Stack maîtrisé par 5PennyAi.
+    pricing_note_fr: "Facturation à l'usage, 30-300 $/mois selon volume de réunions"
+    affiliate_potential: non-applicable
+    source_id: null
+    used_in_paths: [custom]
+    recommended_priority: 1
+
+  - id: whisper-api
+    tier: 3
+    name: Whisper (OpenAI ou Deepgram)
+    origin: USA
+    url: https://platform.openai.com/docs/guides/speech-to-text
+    interface_fr: documentation-en
+    starting_price_monthly: 0
+    currency: USD
+    target_segment_fr: Développement custom de transcription
+    strength_fr: |
+      Whisper d'OpenAI : transcription via API (cloud) ou auto-hébergée
+      (modèle open source). Multi-langues, qualité française correcte.
+      Deepgram alternative avec hébergement zone Canada disponible.
+    pricing_note_fr: "0,006 $/min pour Whisper API, plus économique en self-hosted"
+    affiliate_potential: non-applicable
+    source_id: null
+    used_in_paths: [custom]
+    recommended_priority: 2
+    note_fr: |
+      Option self-hosted avec Whisper open source = données qui ne
+      quittent jamais le serveur du client. Idéal pour cabinets pros
+      québécois exigeant la souveraineté.
+
+# ───── INTÉGRATEURS IA QUÉBÉCOIS (CONCURRENCE DIRECTE) ─────
+
+quebec_competitors:
+  - name: FloatAI
+    url: https://www.floatai.ca
+    positioning_fr: Automatisation pour PME québécoises; pourrait inclure transcription dans approche globale
+    note_fr: Concurrent indirect; pas spécialisé transcription mais peut en faire partie
+
+  - name: EvoluAI
+    url: https://evoluai.ca
+    positioning_fr: Solutions IA pour PME québécoises avec accent service client
+    note_fr: Concurrent sur la voie B générale, pas spécifique aux réunions
+
+  - name: IT Cares
+    url: https://itcares.ca
+    positioning_fr: Copilot Microsoft pour PME (incluant Teams)
+    note_fr: Concurrent direct si client sur Teams + Copilot
+
+  - name: CyberPerformance
+    url: https://cyberperformance.ca
+    positioning_fr: Intégration Microsoft 365 pour PME; expertise Copilot
+    note_fr: Concurrent sur clients Microsoft
+
+strategic_note_fr: |
+  La transcription/résumé de réunions est un pattern à fort impact
+  émotionnel : les utilisateurs qui ont essayé une fois ne reviennent
+  jamais en arrière. Différenciation 5PennyAi : (1) audit qui ne pousse
+  pas systématiquement le bot Fathom/Otter par défaut, mais évalue
+  vraiment le contexte (confidentialité, langue, écosystème, profession),
+  (2) compétence sur la qualité française — un client québécois qui
+  essaye Otter et obtient 70 % en français pense que « l'IA ne marche
+  pas en français » alors qu'avec Happy Scribe ou Noota il aurait 90 %+,
+  (3) angle Loi 25 + secret professionnel pour cabinets pros
+  (avocats, notaires, comptables, médecins) — angle quasi inexploité
+  par les concurrents québécois qui n'ont pas pris la mesure des risques
+  juridiques discutés par Duane Morris LLP et autres cabinets nord-américains.
+
+# ───── COÛTS (RÉSUMÉ TROIS VOIES) ─────
+
+cost_summary_cad:
+  voie_a_self_serve:
+    first_year: "0 à 800 $"
+    recurring_monthly: "0 à 50 $"
+  voie_b_accompanied:
+    first_year: "2 100 à 10 500 $"
+    recurring_monthly: "50 à 500 $"
+  voie_c_custom:
+    first_year: "13 200 à 44 600 $"
+    recurring_monthly: "100 à 800 $"
+
+# ───── VALEUR DOCUMENTÉE ─────
+
+documented_benefits:
+  weekly_meeting_hours_average: 15.5  # Taskade
+  weekly_meeting_hours_high_volume: 31  # Till Freitag mensuel ÷ 4
+  weekly_note_taking_hours_typical:
+    min: 4
+    max: 8
+  weekly_note_taking_hours_high_volume:
+    min: 2
+    max: 3  # 8-12h/mois selon Till Freitag
+  transcription_accuracy_percent_english:
+    min: 90
+    max: 98
+  transcription_accuracy_percent_french_optimized:
+    min: 90
+    max: 95
+  transcription_accuracy_percent_french_otter: 75  # AudiosTranscribe
+  legal_transcription_accuracy_percent: 99
+  typical_payback_months:
+    min: 1
+    max: 3
+  note_fr: |
+    Le ROI est immédiat et facile à mesurer : (heures de réunion par
+    semaine × pourcentage de notes manuelles évitées) = heures
+    libérées. Pour un consultant facturant 100-200 $/h, économiser
+    3 à 6 heures par semaine vaut entre 1 200 et 4 800 $ par mois,
+    ce qui rentabilise très rapidement même la voie B à 3 000 $.
+
+customer_cases:
+  - company: Tech managers (synthèse Index)
+    industry: gestionnaires-tech
+    segment_fr: Cadres en tech qui font régulièrement des appels stratégiques
+    result_fr: "Économie de plus de 4 heures par semaine sur la synthèse manuelle des appels avec un outil IA bien configuré"
+    source_id: index-otter-fireflies-fathom
+    relevance_for_micro: elevee
+    confidence: medium
+    note_fr: Source comparative, donnée corroborée par plusieurs articles
+
+  - company: Knowledge workers (Taskade synthesis)
+    industry: travail-intellectuel-multiple
+    segment_fr: Travailleurs intellectuels en moyenne, toutes industries
+    result_fr: "15,5 heures par semaine en réunion en moyenne, dont la majorité du contenu décisionnel se perd dans les 24 heures sans outil IA"
+    source_id: taskade-meeting-summarizers
+    relevance_for_micro: tres-elevee
+    confidence: medium
+
+  - company: Cabinets juridiques utilisant Rev/Sonix
+    industry: droit-avocats
+    segment_fr: Cabinets juridiques avec gros volume de dépositions et appels client
+    result_fr: "Précision 99 %, identification 75 médecins en 1 minute vs 3 heures manuel pour un cas de medical malpractice"
+    source_id: rev-legal-transcription
+    relevance_for_micro: moyenne-applicable-cabinets-pro-quebec
+    confidence: medium-high
+
+  - company: Courtiers immobiliers résidentiels (cas type)
+    industry: courtage-immobilier
+    segment_fr: Courtier solo résidentiel faisant briefings vendeurs et qualifications acheteurs
+    result_fr: |
+      Une rencontre de briefing avec un vendeur dure typiquement 60-90
+      minutes (état de la propriété, prix souhaité, motivations, calendrier,
+      stratégie de mise en marché). Sans transcription, le courtier perd
+      les nuances importantes. Avec un outil comme Fathom ou Otter, il
+      obtient un compte rendu structuré, le verse dans son CRM, et peut
+      revenir à des détails 3 mois plus tard quand le mandat évolue. Idem
+      pour les qualifications acheteurs (besoins, budget, timing, secteurs
+      ciblés). Voir le profil sectoriel dédié pour le contexte OACIQ
+      (archivage 6 ans).
+    source_id: null
+    relevance_for_micro: tres-elevee
+    confidence: medium
+    note_fr: Cas type basé sur le profil sectoriel courtage immobilier QC.
+
+# ───── RISQUES ─────
+
+risks:
+  - type: reglementaire-qc
+    title_fr: Loi 25 et secret professionnel — MAJEUR pour cabinets pros
+    severity: important
+    description_fr: |
+      Pour les avocats, notaires, comptables (CPA), médecins,
+      psychothérapeutes, dentistes et autres professions assujetties au
+      secret professionnel québécois, l'usage d'un SaaS de transcription
+      cloud américain peut constituer une violation des obligations de
+      confidentialité. Selon Duane Morris LLP, l'enregistrement
+      automatique de réunions où des stratégies juridiques sensibles
+      sont discutées risque l'exposition à des fournisseurs tiers, ce
+      qui peut faire « tomber » le privilège avocat-client.
+    mitigation_fr: |
+      Pour ces professions : (1) ne PAS utiliser Otter, Fathom, Fireflies
+      cloud par défaut, (2) privilégier les outils RGPD européens
+      (Happy Scribe, Noota) après validation auprès de l'ordre
+      professionnel, OU (3) déployer Meetily open source en local, OU
+      (4) voie custom avec hébergement Canada. Toujours obtenir le
+      consentement explicite du client AVANT d'enregistrer. Mettre les
+      bots IA OFF par défaut sur les plateformes de visioconférence.
+
+  - type: reglementaire-general
+    title_fr: Consentement des participants
+    severity: important
+    description_fr: |
+      Au Québec et au Canada, l'enregistrement d'une conversation
+      nécessite le consentement explicite ou implicite d'au moins un
+      participant. Mais l'éthique professionnelle et la Loi 25 imposent
+      souvent un consentement plus large. Plusieurs juridictions
+      américaines (Californie, Floride, Illinois, Maryland, Pennsylvanie)
+      exigent le consentement de TOUS les participants.
+    mitigation_fr: |
+      Toujours informer les participants en début de réunion qu'un outil
+      de transcription IA est actif. Configurer une mention automatique
+      dans les invitations de calendrier. Pour clients hors Québec,
+      validation juridique au cas par cas.
+
+  - type: technique
+    title_fr: Précision insuffisante en français avec outils anglophones
+    severity: moyen
+    description_fr: |
+      Otter atteint seulement 70-75 % de précision en français selon
+      AudiosTranscribe. Sur une heure de réunion, c'est environ 15 à
+      18 minutes de contenu mal transcrit, ce qui rend le résumé peu
+      fiable. Risque de perpétuer le mythe « l'IA ne marche pas en
+      français ».
+    mitigation_fr: |
+      Pour clients francophones, choisir un outil optimisé français :
+      Happy Scribe, Noota, AudiosTranscribe, ou tl;dv. Tester sur un
+      échantillon de réunions réelles avant déploiement. Documenter la
+      précision constatée pour ajuster les attentes.
+
+  - type: technique
+    title_fr: Hallucinations dans les résumés
+    severity: moyen
+    description_fr: |
+      L'IA peut inventer des détails dans le résumé : décisions qui
+      n'ont pas été prises, action items attribués à la mauvaise
+      personne, montants incorrects. Selon Duane Morris LLP, c'est un
+      vrai risque de responsabilité professionnelle pour avocats.
+    mitigation_fr: |
+      Toujours réviser le résumé avant de le partager. Ne jamais
+      l'envoyer automatiquement aux participants sans validation. Pour
+      cabinets pros : règle absolue de relecture par un humain avant
+      tout usage. Conserver la transcription verbatim comme référence
+      en cas de doute.
+
+  - type: business
+    title_fr: Optique du bot dans la liste des participants
+    severity: moyen
+    description_fr: |
+      Un bot nommé « Fathom Notetaker » ou « Fireflies » dans la liste
+      des participants peut mettre certains clients mal à l'aise,
+      surtout en B2B haut de gamme ou en contexte juridique sensible.
+      Certains adoptent un comportement « as-if-on-camera » et la
+      conversation devient moins authentique.
+    mitigation_fr: |
+      Pour appels client B2B exigeants : privilégier outils sans bot
+      (Granola, Jamie, Meetily). Sinon, prévenir explicitement le client
+      en début d'appel et offrir l'option de désactiver. Ne jamais
+      laisser le bot rejoindre une réunion à l'insu des participants.
+
+  - type: business
+    title_fr: Fatigue réunion et déresponsabilisation
+    severity: faible-a-moyen
+    description_fr: |
+      Quand tout est transcrit et résumé, certains participants
+      « décrochent » mentalement en se disant qu'ils pourront relire
+      après. La qualité de présence et d'écoute peut baisser.
+    mitigation_fr: |
+      Établir une politique d'usage interne : la transcription est un
+      filet de sécurité, pas une excuse pour ne pas écouter. Encourager
+      la prise de notes manuelle complémentaire (Granola le facilite
+      bien : on note ses propres réflexions et l'IA enrichit).
+
+  - type: business
+    title_fr: Dépendance et vendor lock-in
+    severity: faible-a-moyen
+    description_fr: |
+      Une fois des centaines d'heures de réunions stockées chez un
+      fournisseur, en sortir devient pénible : exports limités, formats
+      propriétaires, perte de la recherche cross-meetings.
+    mitigation_fr: |
+      Privilégier outils avec exports complets (Fathom, tl;dv, Happy
+      Scribe permettent d'exporter transcriptions et résumés). Faire
+      des sauvegardes périodiques des données sensibles dans un
+      stockage contrôlé par le client.
+
+# ───── PRÉREQUIS ─────
+
+prerequisites:
+  - Plateforme de visioconférence existante (Zoom, Teams, Google Meet) ou réunions en personne avec micro
+  - Calendrier connectable (Google Calendar, Outlook) pour auto-join des bots
+  - Politique de confidentialité interne mise à jour mentionnant l'usage de transcription IA
+  - Pour voie B/C : modèle de clause de consentement à inclure dans les invitations
+  - Pour professions assujetties au secret professionnel : validation de l'ordre professionnel applicable (Barreau, Chambre des notaires, OPCQ, CMQ, OPQ, OPSP, etc.)
+  - Pour entreprises avec données confidentielles : revue de la politique de confidentialité fournisseur (utilisation des données pour entraîner l'IA notamment)
+  - Connaissance basique de l'usage de calendriers et invitations de réunion
+
+# ───── SOURCES (référentiel central) ─────
+
+sources:
+  - id: zapier-best-meeting-assistants
+    type: comparison-article
+    title: "Zapier — The 10 best AI meeting assistants in 2026"
+    url: https://zapier.com/blog/best-ai-meeting-assistant/
+    accessed: 2026-04-26
+    reliability: medium
+    key_facts_fr: |
+      Fathom plan gratuit illimité, summaries instantanés. Fireflies
+      plan gratuit 800 min, paid 10 $/user/mois. Granola pour notes
+      enrichies, MeetGeek pour 3h gratuites/mois.
+
+  - id: taskade-meeting-summarizers
+    type: vendor-article
+    title: "Taskade — 13 Best AI Meeting Summarizer Tools 2026"
+    url: https://www.taskade.com/blog/ai-meeting-summarizers
+    accessed: 2026-04-26
+    reliability: medium
+    key_facts_fr: |
+      Knowledge worker moyen 15,5 h/sem en réunion, soit presque deux
+      jours de travail. Décisions évaporent en 24h sans notes.
+
+  - id: meetingnotes-best-ai-notetakers
+    type: comparison-article
+    title: "Meetingnotes — The 10 Best AI Note Takers in 2026 Tested & Ranked"
+    url: https://meetingnotes.com/blog/best-ai-note-takers
+    accessed: 2026-04-26
+    reliability: medium-high
+    key_facts_fr: |
+      Fellow top pick NYT Wirecutter. Fathom best free. Fireflies best
+      multilingue. Granola best privacy. Otter from $16.99/mo. Jamie
+      best in-person bot-free.
+
+  - id: krisp-best-meeting-assistants
+    type: vendor-article
+    title: "Krisp — Best AI Meeting Assistants 2026 Data-Backed Reviews"
+    url: https://krisp.ai/blog/best-ai-meeting-assistant/
+    accessed: 2026-04-26
+    reliability: medium
+    key_facts_fr: |
+      Fireflies pour analytics, Avoma pour sales, Granola pour task
+      integration. Standalone tools surpassent IA built-in sur
+      Word Error Rate.
+
+  - id: index-otter-fireflies-fathom
+    type: comparison-article
+    title: "Index — Otter vs Fireflies vs Fathom AI Meeting Notes Comparison"
+    url: https://www.index.dev/blog/otter-vs-fireflies-vs-fathom-ai-meeting-notes-comparison
+    accessed: 2026-04-26
+    reliability: medium
+    key_facts_fr: |
+      Tech managers passent 4h/sem à résumer des appels. Otter accuracy
+      meilleure que Fireflies/Fathom en multi-speaker.
+
+  - id: alfred-best-meeting-notetakers
+    type: integrator-article
+    title: "alfred_ — 8 Best AI Meeting Notetakers 2026"
+    url: https://get-alfred.ai/blog/best-ai-meeting-notetakers
+    accessed: 2026-04-26
+    reliability: medium
+    key_facts_fr: |
+      Happy Scribe 150+ langues, 95 %+ accuracy, EU-hosted. Fathom
+      G2 5.0/5 sur 6 000+ avis. Granola best bot-free macOS.
+
+  - id: till-freitag-comparison
+    type: integrator-article
+    title: "Till Freitag — The 11 Best AI Meeting Assistants in 2026"
+    url: https://till-freitag.com/en/blog/ai-meeting-assistants-comparison
+    accessed: 2026-04-26
+    reliability: medium
+    key_facts_fr: |
+      Professionnel moyen 31 h/mois en réunions, 8-12 h/mois en notes
+      manuelles. AI assistants save 4-8 h/sem.
+
+  - id: tldv-officiel
+    type: vendor-official
+    title: "tl;dv — Preneur de notes IA pour Zoom, Meet, Teams"
+    url: https://tldv.io/fr/
+    accessed: 2026-04-26
+    reliability: high
+    key_facts_fr: |
+      Conforme RGPD, SOC 2, partenariat Anthropic. 30+ langues. Données
+      anonymisées, jamais d'entraînement. ISO 27001 + AES-256.
+
+  - id: noota-officiel
+    type: vendor-official
+    title: "Noota — Plateforme transcription IA française"
+    url: https://www.noota.io/fr
+    accessed: 2026-04-26
+    reliability: high
+    key_facts_fr: |
+      50+ langues. Zoom, Meet, Teams, Webex, en personne. EU data
+      centers, RGPD/SOC2/ISO 27001. Spécialisations recrutement et vente.
+
+  - id: audiostranscribe-comparison
+    type: vendor-article
+    title: "AudiosTranscribe — 12 Meilleurs Outils de Transcription Réunion 2026"
+    url: https://audiostranscribe.com/blog/transcription-reunion-ia/
+    accessed: 2026-04-26
+    reliability: medium
+    note_fr: Vendeur AudiosTranscribe (donc biaisé pro-français), mais données factuelles vérifiables.
+    key_facts_fr: |
+      Otter 70-75 % en français, AudiosTranscribe 90-95 %. Plan gratuit
+      60 min/mois, Pro 19 €/mois pour 1 000 minutes.
+
+  - id: dicte-ai-medium
+    type: vendor-article
+    title: "Dicte.AI — Conformité RGPD pour vos réunions"
+    url: https://livdeo.medium.com/comprendre-et-assurer-la-conformit%C3%A9-rgpd-avec-dicte-ai-notre-guide-pour-vos-r%C3%A9unions-d782ccc20ea9
+    accessed: 2026-04-26
+    reliability: medium
+    key_facts_fr: |
+      Plateforme française, modèles open source européens, hébergement
+      UE, option DicteBOX pour contrôle maximal.
+
+  - id: meetily-officiel
+    type: vendor-official
+    title: "Meetily — Assistant IA Réunion 100% Local"
+    url: https://meetily.ai/fr
+    accessed: 2026-04-26
+    reliability: high
+    key_facts_fr: |
+      Open source, 121 000+ utilisateurs, 11 000+ étoiles GitHub.
+      Traitement 100 % local, RGPD/HIPAA par conception. Compatible
+      Zoom, Teams, Meet.
+
+  - id: tixeo-officiel
+    type: vendor-official
+    title: "Tixeo — Visioconférence souveraine + IA Mistral"
+    url: https://www.tixeo.com/ia-tixeo/
+    accessed: 2026-04-26
+    reliability: high
+    key_facts_fr: |
+      IA déconnectée et sans mémorisation. Adapté secteurs critiques
+      LPM/NIS2. Basé sur Mistral AI.
+
+  - id: rev-legal-transcription
+    type: vendor-official
+    title: "Rev — Legal Transcription for Civil Law Firms"
+    url: https://www.rev.com/solutions/law-firms
+    accessed: 2026-04-26
+    reliability: high
+    key_facts_fr: |
+      SOC 2 Type II, attorney-client privilege explicit. Identify 75
+      médecins en 1 min vs 3h manuel.
+
+  - id: sonix-lawyers
+    type: vendor-official
+    title: "Sonix — Legal Transcription Software for Lawyers 2026"
+    url: https://sonix.ai/lawyers
+    accessed: 2026-04-26
+    reliability: high
+
+  - id: plaud-officiel
+    type: vendor-official
+    title: "Plaud.ai FR — Annotez efficacement grâce à l'IA"
+    url: https://fr.plaud.ai/
+    accessed: 2026-04-26
+    reliability: high
+
+  - id: duane-morris-ai-legal
+    type: legal-publication
+    title: "Duane Morris LLP — AI Transcription Tools: Privacy, Privilege and Ethical Pitfalls"
+    url: https://www.duanemorris.com/articles/ai_transcription_tools_privacy_privilege_ethical_pitfalls_0226.html
+    accessed: 2026-04-26
+    published: 2026-02-26
+    reliability: high
+    key_facts_fr: |
+      Risques majeurs pour secret professionnel : waiver of privilege,
+      privacy law risks (multi-jurisdictions), ethical risks, professional
+      liability. Recommandation : bots IA OFF par défaut.
+
+  - id: lexology-ai-meeting
+    type: legal-publication
+    title: "Lexology — Legal and Practical Considerations for AI-Driven Meeting Transcription"
+    url: https://www.lexology.com/library/detail.aspx?g=6a9e5f74-6149-4ede-801b-d880c5a63fae
+    accessed: 2026-04-26
+    reliability: high
+
+  - id: loi-25-canlii
+    type: government-research
+    title: "Loi 25 (LQ 2021, c 25) — Protection des renseignements personnels"
+    url: https://www.canlii.org/fr/qc/legis/loisa/lq-2021-c-25/derniere/lq-2021-c-25.html
+    accessed: 2026-04-26
+    reliability: high
+
+  - id: xdpo-rgpd-iaact
+    type: integrator-article
+    title: "xDPO — RGPD NIS2 IA Act : choisir logiciel transcription"
+    url: https://www.xdpo.fr/post/rgpd-nis2-iaact-comment-choisir-logiciel-transcription-automatique
+    accessed: 2026-04-26
+    reliability: medium
+
+# ───── MÉTADONNÉES INTERNES ─────
+
+confidence_level: high
+source_diversity: vendor-officials + comparison-articles + legal-publications + government-sources
+
+adaptation_needed_for_qc:
+  - Mettre Happy Scribe et Noota en avant pour qualité française
+  - Pour cabinets pros (avocats, notaires, comptables, médecins) : approche custom ou Meetily/Tixeo, JAMAIS Otter/Fathom par défaut
+  - Souligner qu'Otter est limité à 70-75 % en français (cassure du mythe « l'IA ne marche pas en français »)
+  - Modèle de clause de consentement à inclure dans toutes les invitations de calendrier
+  - Validation auprès de l'ordre professionnel concerné avant déploiement chez un cabinet pro
+  - Préférer tl;dv (RGPD + Anthropic) si accompagnement standard pour client mid-tier sensibilité Loi 25
+
+# ───── NOTES HONNÊTES (usage interne uniquement) ─────
+
+internal_notes_fr: |
+  FORCE DE CE PATTERN :
+  Pattern à très fort impact émotionnel — les utilisateurs qui ont
+  goûté à la transcription IA ne reviennent jamais en arrière. ROI
+  immédiat et facile à mesurer (heures de réunion × % notes manuelles
+  évitées). Excellente porte d'entrée commerciale pour 5PennyAi car
+  les consultants, coachs et dirigeants comprennent immédiatement la
+  valeur.
+
+  ANGLE DIFFÉRENCIATEUR PRINCIPAL : QUALITÉ FRANÇAISE
+  Beaucoup de Québécois ont essayé Otter et conclu que « l'IA ne
+  marche pas en français » — c'est faux. Le problème n'est pas l'IA,
+  c'est qu'Otter (et Fathom dans une moindre mesure) sont optimisés
+  pour l'anglais. Happy Scribe, Noota, AudiosTranscribe, tl;dv donnent
+  des résultats nettement meilleurs. 5PennyAi peut casser ce mythe et
+  positionner son audit comme « celui qui choisit l'outil qui marche
+  vraiment dans la langue qu'on parle ».
+
+  ANGLE DIFFÉRENCIATEUR SECONDAIRE : LOI 25 + SECRET PROFESSIONNEL
+  Les cabinets d'avocats, notaires, comptables et médecins québécois
+  sont submergés par leur propre administration ET assujettis à des
+  obligations de confidentialité strictes. Aucun concurrent québécois
+  ne traite spécifiquement la question « comment utiliser l'IA de
+  transcription sans violer le secret professionnel ». 5PennyAi peut
+  se positionner comme le consultant qui maîtrise cette question avec
+  des solutions concrètes (Meetily local, voie custom Canada, outils
+  RGPD européens validés).
+
+  POSITIONNEMENT 5PENNYAI :
+  - Voie A : audit + setup outil simple (99-199 $)
+  - Voie B : forfait clé en main avec gestion confidentialité, 2 000-3 500 $
+  - Voie C : réservée aux cabinets pros avec exigences strictes,
+    8 000-30 000 $
+
+  CROSS-SELL :
+  Client qui adopte la voie B sur transcription = excellent prospect pour :
+  - Pattern 005 (gestion courriels) → automatisation des suivis post-réunion
+  - Pattern 003 (prise de RDV) → alimente le calendrier qui sera transcrit
+  - Pattern 002 (chatbot) → pour les leads qui mèneront à des réunions
+  Le pattern 007 est central dans la chaîne de productivité d'un
+  professionnel — il est rarement adopté seul à long terme.
+
+  PIÈGES À ÉVITER :
+  - Ne PAS proposer Otter par défaut à un client francophone — risque
+    de créer de la déception et de discréditer l'IA en général.
+  - Ne PAS proposer un bot cloud (Fathom, Otter) à un avocat ou notaire
+    sans avoir validé le contexte spécifique. Le risque réputationnel
+    pour 5PennyAi serait majeur en cas de fuite.
+  - Ne PAS oublier la dimension consentement — c'est facile à régler
+    (ajout de clause dans calendrier) mais critique légalement.
+
+  CHIFFRES À NUANCER :
+  - Le « 15,5 h/sem en réunion » de Taskade est une moyenne agrégée
+    — la dispersion est énorme (un développeur fait peut-être 5 h, un
+    consultant en fait 25 h).
+  - La précision « 90-95 % en français avec outils optimisés » vient
+    de comparatifs vendeurs (AudiosTranscribe), à présenter avec
+    honnêteté comme « ordre de grandeur observé ».
+
+  TENDANCE 2026 À SURVEILLER :
+  L'IA native des plateformes (Zoom AI Companion, Microsoft Copilot,
+  Google Meet Gemini) progresse vite. À moyen terme (2-3 ans),
+  beaucoup d'outils dédiés grand public (Otter, Fathom) seront
+  challengés par le « assez bon et inclus » des plateformes. Les
+  outils qui survivront sont ceux qui ont un vrai différenciateur :
+  qualité française (Happy Scribe), bot-free (Granola), conformité
+  RGPD (Noota, Dicte.AI), open source local (Meetily).
+
+# ───── EMBEDDING (généré automatiquement au seed Supabase) ─────
+
+embedding: null

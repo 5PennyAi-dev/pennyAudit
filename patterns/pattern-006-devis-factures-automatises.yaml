@@ -1,0 +1,1437 @@
+# ═══════════════════════════════════════════════════════════════
+# Pattern 006 — Génération et gestion automatisées de devis/factures
+# Format hybride : structure machine + prose humaine
+# Trois voies d'implémentation (self-serve, accompagné, custom)
+# ═══════════════════════════════════════════════════════════════
+
+id: ai-quote-invoice-automation
+title_fr: Génération et gestion automatisées de devis et factures
+category: gestion-financiere-administration
+version: 1.0
+last_updated: 2026-04-26
+language: fr
+
+# ───── RÉSUMÉS (prose narrative pour livrable client) ─────
+
+summary_short_fr: >
+  Utilisation d'outils intégrés et d'IA pour produire des devis professionnels
+  en quelques minutes, convertir automatiquement les devis acceptés en
+  factures, capturer les reçus fournisseurs sans saisie manuelle, et
+  envoyer les rappels de paiement sans intervention.
+
+summary_long_fr: |
+  La génération et la gestion automatisées de devis/factures couvre quatre
+  fonctions principales : (1) produire des devis professionnels rapidement
+  à partir de modèles ou avec assistance IA pour la rédaction, (2) convertir
+  un devis accepté en facture en un clic, (3) extraire automatiquement les
+  données des reçus et factures fournisseurs (OCR/IA), (4) automatiser les
+  rappels de paiement et les suivis. Les gains documentés sont substantiels :
+  les études publiques recensées par Distrya rapportent jusqu'à 80 % de
+  réduction du temps de traitement manuel des factures, et les cas n8n
+  documentent des passages de 6 heures par semaine à 25 minutes pour la
+  création et le suivi de factures dans une agence de 6 personnes. Pour
+  les entrepreneurs en services (contracteurs, plombiers, électriciens,
+  paysagistes, ménage), des outils spécialisés comme Jobber et ServiceM8
+  combinent devis, planification et facturation. Pour les solopreneurs et
+  travailleurs autonomes québécois, des outils locaux comme Momenteo,
+  Kiwili ou Bilano gèrent la TPS/TVQ nativement et hébergent les données
+  au Canada.
+
+# ───── COMPLÉMENTARITÉ AVEC AUTRES PATTERNS ─────
+
+complementary_patterns:
+  - pattern_id: ai-appointment-scheduling
+    relation_fr: |
+      La prise de RDV automatisée alimente directement le pipeline des
+      devis et factures : un RDV bien qualifié se transforme en visite,
+      qui produit un devis, qui devient facture. L'enchaînement
+      RDV → devis → facture forme la chaîne administrative complète d'une
+      entreprise de services.
+
+  - pattern_id: ai-text-chatbot-multichannel
+    relation_fr: |
+      Le chatbot textuel capte les demandes entrantes et qualifie les
+      besoins; ce pattern transforme la qualification en proposition
+      commerciale (devis) puis en revenu encaissé (facture). Lien
+      naturel pour les commerces et les contracteurs.
+
+  - pattern_id: ai-email-management
+    relation_fr: |
+      Les rappels de paiement et les négociations d'écarts de facturation
+      passent souvent par courriel. Le pattern courriel et celui-ci
+      sont fortement complémentaires pour la gestion administrative
+      complète.
+
+# ───── CIBLAGE (tags structurés pour recherche vectorielle) ─────
+
+target_industries:
+  - construction
+  - renovation
+  - plomberie
+  - electricite
+  - chauffage-climatisation
+  - paysagement
+  - entretien-paysager
+  - menage-residentiel
+  - menage-commercial
+  - peinture
+  - toiture
+  - extermination
+  - mecanique-automobile
+  - reparation-electromenagers
+  - photographe
+  - videaste
+  - graphiste-freelance
+  - developpeur-freelance
+  - redacteur
+  - traducteur
+  - consultant-solo
+  - coach-business
+  - coach-vie
+  - therapie
+  - nutritionniste
+  - architecte
+  - ingenieur-conseil
+  - agence-marketing
+  - agence-evenementielle
+  - traiteur
+  - restaurant
+  - commerce-en-ligne
+  - commerce-detail
+  - distribution-b2b
+  - manufacturier-petit
+  - cabinet-comptable
+  - droit-avocats
+  - notaire
+
+target_business_sizes:
+  - solopreneur
+  - micro-2-9
+  - petite-10-49
+
+tech_comfort_required: faible-a-moyen
+requires_existing_accounting_software: false
+high_priority_segments:
+  - contracteurs-faisant-encore-devis-papier-ou-excel
+  - solopreneurs-quebecois-cherchant-outil-tpsvtvq-natif
+  - pme-services-avec-volume-50-plus-factures-par-mois
+  - entreprises-perdant-temps-relances-paiement
+
+# ───── PROBLÈME (voix du client pour narratif) ─────
+
+pain_point_fr: |
+  Je suis plombier. Quand je rentre d'une journée de chantier, je dois
+  encore taper mes soumissions. Excel, copier-coller du contrat type,
+  modifier les quantités, recalculer les taxes, exporter en PDF, envoyer
+  par courriel. Une soumission me prend 30 à 45 minutes. Si le client
+  accepte, je recommence pour produire la facture. Et après, c'est la
+  course aux paiements en retard : je rappelle, j'envoie un courriel, je
+  rappelle encore. Trois clients sur dix paient après la date d'échéance.
+  Mes reçus de matériaux s'empilent dans le coffre du camion. Mon
+  comptable me chicane à chaque fin de mois. Je sais que ça pourrait être
+  plus simple, mais je n'ai pas le temps d'apprendre un nouveau logiciel.
+
+problem_facts:
+  - claim_fr: "Le traitement manuel d'une facture prend en moyenne 15 à 20 minutes vs 30 secondes avec capture IA, selon Lleverage"
+    source_id: lleverage-roi-invoice
+  - claim_fr: "Les études publiques compilées rapportent jusqu'à 80 % de réduction du temps de traitement manuel des factures"
+    source_id: distrya-ai-roadmap
+  - claim_fr: "Le taux d'erreur moyen en saisie manuelle de facture est de 1,6 %, et chaque erreur coûte jusqu'à 53 $ à corriger selon Lindy"
+    source_id: lindy-invoice-processing
+  - claim_fr: "Une agence de 6 personnes documentée par n8n est passée de 6 h/semaine à 25 min/semaine sur création et suivi de factures, et de 25 % à 8 % de paiements en retard"
+    source_id: n8n-workflows-smb
+  - claim_fr: "82 % des micro-entreprises (<5 employés) croient que l'IA ne s'applique pas à leur business, alors que la facturation en bénéficie directement"
+    source_id: sba-ai-adoption-2025
+
+# ───── SOLUTION (prose + structure) ─────
+
+solution_summary_fr: |
+  On déploie un outil de gestion intégré qui couvre, selon le profil :
+  (1) un module de devis avec modèles réutilisables, conversion en un clic
+  vers facture, signature électronique du client, (2) la facturation
+  récurrente, les paiements en ligne intégrés et les rappels automatiques,
+  (3) la capture des reçus fournisseurs par photo (OCR/IA) avec
+  catégorisation automatique. Pour un contracteur ou un métier de service,
+  on privilégie un outil tout-en-un sectoriel (Jobber, ServiceM8) qui
+  combine planification, devis et facturation. Pour un solopreneur
+  québécois en services intellectuels, un outil québécois léger (Momenteo,
+  Kiwili) couvre l'essentiel avec TPS/TVQ native. Pour une PME avec
+  comptable existant, on conserve le moteur comptable (QuickBooks, Sage,
+  Acomba) et on ajoute une couche IA d'extraction (Hubdoc, Dext) sur les
+  factures fournisseurs.
+
+deployment_modes:
+  - id: integrated-field-service
+    name_fr: Plateforme de gestion de service tout-en-un
+    description_fr: |
+      Jobber, ServiceM8, Housecall Pro. Devis, planning, dispatch,
+      facturation et paiement dans un seul outil. Optimisé pour les
+      métiers où le devis se fait sur le terrain (contracteurs, plombiers,
+      électriciens, paysagistes).
+
+  - id: invoicing-saas-quebec
+    name_fr: SaaS de facturation québécois pour solopreneurs
+    description_fr: |
+      Momenteo, Kiwili, Bilano, Libellum. Outils légers et abordables
+      conçus pour le marché québécois (TPS/TVQ native, normes locales).
+      Pour travailleurs autonomes et petites équipes en services
+      intellectuels.
+
+  - id: full-accounting-platform
+    name_fr: Plateforme comptable complète
+    description_fr: |
+      QuickBooks Online, Sage 50, Acomba, Xero. Le devis et la facture
+      ne sont qu'un module parmi d'autres (paie, inventaire, états
+      financiers). Privilégié si la comptabilité est déjà en place.
+
+  - id: ocr-receipt-layer
+    name_fr: Couche IA d'extraction de factures fournisseurs
+    description_fr: |
+      Hubdoc, Dext, AutoEntry, Datamolino. S'ajoute par-dessus une plateforme
+      comptable existante pour automatiser la saisie des reçus et factures
+      fournisseurs (côté dépenses, pas du côté ventes).
+
+  - id: ap-automation-platform
+    name_fr: Plateforme AP (comptes fournisseurs) automatisée
+    description_fr: |
+      BILL, Tipalti, Ramp, Stampli. Pour PME avec volume important de
+      factures fournisseurs : extraction IA, routage d'approbation,
+      paiement programmé. Plus complet que les couches OCR mais plus
+      coûteux.
+
+  - id: custom-agent
+    name_fr: Agent IA custom pour facturation
+    description_fr: |
+      Workflow custom (Make, n8n, ou Anthropic API) pour cas spécifiques :
+      facturation déclenchée par événement (livraison, fin de chantier),
+      extraction de données vers ERP custom, logique de pricing avancée.
+
+typical_capabilities:
+  - Création de devis à partir de modèles personnalisés réutilisables
+  - Conversion automatique d'un devis accepté en facture
+  - Signature électronique du devis par le client
+  - Calcul automatique TPS/TVQ et autres taxes locales
+  - Facturation récurrente (abonnements, contrats d'entretien)
+  - Paiement en ligne intégré (carte de crédit, virement, Apple/Google Pay)
+  - Rappels automatiques de paiement par courriel ou SMS
+  - Capture de reçus fournisseurs par photo (mobile)
+  - Extraction OCR/IA des données de factures fournisseurs (totaux, taxes, ligne par ligne)
+  - Catégorisation automatique des dépenses
+  - Synchronisation avec le logiciel comptable
+  - Tableau de bord trésorerie en temps réel
+  - Suggestions IA pour ajuster les prix ou détecter des opportunités d'upsell (Jobber Copilot)
+  - Intégration au CRM et au calendrier
+
+# ───── VOIES D'IMPLÉMENTATION (core du pattern) ─────
+
+implementation_paths:
+
+  - id: self-serve
+    name_fr: Voie A — Self-serve (autonomie)
+    ideal_profile_fr: |
+      Solopreneur ou micro-entreprise (1-3 personnes), volume de 10 à 50
+      factures par mois, budget serré, confort tech moyen. Veut migrer
+      hors d'Excel/Word vers un outil moderne sans accompagnement.
+      Souvent au Québec : travailleur autonome en services intellectuels
+      ou entrepreneur en service à domicile débutant.
+    description_fr: |
+      Le client choisit lui-même un SaaS de facturation adapté à son
+      profil : Wave (gratuit, 100 % en ligne) ou Momenteo (québécois,
+      pour pigistes) pour services intellectuels; Square Invoices (gratuit
+      avec frais de transaction) pour commerce et services à la pièce;
+      Jobber Core ou ServiceM8 plan gratuit pour métiers de service à
+      faible volume. 5PennyAi fournit un audit qui recommande le bon
+      outil, identifie les modèles de devis à créer, et documente la
+      routine quotidienne (où entrer les reçus, comment relancer les
+      paiements, comment exporter pour le comptable).
+    setup_duration: 4-8-heures
+    client_time_required_hours:
+      min: 4
+      max: 12
+    total_cost_cad:
+      setup_range:
+        min: 0
+        max: 300
+      monthly_min: 0
+      monthly_max: 80
+      first_year: "0 à 1 260 $"
+    recommended_tools_priority:
+      - tool_id: wave
+        reason_fr: Gratuit, canadien (Toronto), parfait pour démarrer
+      - tool_id: momenteo
+        reason_fr: 100 % québécois, conçu pour travailleurs autonomes, TPS/TVQ native
+      - tool_id: square-invoices
+        reason_fr: Gratuit (frais à la transaction), idéal pour commerce et services à la pièce
+      - tool_id: jobber
+        reason_fr: Pour entrepreneurs en services à domicile à faible volume; plan Core 39 $ USD/mois
+      - tool_id: servicem8
+        reason_fr: Plan gratuit jusqu'à 30 jobs/mois, alternative légère à Jobber
+    fivepennyai_service_fr: |
+      Audit payant (99-299 $) : analyse du volume et du type de
+      facturation, recommandation du bon outil, modèles de devis et de
+      facture personnalisés, guide de la routine quotidienne, configuration
+      des taxes québécoises, intégration courriel pour rappels automatiques.
+    fivepennyai_revenue_potential: faible-par-client-mais-volume-eleve
+
+  - id: accompanied
+    name_fr: Voie B — Accompagnement hybride (setup + formation)
+    ideal_profile_fr: |
+      PME 5-25 employés, ou entrepreneur en services avec 2-5 techniciens
+      sur la route. Volume de 50 à 300 factures par mois. Souvent encore
+      sur Excel ou un outil mal configuré. Besoin d'aller au-delà du
+      setup de base : intégrations multiples, automatisations, formation
+      d'équipe.
+    description_fr: |
+      5PennyAi configure une plateforme adaptée au profil : Jobber Connect
+      ou Grow pour métiers de service (avec Jobber Copilot IA, GPS,
+      QuickBooks sync), QuickBooks Online + Hubdoc pour PME en services
+      intellectuels, Acomba ou Kiwili pour PME québécoise voulant outil
+      local. Inclut : import des clients existants, création des modèles
+      de devis et de facture (3-5 templates), configuration des paiements
+      en ligne (Stripe, Square, Moneris), automatisations de rappels,
+      intégration avec courriel et calendrier, formation 2-3 heures de
+      l'équipe, support 30 jours.
+    setup_duration: 2-5-jours
+    client_time_required_hours:
+      min: 6
+      max: 12
+    total_cost_cad:
+      setup_range:
+        min: 1500
+        max: 4000
+      monthly_tool_range:
+        min: 50
+        max: 350
+      first_year: "2 100 à 8 200 $"
+    recommended_tools_priority:
+      - tool_id: jobber
+        reason_fr: Meilleur tout-en-un pour métiers de service, Jobber Copilot IA inclus
+      - tool_id: quickbooks-online
+        reason_fr: Standard nord-américain, Intuit Intelligence (IA), écosystème comptables
+      - tool_id: kiwili
+        reason_fr: 100 % québécois, ERP léger, support en français
+      - tool_id: acomba
+        reason_fr: Référence québécoise PME (40 000 utilisateurs), modulaire
+      - tool_id: hubdoc
+        reason_fr: Capture reçus fournisseurs, gratuit avec Xero, ajout naturel à QuickBooks
+      - tool_id: dext
+        reason_fr: Capture IA plus précise que Hubdoc, idéal si volume reçus élevé
+    fivepennyai_service_fr: |
+      Forfait "Devis & Facturation IA Clé en Main" : audit + configuration
+      de la plateforme + import clients/produits + 3 à 5 modèles de devis
+      personnalisés + paiement en ligne + automatisations rappels +
+      capture reçus IA + formation 2-3 h + 30 jours support. Option
+      rétention mensuelle pour ajustements continus.
+    fivepennyai_revenue_potential: moyen-par-client
+
+  - id: custom
+    name_fr: Voie C — Développement sur mesure
+    ideal_profile_fr: |
+      PME avec logique métier complexe : pricing dynamique selon volume
+      ou client, facturation déclenchée par événement (livraison, fin
+      de chantier IoT, complétion de projet), extraction de données vers
+      ERP propriétaire, ou exigence Loi 25 stricte avec hébergement
+      canadien. Souvent : manufacturiers, distributeurs B2B, entreprises
+      de services techniques avec volume élevé (300+ factures/mois).
+    description_fr: |
+      5PennyAi développe un agent IA custom avec Anthropic API + APIs
+      du logiciel comptable existant + plateforme d'orchestration (Make,
+      n8n, ou code custom). L'agent peut : générer des devis à partir
+      de spécifications client en langage naturel, extraire les données
+      des bons de commande PDF, déclencher la facturation automatique
+      lors d'événements métier (livraison confirmée, projet livré),
+      router les exceptions vers un humain, faire le rapprochement
+      bancaire intelligent. Hébergement sur infrastructure contrôlée
+      (Vercel, Supabase, AWS Canada) pour conformité Loi 25.
+    setup_duration: 4-8-semaines
+    client_time_required_hours:
+      min: 20
+      max: 50
+    total_cost_cad:
+      setup_range:
+        min: 12000
+        max: 30000
+      monthly_hosting_range:
+        min: 150
+        max: 600
+      first_year: "13 800 à 37 200 $"
+    recommended_tools_priority:
+      - tool_id: anthropic-api
+        reason_fr: Claude pour extraction et raisonnement sur documents financiers
+      - tool_id: make-zapier
+        reason_fr: Orchestration des workflows multi-systèmes
+      - tool_id: bill-tipalti
+        reason_fr: Si AP automation complète requise (volume fournisseurs élevé)
+    fivepennyai_service_fr: |
+      AI Sprint 4-8 semaines : conception, développement, intégration
+      ERP, déploiement, formation. Idéal pour PME québécoises voulant
+      l'IA mais ayant besoin de logique métier que Jobber/QuickBooks
+      ne couvrent pas, ou exigeant hébergement Canada strict.
+    fivepennyai_revenue_potential: eleve-par-client-mais-volume-faible
+    honest_note_fr: |
+      La voie custom est rarement nécessaire pour les micro-entreprises et
+      petites PME. À réserver aux cas avec volume élevé (300+ factures/mois),
+      logique unique non couverte par les SaaS, ou contrainte Loi 25
+      forte. Pour 80 % des clients, la voie B couvre amplement les besoins.
+
+# ───── OUTILS DU MARCHÉ (HIÉRARCHISÉS) ─────
+
+tools:
+
+  # ── TIER 1 : Outils tout-en-un grand public ──
+
+  - id: jobber
+    tier: 1
+    name: Jobber
+    origin: Canada (Edmonton)
+    url: https://www.getjobber.com
+    interface_fr: oui
+    starting_price_usd_monthly: 39
+    currency: USD
+    target_segment_fr: Entrepreneurs en services à domicile (1-15 employés) — plomberie, électricité, CVCA, paysagement, ménage, peinture, extermination
+    strength_fr: |
+      Plateforme tout-en-un dominante en Amérique du Nord pour les
+      métiers de service. Combine devis, planning, dispatch, facturation,
+      paiements et CRM. Inclut depuis 2025 « Jobber Copilot », un
+      assistant IA qui aide à tarifer les devis, suggère des opportunités
+      d'upsell, et nudge sur la communication client. Frais de paiement :
+      2,9 % + 0,30 $ par carte, 1 % par virement ACH.
+    plans:
+      - name: Core
+        price_usd: 39
+        per_unit: "mois (1 utilisateur)"
+        note_fr: Devis, factures, planning de base, prise de RDV en ligne
+      - name: Connect (équipe)
+        price_usd: 169
+        per_unit: "mois (5 utilisateurs)"
+        note_fr: Ajoute GPS, sync QuickBooks, rappels automatiques
+      - name: Grow (équipe)
+        price_usd: 349
+        per_unit: "mois (10 utilisateurs)"
+        note_fr: Job costing, SMS deux voies, suivi commercial, devis avancés
+      - name: Plus (équipe)
+        price_usd: 599
+        per_unit: "mois (15 utilisateurs)"
+        note_fr: Marketing Suite et AI Receptionist inclus
+    addons_fr: |
+      AI Receptionist 99 $/mois (sauf plan Plus), Marketing Suite 79 $/mois
+      (sauf plan Plus), utilisateurs additionnels 29 $/mois chacun.
+    weakness_fr: |
+      Prix en USD (douloureux pour les entreprises canadiennes avec le
+      taux de change). Interface anglaise principalement, traductions
+      françaises partielles. Données hébergées au Canada (atout Loi 25).
+    affiliate_potential: a-verifier
+    source_id: jobber-pricing-2026
+    used_in_paths: [self-serve, accompanied]
+    recommended_priority: 1
+    note_fr: |
+      Premier choix pour entrepreneurs en services à domicile au Québec,
+      surtout dans l'écosystème anglophone ou bilingue. Le fait que
+      Jobber soit canadien (Edmonton) avec données au Canada est un
+      atout pour la Loi 25, à mettre en avant.
+
+  - id: servicem8
+    tier: 1
+    name: ServiceM8
+    origin: Australie
+    url: https://www.servicem8.com
+    interface_fr: limitee
+    starting_price_usd_monthly: 0
+    currency: USD
+    target_segment_fr: Petites équipes de services à domicile, métiers de la trade, cleaners
+    strength_fr: |
+      Approche modulaire : on commence avec un plan de base et on ajoute
+      des fonctions au fur et à mesure. Devis, planification, facturation,
+      formulaires, signatures électroniques. Plan gratuit à 30 jobs par
+      mois (excellent pour tester ou pour très petits volumes).
+    plans:
+      - name: Free
+        price_usd: 0
+        note_fr: Jusqu'à 30 jobs par mois, 1 utilisateur
+      - name: Plans payants
+        price_usd: 29
+        per_unit: "mois (point d'entrée)"
+        note_fr: De 29 $ à 349 $/mois selon volume et fonctions
+    weakness_fr: |
+      Application principalement iOS (version Lite Android). Interface en
+      anglais. Moins reconnu au Québec que Jobber.
+    affiliate_potential: a-verifier
+    source_id: procured-jobber-alternatives
+    used_in_paths: [self-serve, accompanied]
+    recommended_priority: 2
+    note_fr: |
+      Alternative économique à Jobber. Le plan gratuit jusqu'à 30 jobs
+      par mois est un atout réel pour démarrer.
+
+  - id: quickbooks-online
+    tier: 1
+    name: QuickBooks Online
+    origin: USA (Intuit)
+    url: https://quickbooks.intuit.com/fr-ca/
+    interface_fr: oui
+    starting_price_cad_monthly: 24
+    currency: CAD
+    target_segment_fr: Toutes tailles de PME, particulièrement celles avec un comptable établi
+    strength_fr: |
+      Standard de fait au Canada. Adopté par la majorité des cabinets
+      comptables, ce qui simplifie énormément la collaboration. Inclut
+      depuis 2025 « Intuit Intelligence » : assistants IA pour la
+      catégorisation des opérations (IA comptable), la prospection client
+      (IA client), et l'interprétation de rapports financiers (IA
+      financière). TPS/TVQ gérée nativement, intégration banques
+      canadiennes.
+    plans:
+      - name: EasyStart
+        price_cad: 24
+        per_unit: "mois (1 utilisateur)"
+        note_fr: Facturation, dépenses, rapports de base
+      - name: Essentials
+        price_cad: 54
+        per_unit: "mois (3 utilisateurs)"
+        note_fr: Gestion fournisseurs, suivi du temps
+      - name: Plus
+        price_cad: 60
+        per_unit: "mois (5 utilisateurs)"
+        note_fr: Inventaire, rentabilité par projet
+      - name: Advanced
+        price_cad: null
+        note_fr: Sur devis, 25 utilisateurs, automatisation avancée
+    affiliate_potential: confirme
+    source_id: bankeo-comptables-quebec
+    used_in_paths: [self-serve, accompanied]
+    recommended_priority: 3
+    note_fr: |
+      Si le comptable du client utilise déjà QuickBooks (cas le plus
+      fréquent), c'est presque toujours le bon choix. Migration future
+      vers d'autres outils est coûteuse, donc bien valider avant.
+
+  - id: wave
+    tier: 1
+    name: Wave
+    origin: Canada (Toronto)
+    url: https://www.waveapps.com
+    interface_fr: oui
+    starting_price_monthly: 0
+    currency: CAD
+    target_segment_fr: Travailleurs autonomes, pigistes, micro-entreprises avec budget zéro
+    strength_fr: |
+      Comptabilité et facturation gratuites sans limite ni publicité.
+      Canadien (Toronto). Conforme aux exigences ARC et Revenu Québec.
+      Excellent point de départ pour solopreneur. Frais à la transaction
+      uniquement pour paiements en ligne.
+    plans:
+      - name: Comptabilité + facturation
+        price_cad: 0
+        note_fr: Gratuit, illimité
+      - name: Paiements
+        price_cad: 0
+        note_fr: Frais par transaction (carte ~2,9 %)
+    affiliate_potential: a-verifier
+    source_id: bankeo-comptables-quebec
+    used_in_paths: [self-serve]
+    recommended_priority: 4
+    note_fr: |
+      Premier choix pour solopreneur québécois avec budget zéro qui ne
+      veut pas d'outil québécois local. Migration vers QuickBooks ou
+      Acomba possible plus tard si croissance.
+
+  - id: square-invoices
+    tier: 1
+    name: Square Invoices
+    origin: USA
+    url: https://squareup.com/ca/fr/invoices
+    interface_fr: oui
+    starting_price_monthly: 0
+    currency: CAD
+    target_segment_fr: Commerces et services à la pièce qui acceptent déjà Square pour paiements
+    strength_fr: |
+      Gratuit pour générer des factures et devis. Frais à la transaction
+      seulement (~2,65 % carte). Idéal si Square est déjà utilisé pour
+      le terminal de paiement en magasin. Création de factures rapides
+      depuis l'application mobile.
+    affiliate_potential: a-verifier
+    source_id: null
+    used_in_paths: [self-serve]
+    recommended_priority: 5
+    note_fr: |
+      Naturel si le client a déjà un terminal Square. Sinon, Wave est
+      souvent meilleur pour services et Momenteo pour pigistes.
+
+  # ── TIER 2 : Outils québécois spécialisés ──
+
+  - id: momenteo
+    tier: 2
+    name: Momenteo
+    origin: Québec
+    url: https://momenteo.com
+    interface_fr: oui
+    starting_price_cad_monthly: 0
+    currency: CAD
+    target_segment_fr: Travailleurs autonomes et pigistes québécois (services intellectuels surtout)
+    strength_fr: |
+      100 % québécois, conçu spécifiquement pour les travailleurs autonomes.
+      Génère automatiquement les données fiscales nécessaires (TPS, TVQ,
+      acomptes provisionnels). Approche différente : pas un logiciel
+      comptable complet, mais un outil de facturation intelligent qui
+      remplit les besoins fiscaux du pigiste.
+    affiliate_potential: a-verifier
+    source_id: bankeo-comptables-quebec
+    used_in_paths: [self-serve, accompanied]
+    recommended_priority: 1
+    note_fr: |
+      Excellent choix pour pigistes québécois. À mettre en avant comme
+      « outil de chez nous » qui comprend la fiscalité locale. Le profil
+      cible est précis (pigiste/freelance) — pour métiers de service à
+      domicile, Jobber/ServiceM8 plus adaptés.
+
+  - id: kiwili
+    tier: 2
+    name: Kiwili
+    origin: Québec
+    url: https://www.kiwili.com
+    interface_fr: oui
+    starting_price_cad_monthly: 0
+    currency: CAD
+    target_segment_fr: PME québécoises 1-25 employés voulant ERP léger 100 % local (cabinets, agences, petites entreprises de services)
+    strength_fr: |
+      ERP en ligne 100 % québécois, tout-en-un : facturation, devis,
+      comptabilité, gestion de projets, feuilles de temps. Devis →
+      facture en un clic. Modèles personnalisables. Conformité aux normes
+      québécoises de facturation. Support en français, équipe québécoise
+      réactive (5 étoiles Google).
+    plans:
+      - name: Free
+        price_cad: 0
+        note_fr: Plan gratuit limité disponible
+      - name: Plans payants
+        price_cad: null
+        note_fr: Tarification progressive selon fonctions et utilisateurs (consulter site)
+    affiliate_potential: a-verifier
+    source_id: kiwili-presentation
+    used_in_paths: [self-serve, accompanied]
+    recommended_priority: 2
+    note_fr: |
+      À mettre en avant pour PME québécoises qui veulent un seul outil
+      pour facturation + projets + temps + compta. Différenciateur
+      important : entreprise québécoise, support français, données au
+      Canada.
+
+  - id: acomba
+    tier: 2
+    name: Acomba
+    origin: Québec
+    url: https://www.acomba.com
+    interface_fr: oui
+    starting_price_cad_monthly: 80
+    currency: CAD
+    target_segment_fr: PME québécoises en construction, manufacturier, distribution, commerce de détail
+    strength_fr: |
+      Référence québécoise utilisée par plus de 40 000 PME et 1 200
+      cabinets comptables. Approche modulaire : on choisit les modules
+      dont on a besoin (compta, paie, inventaire, facturation, point de
+      vente, plus de 40 modules complémentaires). Conformité native aux
+      normes fiscales québécoises (TPS/TVQ, CNESST, RRQ, RQAP). Réseau
+      de revendeurs locaux pour le support en français.
+    plans:
+      - name: Acomba GO
+        price_cad: null
+        note_fr: Solution hybride web/bureau, prix variable selon modules
+      - name: Modules
+        price_cad: 80
+        per_unit: "mois (à partir de)"
+        note_fr: Prix variable selon les modules choisis
+    affiliate_potential: a-verifier-revendeur
+    source_id: acomba-officiel
+    used_in_paths: [accompanied]
+    recommended_priority: 3
+    note_fr: |
+      Privilégié pour PME québécoises traditionnelles (construction,
+      manuf, commerce détail), surtout si déjà ancré dans le réseau de
+      comptables. Moins moderne en interface que Kiwili mais beaucoup
+      plus profond fonctionnellement.
+
+  - id: bilano
+    tier: 2
+    name: Bilano
+    origin: Québec (Sherbrooke)
+    url: https://www.bilano.ca
+    interface_fr: oui
+    starting_price_cad_monthly: 39.95
+    currency: CAD
+    target_segment_fr: PME québécoises voulant comptabilité moderne 100 % locale, hébergée au Canada
+    strength_fr: |
+      Logiciel comptable québécois (Sherbrooke), pensé pour le marché
+      local. TPS/TVQ cochées par défaut sur chaque ligne. Devis → facture
+      en un clic. Hébergé au Canada (atout Loi 25). Tarif unique simple :
+      39,95 $/mois, toutes fonctionnalités incluses, pas de prix qui
+      double après 6 mois. 8 rapports en un clic pour le comptable.
+    plans:
+      - name: Forfait unique
+        price_cad: 39.95
+        per_unit: mois
+        note_fr: Toutes les fonctionnalités, premier mois gratuit
+    affiliate_potential: a-verifier
+    source_id: bilano-officiel
+    used_in_paths: [self-serve, accompanied]
+    recommended_priority: 4
+    note_fr: |
+      Alternative québécoise moderne intéressante pour PME qui veulent
+      un outil simple, prévisible (un seul prix), local et hébergé au
+      Canada. Idéal pour clients sensibles à la Loi 25.
+
+  - id: gem-books
+    tier: 2
+    name: GEM-BOOKS
+    origin: Québec
+    url: https://www.gem-books.com
+    interface_fr: oui
+    starting_price_monthly: null
+    currency: CAD
+    target_segment_fr: PME et solopreneurs québécois (26 000+ utilisateurs)
+    strength_fr: |
+      Solution infonuagique québécoise. Tenue de livres, facturation,
+      signatures électroniques, gestion d'entreprise. Outils d'aspiration
+      des données depuis Sage 50 et Acomba (utile pour migrations).
+    affiliate_potential: a-verifier
+    source_id: gem-books-faq
+    used_in_paths: [self-serve, accompanied]
+    recommended_priority: 5
+    note_fr: |
+      Alternative québécoise crédible. À considérer pour clients qui
+      veulent local et abordable. Validation des prix recommandée car
+      tarification non transparente.
+
+  # ── TIER 2 bis : Plateformes comptables internationales ──
+
+  - id: xero
+    tier: 2
+    name: Xero
+    origin: Nouvelle-Zélande
+    url: https://www.xero.com/ca/
+    interface_fr: oui
+    starting_price_cad_monthly: 55
+    currency: CAD
+    target_segment_fr: PME en croissance avec plusieurs employés et besoins multi-devises
+    strength_fr: |
+      Concurrent direct de QuickBooks. Inclut Hubdoc gratuitement
+      (capture automatique de reçus) sur tous les plans. Connexion
+      directe aux grandes banques canadiennes (TD, RBC, Scotia, BMO,
+      CIBC). Multi-devises native sur plan Premium.
+    plans:
+      - name: Standard
+        price_cad: 55
+        per_unit: "mois"
+        note_fr: Factures illimitées, rapprochements bancaires, Hubdoc inclus
+      - name: Premium
+        price_cad: 75
+        per_unit: "mois"
+        note_fr: Multi-devises, analytique avancée
+    affiliate_potential: a-verifier
+    source_id: bankeo-comptables-quebec
+    used_in_paths: [accompanied]
+    recommended_priority: 6
+    note_fr: |
+      Hubdoc inclus est un argument de vente fort. Moins répandu chez
+      les comptables québécois que QuickBooks, donc valider avant.
+
+  - id: sage-50
+    tier: 2
+    name: Sage 50
+    origin: Royaume-Uni (Sage)
+    url: https://www.sage.com/fr-ca/sage-50-comptabilite/
+    interface_fr: oui
+    starting_price_monthly: null
+    currency: CAD
+    target_segment_fr: PME en manufacturier, distribution, commerce de détail nécessitant gestion d'inventaire avancée
+    strength_fr: |
+      Logiciel installé localement avec profondeur fonctionnelle
+      impressionnante. Version 2026 intègre l'automatisation des
+      comptes fournisseurs et la capture de documents. Particulièrement
+      populaire en manufacturier et commerce de détail.
+    affiliate_potential: a-verifier
+    source_id: bankeo-comptables-quebec
+    used_in_paths: [accompanied]
+    recommended_priority: 7
+    note_fr: |
+      Pour PME ayant besoin de profondeur (paie intégrée, inventaire,
+      gestion serveur local). Plus lourd à déployer que les SaaS modernes.
+
+  # ── TIER 2 ter : Couches IA d'extraction de factures fournisseurs ──
+
+  - id: hubdoc
+    tier: 2
+    name: Hubdoc
+    origin: Canada (acquis par Xero)
+    url: https://www.hubdoc.com
+    interface_fr: limitee
+    starting_price_cad_monthly: 0
+    currency: CAD
+    target_segment_fr: Utilisateurs Xero ou QuickBooks voulant capture basique de reçus
+    strength_fr: |
+      Capture des reçus, factures, relevés bancaires par photo, courriel
+      ou chargement direct. Extrait les données essentielles (total,
+      date, fournisseur). Inclus gratuitement avec tous les plans Xero
+      d'affaires. Origine canadienne (Toronto).
+    plans:
+      - name: Avec Xero
+        price_cad: 0
+        note_fr: Inclus gratuit avec abonnement Xero
+      - name: Standalone
+        price_usd: 12
+        per_unit: mois
+        note_fr: Pour autres logiciels comptables
+    weakness_fr: |
+      Extrait les totaux et en-têtes mais pas les détails ligne par
+      ligne. Développement limité depuis l'acquisition par Xero.
+      Cote 3,3/5 sur le Xero App Store.
+    affiliate_potential: non-applicable
+    source_id: gotofu-best-invoice-capture
+    used_in_paths: [self-serve, accompanied]
+    recommended_priority: 1
+    note_fr: |
+      Choix par défaut si le client est sur Xero (gratuit, suffisant pour
+      90 % des cas). Pour QuickBooks ou besoins plus avancés, considérer
+      Dext ou AutoEntry.
+
+  - id: dext
+    tier: 2
+    name: Dext (anciennement Receipt Bank)
+    origin: Royaume-Uni
+    url: https://dext.com
+    interface_fr: oui
+    starting_price_usd_monthly: 10
+    currency: USD
+    target_segment_fr: PME et cabinets comptables avec volume modéré à élevé de reçus et factures fournisseurs
+    strength_fr: |
+      Précision IA annoncée à 99,9 % sur documents en langues occidentales.
+      Capture mobile (photo de reçu après achat), courriel, glisser-déposer.
+      Détection des transactions bancaires correspondantes (matching).
+      Plus polyvalent que Hubdoc pour les factures multi-lignes ou écrites
+      à la main. 1,2 million d'utilisateurs globalement, 700 000 entreprises.
+    plans:
+      - name: Business
+        price_usd: 10
+        per_unit: "mois (point d'entrée)"
+        note_fr: 7,50 $/mois en facturation annuelle
+      - name: Practice
+        price_usd: null
+        note_fr: Plans pour cabinets comptables, prix par client
+    weakness_fr: |
+      Plus cher que Hubdoc. Tarification par utilisateur peut grimper
+      vite avec une équipe qui s'élargit.
+    affiliate_potential: a-verifier
+    source_id: receiptor-best-receipt-scanner
+    used_in_paths: [accompanied]
+    recommended_priority: 2
+    note_fr: |
+      Recommandé si volume reçus élevé (50+/mois) ou besoin de
+      détails ligne par ligne. Surclasse Hubdoc en précision et en
+      automatisation, mais coût supérieur.
+
+  - id: autoentry
+    tier: 2
+    name: AutoEntry (Sage)
+    origin: Irlande (acquis par Sage)
+    url: https://www.autoentry.com
+    interface_fr: oui
+    starting_price_usd_monthly: 24
+    currency: USD
+    target_segment_fr: Cabinets comptables et PME avec volumes variables mensuels
+    strength_fr: |
+      Tarification par crédits : on paye selon les documents traités,
+      pas par utilisateur. Flexibilité pour volumes variables. Extrait
+      les données ligne par ligne (atout vs Hubdoc). Intègre Xero,
+      QuickBooks, Sage, FreeAgent.
+    affiliate_potential: a-verifier
+    source_id: gotofu-best-invoice-capture
+    used_in_paths: [accompanied]
+    recommended_priority: 3
+    note_fr: |
+      Bonne alternative économique à Dext pour cabinets comptables ou
+      bookkeepers avec petits volumes. Système de crédits demande un
+      monitoring.
+
+  - id: datamolino
+    tier: 2
+    name: Datamolino
+    origin: Slovaquie (Europe)
+    url: https://www.datamolino.com
+    interface_fr: limitee
+    starting_price_gbp_monthly: 7
+    currency: GBP
+    target_segment_fr: Bookkeepers et PME européennes ou cherchant une alternative économique à Dext
+    strength_fr: |
+      Tarification souple basée sur volume de documents (pas par
+      utilisateur). Extraction ligne par ligne incluse sur tous les
+      plans (vs limites de crédits chez Dext). Utilisateurs illimités
+      sur tous les plans Business.
+    affiliate_potential: a-verifier
+    source_id: datamolino-comparison
+    used_in_paths: [accompanied]
+    recommended_priority: 4
+    note_fr: |
+      Origine européenne, marché québécois marginal. À considérer si le
+      client a beaucoup d'utilisateurs ou priorise la ligne par ligne
+      sans payer trop.
+
+  # ── TIER 3 : Plateformes AP (comptes fournisseurs) automatisées ──
+
+  - id: bill
+    tier: 3
+    name: BILL (anciennement Bill.com)
+    origin: USA
+    url: https://www.bill.com
+    interface_fr: limitee
+    starting_price_usd_monthly: 45
+    currency: USD
+    target_segment_fr: PME nord-américaines avec volume élevé de factures fournisseurs et besoins d'approbation/paiement
+    strength_fr: |
+      Plateforme AP (accounts payable) complète : extraction IA des
+      factures, routage d'approbation multi-niveaux, paiement programmé,
+      matching avec bons de commande. Intégrations QuickBooks, Xero,
+      NetSuite. Standard nord-américain pour PME en croissance.
+    affiliate_potential: a-verifier
+    source_id: journal-accountancy-cas
+    used_in_paths: [accompanied, custom]
+    recommended_priority: 1
+    note_fr: |
+      Pour PME avec 100+ factures fournisseurs/mois et processus
+      d'approbation. Trop lourd pour solopreneur ou micro-entreprise.
+
+  - id: tipalti
+    tier: 3
+    name: Tipalti
+    origin: USA / Israël
+    url: https://tipalti.com
+    interface_fr: oui
+    starting_price_monthly: null
+    currency: USD
+    target_segment_fr: PME mid-market avec fournisseurs internationaux et volumes élevés
+    strength_fr: |
+      AP complet incluant paiements internationaux multi-devises,
+      conformité fiscale automatisée, gestion des fournisseurs.
+      Niveau au-dessus de BILL en complexité et coût.
+    affiliate_potential: a-verifier
+    source_id: journal-accountancy-cas
+    used_in_paths: [custom]
+    recommended_priority: 2
+    note_fr: |
+      Réservé aux entreprises avec opérations internationales et volumes
+      à la hauteur. Rarement pertinent pour la cible 5PennyAi (micro/PME).
+
+  - id: ramp
+    tier: 3
+    name: Ramp
+    origin: USA
+    url: https://ramp.com
+    interface_fr: limitee
+    starting_price_monthly: 0
+    currency: USD
+    target_segment_fr: Startups et PME américaines combinant carte corporate, dépenses et AP
+    strength_fr: |
+      Plateforme dépenses + AP combinée. Cartes corporate gratuites,
+      automatisation des dépenses et factures fournisseurs. Disponible
+      au Canada depuis 2024.
+    affiliate_potential: a-verifier
+    source_id: journal-accountancy-cas
+    used_in_paths: [custom]
+    recommended_priority: 3
+    note_fr: |
+      Intéressant pour startups tech ou PME en croissance avec besoin
+      de cartes corporate. Marché québécois limité pour l'instant.
+
+  # ── TIER 3 : Infrastructure pour voie custom ──
+
+  - id: anthropic-api
+    tier: 3
+    name: Anthropic API (Claude)
+    origin: USA
+    url: https://docs.anthropic.com
+    interface_fr: documentation-en
+    starting_price_monthly: 0
+    currency: USD
+    target_segment_fr: Développement custom d'agent IA pour devis et facturation
+    strength_fr: |
+      Claude pour extraction de données structurées depuis PDFs (devis,
+      bons de commande), génération de devis à partir de spécifications
+      en langage naturel, raisonnement sur logique de pricing complexe.
+      Stack maîtrisé par 5PennyAi.
+    pricing_note_fr: "Facturation à l'usage, 20-200 $/mois selon volume"
+    affiliate_potential: non-applicable
+    source_id: null
+    used_in_paths: [custom]
+    recommended_priority: 1
+
+  - id: make-zapier
+    tier: 3
+    name: Make ou Zapier (ou n8n)
+    origin: USA / international
+    url: https://www.make.com
+    interface_fr: oui
+    starting_price_monthly: 0
+    currency: USD
+    target_segment_fr: Orchestration de workflows multi-systèmes pour facturation
+    strength_fr: |
+      Pour automatiser : nouveau projet livré → générer facture →
+      synchroniser CRM → envoyer client → programmer rappels. Make
+      typiquement moins cher que Zapier. n8n auto-hébergeable pour
+      contrôle total. Cas n8n documenté : agence 6 personnes passée
+      de 6h/semaine à 25 min sur factures.
+    pricing_note_fr: "Gratuit à 50 $/mois selon volume (n8n self-hosted ~24 $/mois)"
+    affiliate_potential: confirme
+    source_id: n8n-workflows-smb
+    used_in_paths: [accompanied, custom]
+    recommended_priority: 2
+
+# ───── INTÉGRATEURS IA QUÉBÉCOIS (CONCURRENCE DIRECTE) ─────
+
+quebec_competitors:
+  - name: FloatAI
+    url: https://www.floatai.ca
+    positioning_fr: Automatisation pour PME québécoises; couvre potentiellement facturation dans approche globale
+    note_fr: Concurrent indirect; peu spécialisé facturation
+
+  - name: Gestisoft
+    url: https://www.gestisoft.com
+    positioning_fr: Intégrateur Microsoft Dynamics 365 et solutions ERP pour PME québécoises
+    note_fr: Concurrent direct sur la voie B accompagné, surtout pour cibles plus haut de gamme
+
+  - name: PME Inter Notaires / cabinets comptables québécois
+    url: null
+    positioning_fr: Recommandent souvent Acomba ou QuickBooks à leurs clients lors du démarrage
+    note_fr: |
+      Pas de la concurrence directe (ils ne configurent pas l'IA), mais
+      influencent fortement le choix d'outil par les PME québécoises.
+      5PennyAi devrait s'allier à des cabinets comptables plutôt que
+      compétitionner.
+
+  - name: Revendeurs Acomba locaux
+    url: null
+    positioning_fr: Réseau de revendeurs autorisés Acomba qui font setup et formation
+    note_fr: Concurrent sur le segment des PME traditionnelles québécoises (construction, manufacturier).
+
+strategic_note_fr: |
+  La gestion de devis/factures est un pattern à fort retour sur
+  investissement et à entrée facile : les gains sont visibles dès la
+  première semaine (réduction du temps de saisie, paiements plus rapides).
+  Différenciation 5PennyAi : (1) audit qui recommande le bon outil selon
+  le profil (vs intégrateurs qui poussent leur écosystème), (2) accent
+  sur les outils québécois (Momenteo, Kiwili, Bilano, Acomba) qui
+  résonnent avec la fierté locale et offrent conformité Loi 25 native,
+  (3) pour les contracteurs : Jobber est canadien (Edmonton) avec données
+  au Canada — atout sous-exploité par les concurrents qui ne le savent
+  pas ou ne le mettent pas en avant. C'est aussi un excellent point
+  d'entrée commercial : un client satisfait sur la facturation est
+  réceptif aux patterns 1, 2, 3 (réception demandes, RDV) qui alimentent
+  son pipeline.
+
+# ───── COÛTS (RÉSUMÉ TROIS VOIES) ─────
+
+cost_summary_cad:
+  voie_a_self_serve:
+    first_year: "0 à 1 260 $"
+    recurring_monthly: "0 à 80 $"
+  voie_b_accompanied:
+    first_year: "2 100 à 8 200 $"
+    recurring_monthly: "50 à 350 $"
+  voie_c_custom:
+    first_year: "13 800 à 37 200 $"
+    recurring_monthly: "150 à 600 $"
+
+# ───── VALEUR DOCUMENTÉE ─────
+
+documented_benefits:
+  invoice_processing_time_reduction_percent:
+    min: 60
+    max: 80
+  manual_invoice_time_minutes:
+    min: 15
+    max: 20
+  ai_invoice_time_seconds: 30
+  weekly_time_saved_hours_typical:
+    min: 3
+    max: 8
+  late_payment_reduction_percent_typical: 17  # de 25 % à 8 % cas n8n
+  manual_error_rate_percent: 1.6
+  cost_per_error_usd: 53
+  typical_payback_months:
+    min: 1
+    max: 4
+  note_fr: |
+    Les gains se matérialisent rapidement (1-2 semaines) et sont très
+    tangibles : réduction du temps de saisie, paiements plus rapides,
+    moins d'erreurs comptables. Pour un entrepreneur facturant 75-150 $/h,
+    une économie de 4 heures par semaine vaut 1 200 à 2 400 $ par mois,
+    ce qui rentabilise rapidement même la voie B.
+
+customer_cases:
+  - company: Agence marketing 6 personnes (cas documenté n8n)
+    industry: agence-marketing
+    segment_fr: Agence créative qui automatise création et suivi de factures via n8n
+    result_fr: "Création/envoi factures réduit de 3 h/semaine à 15 min, relances réduites de 3 h à 10 min, paiements en retard de 25 % à 8 %"
+    source_id: n8n-workflows-smb
+    relevance_for_micro: tres-elevee
+    confidence: medium
+    note_fr: Source vendeur (n8n), à présenter comme « cas documenté par n8n »
+
+  - company: PME mid-size (synthèse Lleverage 150+ exécutifs)
+    industry: pme-services-multiples
+    segment_fr: PME européennes mid-market en automatisation de facturation
+    result_fr: "Réduction du temps de traitement de 15-20 min à 30 secondes par facture, économies labour 100 000 à 300 000 € par an"
+    source_id: lleverage-roi-invoice
+    relevance_for_micro: faible-pour-micro-mais-illustrative
+    confidence: medium
+    note_fr: Cas mid-market, pas directement transposable à micro-entreprise mais illustre l'amplitude
+
+  - company: Veckridge Chemical (NetSuite case)
+    industry: distribution-chimique
+    segment_fr: Distributeur familial de produits chimiques industriels
+    result_fr: "Repositionnement « entreprise tournée vers l'avant » via AP automation IA"
+    source_id: netsuite-ap-automation
+    relevance_for_micro: faible
+    confidence: medium
+
+# ───── RISQUES ─────
+
+risks:
+  - type: reglementaire-qc
+    title_fr: Loi 25 et hébergement des données financières
+    severity: moyen
+    description_fr: |
+      Plusieurs outils populaires (QuickBooks Online USA, Jobber Canada,
+      ServiceM8 Australie, Dext Royaume-Uni) hébergent les données dans
+      différentes juridictions. Les données financières contiennent des
+      renseignements personnels (noms, adresses, montants) qui tombent
+      sous la Loi 25.
+    mitigation_fr: |
+      Pour PME standards : QuickBooks et Jobber sont conformes RGPD/Loi
+      25 selon leurs politiques publiques (à valider au cas par cas).
+      Pour clients sensibles (cabinets professionnels, données médicales) :
+      privilégier Bilano ou Acomba (hébergés Canada) ou voie custom avec
+      hébergement AWS Canada Central.
+
+  - type: technique
+    title_fr: Erreurs de catégorisation IA
+    severity: moyen
+    description_fr: |
+      L'IA peut mal catégoriser une dépense (ex : un repas client classé
+      comme « épicerie personnelle »), ce qui fausse les états financiers
+      et peut créer des problèmes fiscaux.
+    mitigation_fr: |
+      Configuration soignée des règles de catégorisation au setup. Revue
+      mensuelle des catégorisations IA les premières 2-3 mois pour
+      corriger les patterns récurrents. Le client garde toujours le
+      contrôle final avant export au comptable.
+
+  - type: technique
+    title_fr: Hallucinations dans génération de devis
+    severity: moyen
+    description_fr: |
+      Si on utilise un assistant IA (Jobber Copilot, Claude API) pour
+      rédiger un devis, l'IA peut inventer des spécifications, des prix
+      ou des conditions qui ne correspondent pas à la réalité de
+      l'entreprise.
+    mitigation_fr: |
+      Toujours réviser le devis IA avant envoi au client. Configurer
+      des modèles de référence pour que l'IA reste dans les limites des
+      services réellement offerts. Ne jamais activer envoi automatique
+      sans révision humaine.
+
+  - type: business
+    title_fr: Migration coûteuse entre logiciels comptables
+    severity: important
+    description_fr: |
+      Migrer d'un logiciel comptable à un autre est complexe et coûteux
+      (transfert plan comptable, historique, clients, contacts). Choisir
+      le mauvais outil au départ peut peser pendant des années.
+    mitigation_fr: |
+      Audit 5PennyAi inclut une analyse de fit logiciel ↔ profil client
+      ↔ comptable existant pour minimiser les risques. Privilégier des
+      outils avec export complet des données (Bilano, Kiwili, QuickBooks,
+      Wave) pour préserver l'optionalité future.
+
+  - type: business
+    title_fr: Frais de transaction sur paiements en ligne
+    severity: faible-a-moyen
+    description_fr: |
+      Les paiements en ligne via Jobber Payments, Square, Stripe coûtent
+      typiquement 2,65 % à 2,9 % + 0,30 $ par transaction. Sur des
+      factures importantes, cela peut représenter des milliers de dollars
+      par an.
+    mitigation_fr: |
+      Calculer le coût réel des frais à l'audit. Pour grosses factures
+      B2B, privilégier virement Interac ou ACH (1 % ou moins). Au-dessus
+      de certains volumes, négocier des taux Stripe ou Moneris en direct.
+
+  - type: business
+    title_fr: Verrouillage avec un écosystème (lock-in)
+    severity: faible-a-moyen
+    description_fr: |
+      Une fois la pile configurée (Jobber + Stripe + QuickBooks +
+      Hubdoc + Mailchimp), changer un élément casse les intégrations.
+      Le client devient prisonnier de son écosystème.
+    mitigation_fr: |
+      Documenter la configuration (5PennyAi livre un document « stack
+      configurée » au client). Privilégier les outils avec API ouvertes
+      et bons exports. Faire des sauvegardes mensuelles automatiques.
+
+# ───── PRÉREQUIS ─────
+
+prerequisites:
+  - Numéros TPS et TVQ (si applicable; obligatoire si chiffre d'affaires > 30 000 $/an au Québec)
+  - Compte bancaire d'entreprise pour synchronisation et paiements
+  - Liste des clients existants (Excel ou autre format) pour import initial
+  - Liste des produits/services typiques et leurs prix
+  - 3 à 5 modèles de devis et factures actuels pour servir de référence
+  - Un comptable identifié (interne ou externe) pour validation des choix
+  - Pour voie B et C : politique de confidentialité de l'entreprise à jour
+  - Pour métiers réglementés (construction, immobilier) : licences applicables
+
+# ───── SOURCES (référentiel central) ─────
+
+sources:
+  - id: bankeo-comptables-quebec
+    type: comparison-article
+    title: "Bankeo — Les 13 meilleurs logiciels comptables au Québec en 2026"
+    url: https://www.bankeo.ca/blog/les-logiciels-comptables-les-plus-utilises-au-quebec-par-les-entrepreneurs
+    accessed: 2026-04-26
+    reliability: medium-high
+    key_facts_fr: |
+      Acomba 40 000+ PME québécoises, GEM-BOOKS 26 000+ utilisateurs,
+      QuickBooks EasyStart 24 $/mois CAD, Xero Standard 55 $/mois CAD
+      avec Hubdoc inclus. Bankeo fait du matching comptables.
+
+  - id: jobber-pricing-2026
+    type: vendor-official
+    title: "Jobber — Pricing Plans"
+    url: https://www.getjobber.com/pricing/
+    accessed: 2026-04-26
+    reliability: high
+    key_facts_fr: |
+      Plans Core 39 $, Connect Team 169 $, Grow Team 349 $, Plus 599 $/mois
+      USD. AI Receptionist 99 $/mois add-on, Marketing Suite 79 $/mois.
+      Jobber Copilot inclus dans plans payants. Frais paiement 2,9 % +
+      0,30 $ par carte, 1 % ACH.
+
+  - id: kiwili-presentation
+    type: vendor-official
+    title: "Kiwili — Logiciel 100% québécois"
+    url: https://www.kiwili.com/fr/Blog/post/kiwili-le-logiciel-100-quebecois-qui-revolutionne-la-gestion-dentreprise/
+    accessed: 2026-04-26
+    reliability: medium
+    key_facts_fr: |
+      ERP en ligne tout-en-un (facturation, devis, compta, projets,
+      feuilles de temps). Support 5 étoiles Google. Devis-facture en
+      un clic.
+
+  - id: bilano-officiel
+    type: vendor-official
+    title: "Bilano — Comptabilité intelligente pour le Québec"
+    url: https://www.bilano.ca/
+    accessed: 2026-04-26
+    reliability: high
+    key_facts_fr: |
+      Forfait unique 39,95 $/mois, hébergé Canada. TPS/TVQ par défaut.
+      Devis → facture en un clic. 8 rapports en un clic pour comptable.
+      Sherbrooke, Québec.
+
+  - id: acomba-officiel
+    type: vendor-official
+    title: "Acomba — Logiciel comptable pour PME"
+    url: https://www.acomba.com/
+    accessed: 2026-04-26
+    reliability: high
+    key_facts_fr: |
+      40 000 PME québécoises, 1 200 cabinets comptables, modulaire
+      (40+ modules), à partir de ~80 $/mois selon modules.
+
+  - id: gotofu-best-invoice-capture
+    type: comparison-article
+    title: "Tofu Blog — 8 Best Invoice Capture Software 2026"
+    url: https://www.gotofu.com/blog/best-invoice-capture-software
+    accessed: 2026-04-26
+    reliability: medium
+    note_fr: Vendor (Tofu) qui se compare à concurrents. Données factuelles cohérentes mais biais auto-promotionnel.
+
+  - id: receiptor-best-receipt-scanner
+    type: comparison-article
+    title: "Receiptor AI — Best Receipt Scanner App for Small Business 2026"
+    url: https://receiptor.ai/blog/best-receipt-scanner-app-for-small-business
+    accessed: 2026-04-26
+    reliability: medium
+    key_facts_fr: |
+      Dext 99,9 % accuracy, depuis 10 $/mois. Hubdoc gratuit avec Xero,
+      12 $/mois standalone. Comparaisons Hubdoc vs Dext vs AutoEntry.
+
+  - id: datamolino-comparison
+    type: vendor-article
+    title: "Datamolino — AutoEntry vs Hubdoc vs Dext vs Datamolino 2026"
+    url: https://www.datamolino.com/blog/pricing-and-features-autoentry-vs-hubdoc-vs-dext-vs-datamolino-in-2026/
+    accessed: 2026-04-26
+    reliability: medium
+
+  - id: procured-jobber-alternatives
+    type: comparison-article
+    title: "Procured — Best 13 Jobber Alternatives for Home Service 2026"
+    url: https://procured.us/articles/jobber-alternatives
+    accessed: 2026-04-26
+    reliability: medium
+    key_facts_fr: |
+      ServiceM8 free 30 jobs/mois, payants 29-349 $/mois. Cible
+      électriciens, plombiers, HVAC, paysagement, etc.
+
+  - id: distrya-ai-roadmap
+    type: integrator-article
+    title: "Distrya — AI Adoption for Small Business 2026 ROI Roadmap"
+    url: https://distrya.com/blog/ai-adoption-for-small-business-2026-roi-focused-roadmap
+    accessed: 2026-04-26
+    reliability: medium
+    key_facts_fr: |
+      Études publiques : jusqu'à 80 % de réduction du temps de traitement
+      manuel des factures, 2-3 % d'économies sur frais de retard et
+      escomptes early-payment.
+
+  - id: lleverage-roi-invoice
+    type: vendor-article
+    title: "Lleverage — AI Invoice Processing Save €100K+ Annually 2026"
+    url: https://www.lleverage.ai/blog/ai-invoice-processing-automation-save-eu100k-annually-roi-calculator
+    accessed: 2026-04-26
+    reliability: medium
+    key_facts_fr: |
+      15-20 min par facture manuelle vs 30 secondes automatisée. 99 %
+      accuracy capture en-tête. Économies labour 100 000-300 000 €/an
+      mid-size companies.
+
+  - id: lindy-invoice-processing
+    type: vendor-article
+    title: "Lindy — AI Invoice Processing 2026"
+    url: https://www.lindy.ai/blog/ai-invoice-processing
+    accessed: 2026-04-26
+    reliability: medium
+    key_facts_fr: |
+      Taux d'erreur manuel 1,6 %, coût correction jusqu'à 53 $ par erreur.
+      Cas agence 60 factures/mois : 6-8 h/semaine → automatisé.
+
+  - id: n8n-workflows-smb
+    type: integrator-article
+    title: "AI for Small Business — 7 Best n8n Workflows 2026"
+    url: https://aiforsmallbusiness.io/best-n8n-workflows-small-business/
+    accessed: 2026-04-26
+    reliability: medium
+    key_facts_fr: |
+      Cas agence marketing 6 personnes : factures de 6 h/sem à 25 min.
+      Late payments 25 % → 8 %. ROI 900x première année sur factures.
+
+  - id: netsuite-ap-automation
+    type: vendor-article
+    title: "NetSuite — Make the Business Case for AP Automation 2026"
+    url: https://www.netsuite.com/portal/resource/articles/accounting/ap-automation-business-case.shtml
+    accessed: 2026-04-26
+    reliability: medium-high
+    key_facts_fr: |
+      Manuel 45 min/facture vs 5 min avec IA. À 2 000 factures/mois :
+      1 333 heures libérées par mois.
+
+  - id: journal-accountancy-cas
+    type: industry-publication
+    title: "Journal of Accountancy — Simple but effective AI use cases for CAS"
+    url: https://www.journalofaccountancy.com/issues/2026/jan/simple-but-effective-ai-use-cases-for-cas/
+    accessed: 2026-04-26
+    reliability: high
+    key_facts_fr: |
+      Outils AP IA : BILL, Tipalti, Ramp. Outils bookkeeping IA : Keeper,
+      Truewind, Botkeeper. Source professionnelle reconnue (AICPA).
+
+  - id: gem-books-faq
+    type: vendor-official
+    title: "GEM-BOOKS — FAQ"
+    url: https://www.gem-faq.com/fr/gem-books
+    accessed: 2026-04-26
+    reliability: medium
+
+  - id: sba-ai-adoption-2025
+    type: government-research
+    title: "SBA Office of Advocacy — AI in Business Small Firms Closing In"
+    url: https://advocacy.sba.gov/wp-content/uploads/2025/09/Research-Spotlight-AI-in-Business-Small-Firms-Closing-In_-092425.pdf
+    published: 2025-09
+    reliability: high
+
+# ───── MÉTADONNÉES INTERNES ─────
+
+confidence_level: high
+source_diversity: vendor-officials + integrator-articles + industry-publications + government-research
+
+adaptation_needed_for_qc:
+  - Mettre Momenteo, Kiwili, Bilano en avant (entreprises québécoises)
+  - Acomba reste la référence pour PME traditionnelles québécoises
+  - Souligner que Jobber est canadien (Edmonton) avec données au Canada (atout Loi 25)
+  - TPS/TVQ doivent être configurées correctement dès le départ
+  - Pour secteur construction au Québec : RBQ et CCQ ont des exigences spécifiques sur factures
+  - Comptables québécois maîtrisent surtout QuickBooks et Acomba; valider avant de proposer Xero ou outils émergents
+
+# ───── NOTES HONNÊTES (usage interne uniquement) ─────
+
+internal_notes_fr: |
+  FORCE DE CE PATTERN :
+  Pattern à fort ROI immédiat et facile à vendre. Les gains sont
+  visibles en 1-2 semaines : moins de temps perdu en saisie, paiements
+  plus rapides, comptable content. Excellent point d'entrée commercial
+  pour 5PennyAi : souvent moins intimidant que « assistant IA » ou
+  « chatbot », c'est juste « moderniser ta facturation ».
+
+  COUVERTURE QUÉBÉCOISE EXCEPTIONNELLE :
+  Le marché québécois est richement servi par des outils locaux :
+  Momenteo (pigistes), Kiwili (PME), Bilano (Sherbrooke), Acomba
+  (référence), GEM-BOOKS, Mes Livres Comptables, Finance D, Libellum,
+  SbdCloud. Cinq fournisseurs québécois crédibles permettent une
+  recommandation 100 % locale pour à peu près n'importe quel profil
+  client. Argument de vente fort.
+
+  JOBBER EST CANADIEN — POINT IMPORTANT :
+  Jobber est basé à Edmonton, Alberta. Pour les clients sensibles à la
+  Loi 25 et au « tech canadien », c'est un argument à mettre en avant
+  systématiquement. Les concurrents 5PennyAi qui poussent ServiceM8
+  (australien) ou Housecall Pro (USA) ratent cet angle.
+
+  ANGLE DIFFÉRENCIATEUR : NEUTRALITÉ DES RECOMMANDATIONS
+  Les intégrateurs québécois sont souvent revendeurs d'un seul écosystème
+  (Acomba, Microsoft, Sage). 5PennyAi peut se positionner comme
+  « auditeur indépendant » qui recommande l'outil le mieux adapté, pas
+  celui qui paie la meilleure commission. C'est un positionnement
+  honnête et différenciant.
+
+  ATTENTION AUX MÉTRIQUES :
+  Les chiffres ROI les plus impressionnants (80 %, 99,9 % accuracy,
+  économies 100K+) viennent de cas mid-market ou de vendeurs (Lleverage,
+  Dext, Tofu). Pour les micro-entreprises, les gains sont réels mais
+  plus modestes : typiquement 3-8 heures par semaine, ce qui reste
+  excellent pour un solopreneur. Toujours présenter des fourchettes
+  avec contexte.
+
+  POSITIONNEMENT 5PENNYAI :
+  - Voie A : audit + setup léger d'outil simple (99-299 $)
+  - Voie B : forfait clé en main configuration + formation, 2 000-3 500 $
+  - Voie C : réservée aux cas avec logique métier unique ou Loi 25 stricte
+
+  CROSS-SELL :
+  Client qui fait voie B sur facturation = excellent prospect pour :
+  - Pattern 003 (RDV automatisés) → alimente le pipeline qui devient devis
+  - Pattern 002 (chatbot textuel) → qualifie les leads avant devis
+  - Pattern 005 (gestion courriels) → automatise les rappels et négociations
+  Le pattern 006 est central dans la chaîne administrative — il est
+  rarement adopté seul à long terme.
+
+  PIÈGE À ÉVITER :
+  Ne pas proposer Jobber/ServiceM8 à des solopreneurs en services
+  intellectuels (consultants, designers) — ils n'ont pas besoin de
+  planning de techniciens et trouveront ça lourd. Pour ce profil,
+  Momenteo/Kiwili/Wave sont nettement supérieurs.
+
+  CHIFFRE À VÉRIFIER :
+  Le « 25 % → 8 % paiements en retard » du cas n8n est intéressant mais
+  vient d'un seul cas vendeur. À présenter comme « cas documenté par
+  n8n » et non comme moyenne.
+
+# ───── EMBEDDING (généré automatiquement au seed Supabase) ─────
+
+embedding: null
