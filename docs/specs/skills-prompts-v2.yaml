@@ -1,7 +1,17 @@
-# Prompts systèmes des 5 skills — Pipeline d'audit IA 5PennyAi
-# Version 2.0 — 24 avril 2026
+# Prompts systèmes des skills — Pipeline d'audit IA 5PennyAi
+# Version 2.1 — 26 avril 2026
 #
-# Changements majeurs vs v1.0 (Session 2B-bis) :
+# Changements v2.1 (Session 2E) :
+# - Skill 6 ajouté : générateur de prompts pour les diagrammes
+#   d'architecture (un par opportunité phase 1 et phase 2). Produit des
+#   prompt_full prêts à envoyer à gemini-3-pro-image-preview avec la
+#   planche style-guide-v1.png en pièce jointe. Template invariant +
+#   sections variables (titre, sujet, COMPONENTS, ARROWS) extrait du
+#   prompt validé du test #3 (assistant courriel IA).
+# - Orchestration : nouveaux steps 6a (Skill 6) et 6b (génération
+#   parallèle Gemini), transition pending_review devient step 7.
+#
+# Changements v2.0 (Session 2B-bis) :
 # - Skill 1 : web_search activé + industry_portrait (benchmarks sectoriels sourcés)
 #             + extracted_client_figures (extraction normalisée des chiffres du texte libre)
 # - Skill 2 : expected_impact structuré avec quantitative_estimate (available, basis,
@@ -28,7 +38,7 @@
 
 meta:
   id: skills-prompts
-  version: "2.0"
+  version: "2.1"
   language: fr
   model_default: claude-opus-4-7
   max_tokens_default: 8000
@@ -1666,7 +1676,482 @@ skills:
       Réponds uniquement avec un JSON valide.
 
 # ============================================================
-# Orchestration — séquence d'exécution (inchangée en v2)
+# SKILL 6 — Diagram Prompt Generator (Session 2E)
+# ============================================================
+  - id: skill_6_diagram_prompt_generator
+    position: 6
+    role: "Concepteur de diagrammes d'architecture pour rapports d'audit IA"
+    model: claude-opus-4-7
+    max_tokens: 8000
+
+    purpose: |
+      Pour chaque opportunité de la phase 1 (Quick wins) et de la phase 2
+      (Moyen terme) de la feuille de route, produire un prompt Gemini
+      complet et structuré qui sera envoyé au modèle gemini-3-pro-image-
+      preview avec la planche docs/references/style-guide-v1.png en
+      pièce jointe.
+
+      Le rendu visuel des diagrammes doit rester fidèle à la planche et
+      aux trois architectures déjà validées (prise de RDV en ligne,
+      réceptionniste vocale, assistant courriel IA). Pour cela, le Skill
+      6 n'écrit PAS un prompt libre : il assemble un template invariant
+      (en-tête, LAYOUT, COLOR PALETTE, TYPOGRAPHY, DO NOT INCLUDE)
+      avec des sections variables (titre, sujet, COMPONENTS TO DRAW,
+      ARROWS) qu'il dérive des opportunités et du contexte client.
+
+    input_schema:
+      type: object
+      required: [context, selected_opportunities, synthesis]
+      properties:
+        context:
+          type: object
+          description: "Output du Skill 1 (industry, business_size, etc.)"
+        selected_opportunities:
+          type: array
+          description: "Output du Skill 2 (avec stack_output par opportunité)"
+        synthesis:
+          type: object
+          description: |
+            Output du Skill 5. Le Skill 6 lit en particulier :
+            - synthesis.roadmap.phase_1_quick_wins.opportunities
+            - synthesis.roadmap.phase_2_medium_term.opportunities
+            - synthesis.executive_summary.top_3_recommendations
+            pour identifier le sous-ensemble d'opportunités à diagrammer.
+
+    output_schema:
+      type: object
+      required: [diagrams, confidence_level, reviewer_notes]
+      properties:
+        diagrams:
+          type: array
+          description: |
+            Une entrée par opportunité de phase 1 ou 2. Typiquement 3-4
+            entrées. Vide si aucune opportunité phase 1/2 n'est listée
+            dans la feuille de route (le pipeline traite ce cas comme
+            "aucun diagramme à générer").
+          items:
+            type: object
+            required:
+              - solution_id
+              - title
+              - phase
+              - subject
+              - components
+              - arrows
+              - prompt_full
+            properties:
+              solution_id:
+                type: string
+                description: |
+                  Identifiant unique de l'opportunité. DOIT correspondre
+                  à un opportunity_id présent dans selected_opportunities
+                  ET dans la phase 1 ou 2 de la roadmap (sinon le
+                  pipeline d'Étape 4 ne saura pas l'associer).
+              title:
+                type: string
+                description: |
+                  Titre du diagramme. Format imposé :
+                  "Architecture de la solution — <titre court>".
+                  Le <titre court> reprend le nom de l'opportunité tel
+                  qu'il apparaît dans le rapport (ex. "Prise de rendez-
+                  vous automatisée", "Assistant courriel IA").
+              phase:
+                type: string
+                enum: [phase_1, phase_2]
+              subject:
+                type: string
+                description: |
+                  1-2 phrases en anglais qui décrivent le sujet du
+                  diagramme à Gemini (le client, le secteur, le
+                  problème adressé). Exemple :
+                  "An AI-assisted email workflow for a dental clinic
+                  owner who answers repetitive patient questions
+                  (prices, schedules, treated conditions)."
+              components:
+                type: array
+                description: |
+                  Liste structurée des 4-6 composants du diagramme.
+                  Sert au debug et permettra à Christian d'éditer
+                  plus tard la composition (Étape 7).
+                items:
+                  type: object
+                  required: [id, kind, position, label, icon_hint]
+                  properties:
+                    id:
+                      type: string
+                      description: "Identifiant local (snake_case), ex. patient_left, claude_central."
+                    kind:
+                      type: string
+                      enum:
+                        - silhouette_endpoint    # silhouette humaine externe ou interne
+                        - secondary_box          # boîte cream avec icône
+                        - central_box            # boîte navy (composant principal IA)
+                        - resource_box_top       # boîte cream positionnée AU-DESSUS du central
+                    position:
+                      type: string
+                      enum:
+                        - LEFT
+                        - CENTER-LEFT
+                        - UPPER-CENTER
+                        - CENTER
+                        - CENTER-RIGHT
+                        - RIGHT
+                        - RIGHT-CENTER
+                    label:
+                      type: string
+                      description: "Texte principal de la boîte ou du label sous la silhouette (en français)."
+                    subtitle:
+                      type: [string, "null"]
+                      description: "Sous-titre en français, en muted grey (optionnel)."
+                    icon_hint:
+                      type: string
+                      description: |
+                        Icône suggérée à dessiner. Si présente dans le
+                        catalogue de la planche (téléphone, courriel,
+                        calendrier, microphone, document, sparkle,
+                        bouclier, cadenas, écran, globe, engrenage,
+                        loupe, graphique, casque audio, horloge, carte) :
+                        nommer l'icône. Sinon, décrire le style attendu
+                        (ex. "dental chair (invent in style)") pour
+                        guider l'invention par Gemini.
+                    badge:
+                      type: [object, "null"]
+                      description: |
+                        Optionnel. Quand présent, attache un badge au
+                        coin haut-droit de la boîte centrale.
+                      properties:
+                        title_line: string         # bold, ex. "Anonymisation"
+                        subtitle_line: string      # plus petit, ex. "Loi 25"
+                        icon_hint: string          # ex. "shield", "lock"
+              arrows:
+                type: array
+                items:
+                  type: object
+                  required: [from, to, style]
+                  properties:
+                    from: string                   # id d'un composant ci-dessus
+                    to: string                     # id d'un composant ci-dessus
+                    label:
+                      type: [string, "null"]
+                      description: "Étiquette de la flèche (français), null si la flèche n'a pas d'étiquette."
+                    style:
+                      type: string
+                      enum:
+                        - horizontal               # gauche → droite
+                        - vertical_down            # ressource au-dessus → composant central
+                        - return_arc               # boucle retournant au demandeur initial, passe sous le diagramme
+                        - branch                   # bifurcation conditionnelle (cas standard / exception)
+              prompt_full:
+                type: string
+                description: |
+                  Prompt textuel COMPLET prêt à être envoyé à Gemini.
+                  Assemblé strictement à partir du template invariant
+                  ci-dessous, avec uniquement title / subject /
+                  COMPONENTS / ARROWS variables. Aucune autre
+                  variabilité acceptée — la constance visuelle entre
+                  diagrammes en dépend.
+        confidence_level:
+          type: string
+          enum: [low, medium, high]
+        reviewer_notes:
+          type: [string, "null"]
+
+    # Template invariant : le Skill 6 doit le reproduire à l'identique
+    # dans chaque prompt_full. Les marqueurs {{...}} sont remplacés par
+    # les valeurs dérivées de l'opportunité courante. Toute autre
+    # modification est interdite. Validé contre les 3 tests de référence
+    # (GOrendezvous, AgentZap, Claude IA — assistant courriel).
+    prompt_template_invariant: |
+      ATTACHED IMAGE: 5PennyAi Diagram Style Guide v1 — design system reference sheet.
+
+      You must generate a technical architecture diagram. Before generating, carefully analyze the attached style guide image and extract its visual rules: color palette, box treatments (secondary cream, central navy, endpoint white), arrow style and color, attached badge pattern, human silhouette style, icon style (line-art, monochrome navy, consistent stroke weight), and typography hierarchy. The icons shown in the style guide are NOT a fixed catalog — for icons not present in the guide, invent new icons that match the demonstrated style: thin uniform strokes, monochrome navy, geometric and minimal, same level of detail as the reference icons.
+
+      Apply these rules to generate the following diagram:
+
+      DIAGRAM TO GENERATE:
+      Title: "{{TITLE}}"
+      Subject: {{SUBJECT}}
+
+      LAYOUT:
+      - Horizontal landscape orientation, 16:9 aspect ratio
+      - Components arranged left-to-right, with optional resource components positioned ABOVE the central AI component when applicable
+      - Generous white space between elements
+      - White background
+
+      COLOR PALETTE (use ONLY these colors):
+      - Primary navy: #0F2744 (for component borders, main text, primary boxes)
+      - Accent orange: #F57D20 (for arrows, the central AI component, highlights)
+      - Light cream: #FAF7F2 (for box fills)
+      - Muted grey: #6B7280 (for secondary labels)
+      - White: #FFFFFF (background)
+
+      COMPONENTS TO DRAW:
+
+      {{COMPONENTS_LIST}}
+
+      ARROWS:
+      - Use solid orange arrows (#F57D20) with simple arrowheads
+      {{ARROWS_LIST}}
+
+      TYPOGRAPHY:
+      - Sans-serif font, clean and modern (similar to Inter or Plus Jakarta Sans)
+      - Component titles: bold, 14-16pt equivalent, in a single color
+      - Arrow labels: regular, 10-12pt equivalent, in muted grey
+      - All text in French as written above
+
+      TITLE AT TOP:
+      Bold navy text: "{{TITLE}}"
+
+      DO NOT INCLUDE:
+      - Decorative elements, backgrounds, patterns, or textures
+      - Drop shadows, gradients, glows, or 3D effects
+      - Photographic elements or realistic illustrations
+      - Cartoon characters or anthropomorphic icons
+      - Logos of real companies (no Anthropic logo, no Claude logo, just the text)
+      - Any text other than what is specified above
+      - Watermarks or signatures
+      - Multiple colors within a single component name (component names should appear in one consistent color only)
+
+    # Règles de formatage des sections variables (extraites du test #3
+    # validé). Le Skill 6 produit chaque ligne de COMPONENTS_LIST et
+    # ARROWS_LIST en respectant scrupuleusement ce style — c'est ce qui
+    # garantit que Gemini reconnaît la structure et reproduit le rendu.
+    formatting_rules:
+      components_list:
+        numbering: 'Sequential "1. ", "2. ", "3. ", ...'
+        line_per_component_kind:
+          silhouette_endpoint: |
+            <N>. <POSITION>: A simple geometric icon representing <description>
+            (abstract silhouette with a small <icon_hint> icon, monochrome
+            navy, NOT a detailed face). Label below in navy: "<label>"
+            <if subtitle>Subtitle in muted grey: "<subtitle>"
+          secondary_box: |
+            <N>. <POSITION>: A rectangular box with rounded corners, cream
+            fill, navy border. Inside: a small <icon_hint> icon and the
+            text "<label>"
+            <if subtitle>Subtitle below in muted grey: "<subtitle>"
+          resource_box_top: |
+            <N>. UPPER-CENTER (positioned ABOVE the central component,
+            feeding downward into it): A medium rectangular box with cream
+            fill, navy border. Inside: a small <icon_hint> icon and the
+            text "<label>". <if subtitle>Subtitle below in muted grey:
+            "<subtitle>"
+          central_box: |
+            <N>. CENTER (main flow): A larger rectangular box with rounded
+            corners, NAVY fill, white text. This is the central component.
+            Inside: a small <icon_hint> icon and the text "<label>"
+            <if subtitle>Subtitle below in smaller white text: "<subtitle>"
+        badge_attached_to_central: |
+          <N>. ATTACHED TO <CENTRAL_LABEL> (small badge to the upper-right
+          corner of the <CENTRAL_LABEL> box, NOT a separate node in the
+          flow): A small rounded rectangle with white fill, navy border,
+          navy text. Inside: a small <badge.icon_hint> icon and TWO
+          LINES of text:
+          - Line 1 (bold): "<badge.title_line>"
+          - Line 2 (regular, smaller): "<badge.subtitle_line>"
+          This badge should look like a certification stamp attached to
+          <CENTRAL_LABEL>.
+
+      arrows_list:
+        line_per_arrow_style:
+          horizontal: |
+            - <FROM_LABEL> → <TO_LABEL> (label above arrow: "<label>")
+          vertical_down: |
+            - <FROM_LABEL> → <TO_LABEL> (vertical arrow pointing DOWN
+              from the <FROM_LABEL> box into <TO_LABEL>, label to the
+              right: "<label>")
+          return_arc: |
+            - <FROM_LABEL> → <TO_LABEL> (curved arrow returning all the
+              way back to <TO_LABEL> on the LEFT, passing below the
+              other components, label centered below: "<label>")
+          branch: |
+            - <FROM_LABEL> → <TO_LABEL> (branching arrow for conditional
+              flow, label on the branch: "<label>")
+
+    # Patterns architecturaux à appliquer selon les caractéristiques de
+    # l'opportunité. Ces règles encodent la cohérence visuelle entre
+    # diagrammes — le Skill 6 doit s'y référer systématiquement.
+    architectural_patterns:
+      - id: human_validation
+        trigger: |
+          La solution implique une révision, validation, supervision ou
+          signature humaine avant l'envoi au demandeur final.
+        apply: |
+          Ajouter un composant silhouette_endpoint à droite avec un
+          label spécifique au métier du client (ex. "Sophie — révision
+          humaine" pour une dentiste, "Marc — validation" pour un
+          avocat). Subtitle en muted grey précisant le rôle (ex.
+          "Validation finale obligatoire").
+
+      - id: lateral_resource
+        trigger: |
+          La solution s'appuie sur une ressource latérale (bibliothèque
+          de prompts, base de connaissances, base de données, document
+          de référence).
+        apply: |
+          Ajouter un composant resource_box_top positionné AU-DESSUS du
+          central_box, relié par une flèche de style vertical_down.
+
+      - id: compliance_badge
+        trigger: |
+          La solution mentionne une exigence de conformité visible
+          (Loi 25, anonymisation, sécurité des données, certification,
+          secret professionnel).
+        apply: |
+          Ajouter un badge sur le central_box avec title_line = nom
+          court de la conformité (ex. "Anonymisation", "Loi 25",
+          "Secret pro") et subtitle_line = précision (ex. "Loi 25",
+          "Données chiffrées"). icon_hint typique : "shield" ou "lock".
+
+      - id: response_loop
+        trigger: |
+          La solution boucle vers le demandeur initial (réponse
+          courriel, confirmation de RDV, livraison de réponse vocale).
+        apply: |
+          Ajouter une flèche de style return_arc du dernier composant
+          (humain ou IA selon le cas) vers la silhouette_endpoint de
+          gauche (le demandeur initial).
+
+      - id: central_component_selection
+        rule: |
+          Le central_box est l'outil ou service IA qui porte la
+          solution. Ordre de préférence pour le label :
+          1) Outil principal recommandé dans stack_output[opportunity].
+             tier_1[0] (le tier 1 numéro 1 du pattern utilisé).
+          2) Sinon, premier outil de stack_output[opportunity].tier_1.
+          3) Sinon, label générique "Module IA".
+          Exemples validés :
+          - "Prise de RDV en ligne" → "GOrendezvous" ou "Cal.com"
+          - "Réceptionniste vocale" → "AgentZap" ou "Avoca"
+          - "Assistant courriel IA" → "Claude IA"
+
+      - id: secondary_components_count
+        rule: |
+          4 à 6 composants au total (silhouettes + boîtes + central),
+          pas plus. Au-delà, le diagramme devient illisible. Si la
+          solution est complexe, simplifier à l'essentiel.
+
+    system_prompt: |
+      Tu es un concepteur de diagrammes d'architecture pour des rapports
+      d'audit IA. Tu produis, pour chaque opportunité phase 1 et phase 2
+      du rapport, un prompt complet prêt à être envoyé au modèle Gemini
+      gemini-3-pro-image-preview, avec la planche style guide v1 jointe.
+
+      CONTEXTE DU SYSTÈME
+
+      Tu es le sixième skill, exécuté APRÈS le Skill 5 (synthèse). Tu
+      reçois le contexte client (Skill 1), les opportunités sélectionnées
+      (Skill 2) et la synthèse complète (Skill 5). Tu identifies les
+      opportunités qui apparaissent dans roadmap.phase_1_quick_wins ET
+      dans roadmap.phase_2_medium_term, et tu produis pour chacune une
+      entrée du tableau diagrams.
+
+      Les opportunités de phase 3 (long terme) et les options secondaires
+      n'ont PAS de diagramme — ne pas les inclure dans la sortie.
+
+      TON TRAVAIL
+
+      1. Identifier les opportunités à diagrammer en croisant
+         selected_opportunities avec synthesis.roadmap.phase_1_quick_wins.
+         opportunities et synthesis.roadmap.phase_2_medium_term.opportunities.
+         Typiquement 2-5 entrées au total.
+
+      2. Pour chaque opportunité retenue :
+
+         a. Composer title au format "Architecture de la solution —
+            <titre court>" en reprenant le nom de l'opportunité tel
+            qu'utilisé dans le rapport.
+
+         b. Composer subject : 1-2 phrases en ANGLAIS qui décrivent à
+            Gemini le sujet du diagramme — le rôle du client (avec son
+            métier), le secteur et le problème adressé. Exemple :
+            "An AI-assisted email workflow for a dental clinic owner
+            who answers repetitive patient questions (prices, schedules,
+            treated conditions)."
+
+         c. Identifier le central_box (l'outil IA principal) selon la
+            règle central_component_selection ci-dessus.
+
+         d. Sélectionner 4-6 composants au total parmi :
+            - Acteur entrant (silhouette_endpoint à LEFT) : Patient,
+              Client, Demandeur, etc., adapté au métier du client.
+            - Canal d'entrée éventuel (secondary_box à CENTER-LEFT) :
+              site web, téléphone, application mobile, boîte courriel.
+            - Le central_box (CENTER).
+            - Sorties / résultats (1-2 secondary_box à CENTER-RIGHT
+              ou RIGHT-CENTER).
+            - Acteur sortant (silhouette_endpoint à RIGHT) : Cabinet,
+              Clinique, Équipe, Conseiller, ou silhouette humaine de
+              révision si pattern human_validation s'applique.
+
+         e. Appliquer les patterns architecturaux pertinents :
+            - Si la solution implique une révision humaine →
+              human_validation.
+            - Si la solution s'appuie sur une ressource latérale →
+              lateral_resource (resource_box_top + arrow vertical_down).
+            - Si la solution mentionne conformité / anonymisation →
+              compliance_badge sur le central_box.
+            - Si la solution boucle vers le demandeur →
+              response_loop (arrow return_arc).
+
+         f. Composer la liste des arrows en respectant le sens narratif
+            (entrée → traitement → sortie → boucle de retour si
+            applicable). Toujours utiliser des étiquettes courtes en
+            FRANÇAIS sur les flèches (ex. "Demande entrante", "Données
+            anonymisées", "Brouillon de réponse").
+
+         g. Assembler prompt_full en reproduisant le template invariant
+            (prompt_template_invariant ci-dessus) à l'identique, avec :
+            - {{TITLE}} remplacé par title (deux fois : DIAGRAM TO
+              GENERATE > Title et TITLE AT TOP)
+            - {{SUBJECT}} remplacé par subject
+            - {{COMPONENTS_LIST}} remplacé par les composants formatés
+              selon formatting_rules.components_list (numérotation 1.
+              2. 3. ..., format propre à chaque kind).
+            - {{ARROWS_LIST}} remplacé par les arrows formatées selon
+              formatting_rules.arrows_list (chaque ligne préfixée par
+              "- ", format propre à chaque style).
+
+         h. Vérifier que prompt_full ne contient AUCUN ajout libre :
+            ni couleur supplémentaire, ni section LAYOUT modifiée, ni
+            règle TYPOGRAPHY ajoutée, ni élément retiré du DO NOT
+            INCLUDE. Seules les sections variables changent.
+
+      RÈGLES DE QUALITÉ
+
+      - Pas plus de 6 composants par diagramme. Au-delà = illisible.
+      - Tous les labels en français, exactement comme ils apparaissent
+        dans le rapport (cohérence textuelle entre diagramme et prose).
+      - subject EN ANGLAIS (Gemini répond mieux à un sujet anglais
+        techniquement décrit, même si tous les labels du diagramme
+        sont en français).
+      - Réutiliser le nom du métier du client dans la silhouette de
+        révision humaine quand applicable (ex. "Sophie — révision
+        humaine", PAS "Personne — révision").
+      - Si l'opportunité n'a pas d'outil clairement identifié dans
+        stack_output, utiliser "Module IA" en label central plutôt
+        que d'inventer un nom d'outil.
+
+      ANTI-PATTERNS À ÉVITER
+
+      - Ne pas dévier du template invariant. Aucune section ajoutée,
+        aucune section retirée, aucun ordre modifié.
+      - Ne pas inventer de couleurs ou de polices. La palette est
+        figée par le template + la planche.
+      - Ne pas utiliser des positions multiples pour un même composant
+        (ex. "LEFT-CENTER" n'existe pas dans l'enum).
+      - Ne pas inclure de diagramme pour la phase 3 ou les options
+        secondaires.
+      - Ne pas générer un diagramme pour une opportunité dont
+        l'opportunity_id n'est pas présent dans selected_opportunities
+        (cohérence référentielle).
+
+      FORMAT DE SORTIE
+
+      Réponds uniquement avec un JSON valide conforme à output_schema.
+
+# ============================================================
+# Orchestration — séquence d'exécution
 # ============================================================
 orchestration:
   endpoint: "POST /api/audit/run"
@@ -1714,14 +2199,46 @@ orchestration:
       on_complete_sse_event: "skill_5_completed"
       persist_to: "audits.skill_5_output"
 
-    - step: 6
+    - step: 6a
+      name: "Skill 6 - Diagram Prompt Generator"
+      description: |
+        Pour chaque opportunité phase 1 et phase 2, produit un prompt
+        Gemini complet (template invariant + sections variables) prêt
+        à être envoyé. Sortie consommée immédiatement par 6b.
+      waits_for: [step_5]
+      sse_event: "skill_6_started"
+      on_complete_sse_event: "skill_6_completed"
+      # Pas de persist dédié : les prompt_full sont stockés dans
+      # diagrams_metadata[<solution_id>].prompt_used à l'étape 6b
+      # après la génération de l'image.
+
+    - step: 6b
+      name: "Génération des diagrammes (Gemini)"
+      description: |
+        Appelle gemini-3-pro-image-preview en parallèle (3-4 appels
+        concurrents max) pour chaque entrée du Skill 6, avec la
+        planche style guide jointe. Upload chaque PNG dans le bucket
+        Storage privé audit-diagrams. Met à jour audits.diagrams_metadata.
+        En cas d'échec partiel ou total : ne bloque pas le pipeline,
+        l'audit passe en pending_review avec les diagrammes manquants
+        signalés dans l'admin.
+      waits_for: [step_6a]
+      sse_event: "diagrams_generation_started"
+      on_complete_sse_event: "diagrams_generation_completed"
+      persist_to: "audits.diagrams_metadata"
+      review_events_emitted:
+        - diagrams_generation_started
+        - diagram_generated         # par diagramme réussi
+        - diagram_failed            # par diagramme échoué
+
+    - step: 7
       name: "Transition état pending_review"
       description: "Passe audits.status de 'running' à 'pending_review'"
       sse_event: "audit_pending_review"
       side_effect: "Notifie Christian par courriel qu'un audit attend revue"
 
-  estimated_total_duration_seconds: "360-720"  # 6-12 minutes (v2 légèrement plus long à cause de web_search et Skill 5)
-  parallelization_savings_seconds: "60-120"    # Skills 3 et 4 en parallèle
+  estimated_total_duration_seconds: "390-780"  # 6-13 minutes (v2 + Skill 6 + génération diagrammes)
+  parallelization_savings_seconds: "60-120"    # Skills 3 et 4 en parallèle, diagrammes en parallèle
 
 # ============================================================
 # Pour plus tard (v3+)
