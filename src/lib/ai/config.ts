@@ -39,8 +39,13 @@ export const SKILL_MODEL_CONFIG: Record<1 | 2 | 3 | 4 | 5 | 6, SkillModelParams>
     ],
   },
   2: { model: ANTHROPIC_MODEL_DEFAULT, maxTokens: 12000 },
-  3: { model: ANTHROPIC_MODEL_DEFAULT, maxTokens: 8000 },
-  4: { model: ANTHROPIC_MODEL_DEFAULT, maxTokens: 8000 },
+  // 12000 (était 8000) : risks_identified avec mitigation détaillée +
+  // loi_25_applicability complet dépasse régulièrement 20 000 chars.
+  3: { model: ANTHROPIC_MODEL_DEFAULT, maxTokens: 12000 },
+  // 12000 (était 8000) : par symétrie avec Skill 3, et car
+  // integration_map + dependencies_to_resolve + modernizations_required
+  // peuvent aussi gonfler.
+  4: { model: ANTHROPIC_MODEL_DEFAULT, maxTokens: 12000 },
   5: { model: ANTHROPIC_MODEL_DEFAULT, maxTokens: 20000 },
   // Skill 6 : 16000 (chaque prompt_full ~2000 chars / ~600 tokens,
   // 4 diagrammes typiques + structure JSON ≈ 5000 tokens output mini ;
