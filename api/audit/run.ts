@@ -28,6 +28,11 @@ import {
   buildMatchingQueryText,
   findTopKPatterns,
 } from '../../src/lib/ai/semantic-matching';
+import { generateAuditDiagrams } from '../../src/lib/diagrams/diagram-pipeline';
+import {
+  buildDiagramStoragePath,
+  uploadDiagram,
+} from '../_storageAuditDiagrams';
 import type {
   PatternPrereqData,
   PatternRiskData,
@@ -405,15 +410,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     tokensTotals.total_output += skill5.tokensUsed.output;
     tokensTotals.by_skill.skill_5 = skill5.tokensUsed.total;
 
-    const now = new Date().toISOString();
+    // Persiste skill_5_output sans encore basculer pending_review : la
+    // génération des diagrammes (Session 2E) doit s'exécuter avant.
     try {
+      const skill5SavedAt = new Date().toISOString();
       const { error: updateError } = await supabase
         .from('audits')
         .update({
           skill_5_output: skill5.output,
-          status: 'pending_review',
-          pipeline_completed_at: now,
-          updated_at: now,
+          updated_at: skill5SavedAt,
         })
         .eq('id', auditId);
       if (updateError) {
@@ -431,6 +436,61 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       tokensUsed: skill5.tokensUsed.total,
       durationMs: skill5.durationMs,
     });
+
+    // ─────────── Génération des diagrammes (Session 2E) ───────────
+    // Best-effort : un échec total ne bloque pas le passage en
+    // pending_review (l'audit reste livrable sans visuels, signalé
+    // dans l'admin).
+    sendEvent(res, 'diagrams_started', {
+      skillName: "Génération des diagrammes d'architecture",
+    });
+    let diagramsGenerated = 0;
+    let diagramsFailed = 0;
+    try {
+      const diagramsResult = await generateAuditDiagrams({
+        auditId,
+        supabase,
+        storage: {
+          buildStoragePath: buildDiagramStoragePath,
+          upload: uploadDiagram,
+        },
+      });
+      diagramsGenerated = diagramsResult.generated;
+      diagramsFailed = diagramsResult.failed;
+      if (diagramsResult.failed > 0 && diagramsResult.generated === 0) {
+        console.warn(
+          '[run] all diagrams failed — audit will deliver without visuals',
+        );
+      }
+    } catch (err) {
+      console.error('[run] diagrams pipeline exception:', err);
+      // On laisse passer : pas de blocage, l'admin verra l'absence et
+      // pourra relancer la génération manuellement à l'Étape 7.
+    }
+    sendEvent(res, 'diagrams_completed', {
+      generated: diagramsGenerated,
+      failed: diagramsFailed,
+    });
+
+    // ─────────── Bascule finale en pending_review ───────────
+    const now = new Date().toISOString();
+    try {
+      const { error: finalErr } = await supabase
+        .from('audits')
+        .update({
+          status: 'pending_review',
+          pipeline_completed_at: now,
+          updated_at: now,
+        })
+        .eq('id', auditId);
+      if (finalErr) {
+        console.error('[run] failed to mark pending_review:', finalErr);
+        throw finalErr;
+      }
+    } catch (err) {
+      console.error('[run] pending_review transition exception:', err);
+      throw err;
+    }
 
     sendEvent(res, 'pipeline_completed', {
       auditId,

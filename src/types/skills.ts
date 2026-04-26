@@ -438,6 +438,8 @@ export type SSEEventName =
   | 'skills_3_4_completed'
   | 'skill_5_started'
   | 'skill_5_completed'
+  | 'diagrams_started'
+  | 'diagrams_completed'
   | 'pipeline_completed'
   | 'pipeline_error';
 

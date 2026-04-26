@@ -1,15 +1,15 @@
 // Hook React qui consomme le stream SSE de /api/audit/run.
 //
-// Les événements du backend portent sur 5 skills + matching (6 events).
-// L'UI client aggrège en 4 étapes visuelles :
+// L'UI client aggrège en 5 étapes visuelles :
 //   1. Analyse du contexte  (skill 1)
 //   2. Identification des opportunités (matching + skill 2)
 //   3. Évaluation risques et stack (skills 3 + 4 en parallèle)
 //   4. Rédaction du rapport personnalisé (skill 5)
+//   5. Génération des diagrammes d'architecture (skill 6 + Gemini)
 
 import { useCallback, useState } from 'react';
 
-export type UiStepId = 1 | 2 | 3 | 4;
+export type UiStepId = 1 | 2 | 3 | 4 | 5;
 export type UiStepState = 'pending' | 'running' | 'done';
 
 export interface UiStep {
@@ -37,6 +37,7 @@ const INITIAL_STEPS: UiStep[] = [
   { id: 2, label: 'Identification des opportunités', state: 'pending' },
   { id: 3, label: 'Évaluation des risques et de votre stack', state: 'pending' },
   { id: 4, label: 'Rédaction de votre rapport personnalisé', state: 'pending' },
+  { id: 5, label: "Génération des diagrammes d'architecture", state: 'pending' },
 ];
 
 interface SSEMessage {
@@ -106,6 +107,12 @@ export function useAuditProgress(auditId: string | undefined): UseAuditProgressR
         break;
       case 'skill_5_completed':
         setSteps((s) => updateStep(s, 4, 'done'));
+        break;
+      case 'diagrams_started':
+        setSteps((s) => updateStep(s, 5, 'running'));
+        break;
+      case 'diagrams_completed':
+        setSteps((s) => updateStep(s, 5, 'done'));
         break;
       case 'pipeline_completed':
         setSteps((s) => s.map((x) => ({ ...x, state: 'done' as UiStepState })));
