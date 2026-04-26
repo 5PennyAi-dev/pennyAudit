@@ -167,6 +167,31 @@ function buildEmbeddingSource(pattern) {
     if (tier1) pushSection('OUTILS PRINCIPAUX', tier1);
   }
 
+  // ── Cas d'usage couverts par les implementation_templates ───
+  // Stratégie : on n'injecte QUE les use_case_fr et keywords des
+  // triggers_when. Le contenu détaillé (voie_a_self_serve,
+  // voie_b_accompagnee, pitfalls, workflow…) noierait le signal.
+  if (
+    Array.isArray(pattern.implementation_templates) &&
+    pattern.implementation_templates.length > 0
+  ) {
+    const lines = [];
+    for (const tmpl of pattern.implementation_templates) {
+      if (tmpl?.use_case_fr) {
+        lines.push(`- ${String(tmpl.use_case_fr).trim()}`);
+      }
+      const kw = tmpl?.triggers_when?.automation_wish_keywords;
+      if (Array.isArray(kw) && kw.length) {
+        lines.push(`  Mots-clés associés : ${kw.join(', ')}`);
+      }
+      const inds = tmpl?.triggers_when?.industry_in;
+      if (Array.isArray(inds) && inds.length) {
+        lines.push(`  Industries spécifiques : ${inds.join(', ')}`);
+      }
+    }
+    if (lines.length) pushSection("CAS D'USAGE COUVERTS", lines.join('\n'));
+  }
+
   // Assemblage avec troncature douce : on conserve les sections en
   // ordre, et on coupe net dès qu'on dépasse la limite.
   let total = 0;

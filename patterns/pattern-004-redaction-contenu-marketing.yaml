@@ -1406,6 +1406,48 @@ implementation_templates:
           - Notes de la séance de calibrage 30 jours
           - Procédure de maintenance trimestrielle documentée
 
+
+    # Notes internes sur ce sous-template (non rendu au client)
+    internal_notes_fr: |
+      CHOIX STRUCTURELS DE CE TEMPLATE
+
+      Format choisi : YAML structuré avec sections en français pour
+      injection directe par le Skill 5. Le Skill 5 reçoit ce template
+      et l'adapte au contexte du client (nom, bannière, secteur précis)
+      via Claude.
+
+      Niveau de détail : suffisant pour qu'un client autonome implémente,
+      mais avec des [ADAPTER], [VOTRE NOM], [VOTRE BANNIÈRE] qui forcent
+      la personnalisation. Le client ne reçoit pas un livrable « plug-and-play
+      zéro réflexion ».
+
+      Pièges courants : section critique car elle MONTRE la valeur de
+      l'accompagnement sans la cacher. Le client comprend que l'expertise
+      est dans la prévention de ces pièges.
+
+      Section accompagnement : structure en 3 sous-sections (« ce qu'on
+      fait », « ce qui ne se transmet pas », « livrables tangibles »)
+      pour rendre la valeur concrète et démarquer du conseil flou.
+
+      CE QUI DOIT ÊTRE GARDÉ HORS TEMPLATE (gardé en accompagnement réel)
+
+      - Le contenu DÉTAILLÉ des Project Instructions calibrées à un client
+        spécifique (ex: la version finale pour Marie-Pier Dubuc avec son
+        style RE/MAX du Cartier, ses préférences de ton)
+      - L'audit qualitatif des 15-20 fiches du client pour sélection
+      - La méthode de calibrage par itération (ce qu'on cherche à chaque
+        revue, comment on identifie une dérive)
+      - Les arbitrages contextuels (« pour TON marché, je ferais plutôt… »)
+
+      À VALIDER AVEC CHRISTIAN
+
+      - Le format de prix dans cost_summary du voie B (1 500-3 500 $)
+        doit-il être harmonisé avec le pattern parent ?
+      - Les estimated_value_hours dans la voie B doivent-ils apparaître
+        au client (justifient le prix) ou rester en interne ?
+      - La structure de validation_method_fr (4 semaines détaillées)
+        est-elle reproductible pour les autres patterns ou trop spécifique
+        à Centris ?
   - id: posts-sociaux-blog
     use_case_fr: |
       Production cadencée de posts pour Facebook, Instagram, LinkedIn et
@@ -1860,6 +1902,46 @@ implementation_templates:
           - Notes de la séance de calibrage 30 jours
           - Procédure de maintenance mensuelle documentée
 
+
+    # Notes internes sur ce sous-template (non rendu au client)
+    internal_notes_fr: |
+      CHOIX SPÉCIFIQUES À CE SOUS-TEMPLATE
+
+      Densité plus légère que Centris : moins de réglementation à
+      intégrer, donc le template insiste plus sur la voix de marque
+      (l'enjeu commercial réel ici) et le calendrier éditorial (le
+      vrai différenciateur entre une marque et une autre).
+
+      Volet Canva inclus : pour les posts sociaux, la dimension visuelle
+      est inséparable du texte. Sans Canva ou équivalent, le client a
+      un contenu mais pas une publication complète.
+
+      Volet calendrier éditorial : c'est probablement le plus gros
+      apport de l'accompagnement vs voie A. Un client autonome aura
+      Claude qui produit bien mais sans direction stratégique.
+
+      CE QUI RESTE HORS TEMPLATE
+
+      - L'audit qualitatif des 50-100 publications du client
+      - Le calendrier éditorial spécifique à la marque (impossible à
+        template, par définition unique à chaque entreprise)
+      - L'identification des tics linguistiques inconscients
+      - Les arbitrages contextuels sur le ton à conserver vs corriger
+
+      HARMONISATION AVEC LE TEMPLATE CENTRIS
+
+      Structure parfaitement alignée (overview, stack, configuration,
+      workflow, validation_method, pitfalls, success_criteria,
+      when_accompaniment, voie B avec ses 4 sous-sections). Le format
+      tient sur deux cas très différents (réglementé vs créatif),
+      bonne preuve de généralisation.
+
+      POINT DE VIGILANCE FUTURS PATTERNS
+
+      Pour les patterns plug-and-play (ex: 003 RDV avec Cal.com), la
+      validation_method risque d'être moins riche (4 semaines de
+      validation pour configurer un Cal.com, c'est trop). On l'allégera
+      à ce moment-là — voir la note dans le doc de validation.
   - id: newsletters-nurturing
     use_case_fr: |
       Production d'une newsletter régulière et de séquences d'emails
@@ -2323,6 +2405,55 @@ implementation_templates:
           - Notes de la séance de calibrage 30 jours
           - Procédure de maintenance trimestrielle documentée
 
+
+    # Notes internes sur ce sous-template (non rendu au client)
+    internal_notes_fr: |
+      CHOIX SPÉCIFIQUES À CE SOUS-TEMPLATE
+
+      Cohabitation avec le pattern 005 (gestion courriels) : il y a un
+      recouvrement. Le pattern 005 traite la gestion d'inbox réactive,
+      ce sous-template traite la communication sortante proactive. Pas
+      de doublon, mais à clarifier dans le rapport si les deux patterns
+      sont matchés pour le même client.
+
+      Densité comparable à Centris : la dimension réglementaire (Loi 25,
+      CASL) ramène une richesse de règles équivalente, même si les
+      contraintes ne sont pas aussi pointues que pour OACIQ.
+
+      Volet plateforme (Brevo / Mailchimp) inclus : impossible de séparer
+      la production du contenu de l'outil d'envoi. Sans Brevo configuré,
+      le client a un beau texte qui n'arrive nulle part. Le template
+      intègre donc cette dimension complète.
+
+      Volet segmentation : c'est probablement le plus gros apport de
+      l'accompagnement vs voie A. Un client autonome envoie souvent à
+      toute sa base, ce qui réduit l'efficacité.
+
+      HARMONISATION AVEC LES DEUX AUTRES SOUS-TEMPLATES DU 004
+
+      Structure parfaitement alignée : overview, stack, configuration,
+      workflow, validation_method, pitfalls, success_criteria,
+      when_accompaniment_makes_sense, voie B avec ses 4 sous-sections.
+      Le format passe le test de généralisation sur 3 cas très différents
+      (réglementé Centris, créatif sociaux, hybride newsletter).
+
+      POINT DE VIGILANCE
+
+      Pour Marie-Pier (immobilier), ce sous-template serait celui injecté
+      pour l'opportunité « Réveil du Excel de 200+ leads tièdes » de la
+      feuille de route. À vérifier : est-ce que le Skill 5 saurait
+      sélectionner CE sous-template plutôt que celui de Centris pour
+      cette opportunité spécifique ? Probablement oui via les keywords
+      (« nurturing », « leads tièdes ») mais à valider en re-test.
+
+      CE QUI RESTE HORS TEMPLATE (gardé en accompagnement)
+
+      - L'analyse spécifique de la base de contacts du client
+      - La stratégie de segmentation calibrée à son modèle d'affaires
+      - L'appréciation du dosage rythme / pression commerciale pour SON
+        audience
+      - La conformité Loi 25 / CASL appliquée à ses cas particuliers
+        (transferts internationaux, données sensibles, etc.)
 # ───── NOTES INTERNES SUR LES SOUS-TEMPLATES ─────
 
 implementation_templates_notes_fr: |
@@ -2362,141 +2493,4 @@ implementation_templates_notes_fr: |
   le pattern 004 est matché pour cette opportunité), le Skill 5 doit
   sélectionner newsletters-nurturing (industry immobilier + keywords
   "nurturing", "leads tièdes").
-
-# Notes spécifiques au sous-template fiches-centris-immobilier
-
-internal_notes_fr: |
-  CHOIX STRUCTURELS DE CE TEMPLATE
-
-  Format choisi : YAML structuré avec sections en français pour
-  injection directe par le Skill 5. Le Skill 5 reçoit ce template
-  et l'adapte au contexte du client (nom, bannière, secteur précis)
-  via Claude.
-
-  Niveau de détail : suffisant pour qu'un client autonome implémente,
-  mais avec des [ADAPTER], [VOTRE NOM], [VOTRE BANNIÈRE] qui forcent
-  la personnalisation. Le client ne reçoit pas un livrable « plug-and-play
-  zéro réflexion ».
-
-  Pièges courants : section critique car elle MONTRE la valeur de
-  l'accompagnement sans la cacher. Le client comprend que l'expertise
-  est dans la prévention de ces pièges.
-
-  Section accompagnement : structure en 3 sous-sections (« ce qu'on
-  fait », « ce qui ne se transmet pas », « livrables tangibles »)
-  pour rendre la valeur concrète et démarquer du conseil flou.
-
-  CE QUI DOIT ÊTRE GARDÉ HORS TEMPLATE (gardé en accompagnement réel)
-
-  - Le contenu DÉTAILLÉ des Project Instructions calibrées à un client
-    spécifique (ex: la version finale pour Marie-Pier Dubuc avec son
-    style RE/MAX du Cartier, ses préférences de ton)
-  - L'audit qualitatif des 15-20 fiches du client pour sélection
-  - La méthode de calibrage par itération (ce qu'on cherche à chaque
-    revue, comment on identifie une dérive)
-  - Les arbitrages contextuels (« pour TON marché, je ferais plutôt… »)
-
-  À VALIDER AVEC CHRISTIAN
-
-  - Le format de prix dans cost_summary du voie B (1 500-3 500 $)
-    doit-il être harmonisé avec le pattern parent ?
-  - Les estimated_value_hours dans la voie B doivent-ils apparaître
-    au client (justifient le prix) ou rester en interne ?
-  - La structure de validation_method_fr (4 semaines détaillées)
-    est-elle reproductible pour les autres patterns ou trop spécifique
-    à Centris ?
-
-# Notes spécifiques au sous-template posts-sociaux-blog
-
-internal_notes_fr: |
-  CHOIX SPÉCIFIQUES À CE SOUS-TEMPLATE
-
-  Densité plus légère que Centris : moins de réglementation à
-  intégrer, donc le template insiste plus sur la voix de marque
-  (l'enjeu commercial réel ici) et le calendrier éditorial (le
-  vrai différenciateur entre une marque et une autre).
-
-  Volet Canva inclus : pour les posts sociaux, la dimension visuelle
-  est inséparable du texte. Sans Canva ou équivalent, le client a
-  un contenu mais pas une publication complète.
-
-  Volet calendrier éditorial : c'est probablement le plus gros
-  apport de l'accompagnement vs voie A. Un client autonome aura
-  Claude qui produit bien mais sans direction stratégique.
-
-  CE QUI RESTE HORS TEMPLATE
-
-  - L'audit qualitatif des 50-100 publications du client
-  - Le calendrier éditorial spécifique à la marque (impossible à
-    template, par définition unique à chaque entreprise)
-  - L'identification des tics linguistiques inconscients
-  - Les arbitrages contextuels sur le ton à conserver vs corriger
-
-  HARMONISATION AVEC LE TEMPLATE CENTRIS
-
-  Structure parfaitement alignée (overview, stack, configuration,
-  workflow, validation_method, pitfalls, success_criteria,
-  when_accompaniment, voie B avec ses 4 sous-sections). Le format
-  tient sur deux cas très différents (réglementé vs créatif),
-  bonne preuve de généralisation.
-
-  POINT DE VIGILANCE FUTURS PATTERNS
-
-  Pour les patterns plug-and-play (ex: 003 RDV avec Cal.com), la
-  validation_method risque d'être moins riche (4 semaines de
-  validation pour configurer un Cal.com, c'est trop). On l'allégera
-  à ce moment-là — voir la note dans le doc de validation.
-
-# Notes spécifiques au sous-template newsletters-nurturing
-
-internal_notes_fr: |
-  CHOIX SPÉCIFIQUES À CE SOUS-TEMPLATE
-
-  Cohabitation avec le pattern 005 (gestion courriels) : il y a un
-  recouvrement. Le pattern 005 traite la gestion d'inbox réactive,
-  ce sous-template traite la communication sortante proactive. Pas
-  de doublon, mais à clarifier dans le rapport si les deux patterns
-  sont matchés pour le même client.
-
-  Densité comparable à Centris : la dimension réglementaire (Loi 25,
-  CASL) ramène une richesse de règles équivalente, même si les
-  contraintes ne sont pas aussi pointues que pour OACIQ.
-
-  Volet plateforme (Brevo / Mailchimp) inclus : impossible de séparer
-  la production du contenu de l'outil d'envoi. Sans Brevo configuré,
-  le client a un beau texte qui n'arrive nulle part. Le template
-  intègre donc cette dimension complète.
-
-  Volet segmentation : c'est probablement le plus gros apport de
-  l'accompagnement vs voie A. Un client autonome envoie souvent à
-  toute sa base, ce qui réduit l'efficacité.
-
-  HARMONISATION AVEC LES DEUX AUTRES SOUS-TEMPLATES DU 004
-
-  Structure parfaitement alignée : overview, stack, configuration,
-  workflow, validation_method, pitfalls, success_criteria,
-  when_accompaniment_makes_sense, voie B avec ses 4 sous-sections.
-  Le format passe le test de généralisation sur 3 cas très différents
-  (réglementé Centris, créatif sociaux, hybride newsletter).
-
-  POINT DE VIGILANCE
-
-  Pour Marie-Pier (immobilier), ce sous-template serait celui injecté
-  pour l'opportunité « Réveil du Excel de 200+ leads tièdes » de la
-  feuille de route. À vérifier : est-ce que le Skill 5 saurait
-  sélectionner CE sous-template plutôt que celui de Centris pour
-  cette opportunité spécifique ? Probablement oui via les keywords
-  (« nurturing », « leads tièdes ») mais à valider en re-test.
-
-  CE QUI RESTE HORS TEMPLATE (gardé en accompagnement)
-
-  - L'analyse spécifique de la base de contacts du client
-  - La stratégie de segmentation calibrée à son modèle d'affaires
-  - L'appréciation du dosage rythme / pression commerciale pour SON
-    audience
-  - La conformité Loi 25 / CASL appliquée à ses cas particuliers
-    (transferts internationaux, données sensibles, etc.)
-
-# ───── EMBEDDING (généré automatiquement au seed Supabase) ─────
-
 embedding: null
