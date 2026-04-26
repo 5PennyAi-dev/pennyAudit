@@ -26,31 +26,23 @@ export interface SkillModelParams {
 //
 // Note : depuis Opus 4.7, temperature/top_p/top_k ne sont plus acceptés
 // par l'API Anthropic.
+// Plafonds généreux pour éviter toute troncature JSON (= rerun coûteux).
+// Opus 4.7 facture uniquement les tokens effectivement émis, donc augmenter
+// maxTokens n'augmente PAS le coût des réponses qui terminent avant —
+// c'est uniquement un plafond de sécurité.
 export const SKILL_MODEL_CONFIG: Record<1 | 2 | 3 | 4 | 5 | 6, SkillModelParams> = {
   1: {
     model: ANTHROPIC_MODEL_DEFAULT,
-    // 12000 : web_search intercale du raisonnement narratif entre les
-    // recherches, et le JSON final (industry_portrait + benchmarks +
-    // extracted_client_figures) est volumineux. À 6000 la réponse était
-    // tronquée avant le `}` racine → JSON.parse plantait sur le préambule.
-    maxTokens: 12000,
+    maxTokens: 16000,
     tools: [
       { type: 'web_search_20250305', name: 'web_search', max_uses: 5 },
     ],
   },
-  2: { model: ANTHROPIC_MODEL_DEFAULT, maxTokens: 12000 },
-  // 12000 (était 8000) : risks_identified avec mitigation détaillée +
-  // loi_25_applicability complet dépasse régulièrement 20 000 chars.
-  3: { model: ANTHROPIC_MODEL_DEFAULT, maxTokens: 12000 },
-  // 12000 (était 8000) : par symétrie avec Skill 3, et car
-  // integration_map + dependencies_to_resolve + modernizations_required
-  // peuvent aussi gonfler.
-  4: { model: ANTHROPIC_MODEL_DEFAULT, maxTokens: 12000 },
-  5: { model: ANTHROPIC_MODEL_DEFAULT, maxTokens: 20000 },
-  // Skill 6 : 16000 (chaque prompt_full ~2000 chars / ~600 tokens,
-  // 4 diagrammes typiques + structure JSON ≈ 5000 tokens output mini ;
-  // marge x3 pour absorber les cas avec 5+ opportunités phase 1+2).
-  6: { model: ANTHROPIC_MODEL_DEFAULT, maxTokens: 16000 },
+  2: { model: ANTHROPIC_MODEL_DEFAULT, maxTokens: 16000 },
+  3: { model: ANTHROPIC_MODEL_DEFAULT, maxTokens: 16000 },
+  4: { model: ANTHROPIC_MODEL_DEFAULT, maxTokens: 16000 },
+  5: { model: ANTHROPIC_MODEL_DEFAULT, maxTokens: 28000 },
+  6: { model: ANTHROPIC_MODEL_DEFAULT, maxTokens: 20000 },
 };
 
 export type SkillId = 1 | 2 | 3 | 4 | 5 | 6;
