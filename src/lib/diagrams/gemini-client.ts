@@ -14,7 +14,11 @@ import { readFileSync } from 'node:fs';
 import { GoogleGenAI } from '@google/genai';
 
 const MODEL = 'gemini-3-pro-image-preview';
-const ATTEMPT_TIMEOUT_MS = 60_000;
+// 90s : Gemini 3 Pro Image en 2K avec mode Thinking met typiquement
+// 20-40s en isolation, mais sous parallélisme (3-4 appels concurrents)
+// on observe régulièrement des appels >60s. Marge confortable pour
+// éviter les retries inutiles.
+const ATTEMPT_TIMEOUT_MS = 90_000;
 const BACKOFF_MS = [1_000, 3_000];
 const LOG_PREFIX = '[gemini-diagram]';
 

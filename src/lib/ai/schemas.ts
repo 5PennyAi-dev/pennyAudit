@@ -375,3 +375,64 @@ export const skill5OutputSchema = z.object({
   confidence_level: confidenceLevel,
   reviewer_notes: reviewerNotes,
 });
+
+// ─────────── Skill 6 (Session 2E — diagrammes) ───────────
+
+export const skill6InputSchema = z.object({
+  context: skill1OutputSchema,
+  selected_opportunities: skill2OutputSchema.shape.selected_opportunities,
+  synthesis: skill5OutputSchema,
+});
+
+const diagramComponentSchema = z.object({
+  id: z.string(),
+  kind: z.enum([
+    'silhouette_endpoint',
+    'secondary_box',
+    'central_box',
+    'resource_box_top',
+  ]),
+  position: z.enum([
+    'LEFT',
+    'CENTER-LEFT',
+    'UPPER-CENTER',
+    'CENTER',
+    'CENTER-RIGHT',
+    'RIGHT',
+    'RIGHT-CENTER',
+  ]),
+  label: z.string(),
+  subtitle: z.string().nullable().optional(),
+  icon_hint: z.string(),
+  badge: z
+    .object({
+      title_line: z.string(),
+      subtitle_line: z.string(),
+      icon_hint: z.string(),
+    })
+    .nullable()
+    .optional(),
+});
+
+const diagramArrowSchema = z.object({
+  from: z.string(),
+  to: z.string(),
+  label: z.string().nullable().optional(),
+  style: z.enum(['horizontal', 'vertical_down', 'return_arc', 'branch']),
+});
+
+export const skill6OutputSchema = z.object({
+  diagrams: z.array(
+    z.object({
+      solution_id: z.string(),
+      title: z.string(),
+      phase: z.enum(['phase_1', 'phase_2']),
+      subject: z.string(),
+      components: z.array(diagramComponentSchema).min(2).max(8),
+      arrows: z.array(diagramArrowSchema),
+      prompt_full: z.string(),
+    }),
+  ),
+  confidence_level: confidenceLevel,
+  reviewer_notes: reviewerNotes,
+});

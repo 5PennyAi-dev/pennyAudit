@@ -1682,7 +1682,10 @@ skills:
     position: 6
     role: "Concepteur de diagrammes d'architecture pour rapports d'audit IA"
     model: claude-opus-4-7
-    max_tokens: 8000
+    # 16000 : chaque prompt_full pèse ~2000 chars (~600 tokens), avec 4
+    # diagrammes typiques + la structure JSON on dépasse 8000. Marge x3
+    # pour absorber les audits riches (5+ opportunités phase 1 et 2).
+    max_tokens: 16000
 
     purpose: |
       Pour chaque opportunité de la phase 1 (Quick wins) et de la phase 2

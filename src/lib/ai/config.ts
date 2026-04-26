@@ -26,7 +26,7 @@ export interface SkillModelParams {
 //
 // Note : depuis Opus 4.7, temperature/top_p/top_k ne sont plus acceptés
 // par l'API Anthropic.
-export const SKILL_MODEL_CONFIG: Record<1 | 2 | 3 | 4 | 5, SkillModelParams> = {
+export const SKILL_MODEL_CONFIG: Record<1 | 2 | 3 | 4 | 5 | 6, SkillModelParams> = {
   1: {
     model: ANTHROPIC_MODEL_DEFAULT,
     maxTokens: 6000,
@@ -38,6 +38,10 @@ export const SKILL_MODEL_CONFIG: Record<1 | 2 | 3 | 4 | 5, SkillModelParams> = {
   3: { model: ANTHROPIC_MODEL_DEFAULT, maxTokens: 8000 },
   4: { model: ANTHROPIC_MODEL_DEFAULT, maxTokens: 8000 },
   5: { model: ANTHROPIC_MODEL_DEFAULT, maxTokens: 20000 },
+  // Skill 6 : 16000 (chaque prompt_full ~2000 chars / ~600 tokens,
+  // 4 diagrammes typiques + structure JSON ≈ 5000 tokens output mini ;
+  // marge x3 pour absorber les cas avec 5+ opportunités phase 1+2).
+  6: { model: ANTHROPIC_MODEL_DEFAULT, maxTokens: 16000 },
 };
 
-export type SkillId = 1 | 2 | 3 | 4 | 5;
+export type SkillId = 1 | 2 | 3 | 4 | 5 | 6;
