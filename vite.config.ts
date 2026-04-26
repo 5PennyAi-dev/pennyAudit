@@ -22,6 +22,7 @@ import requestChangesHandler from './api/admin/audits/[id]/request-changes';
 import rejectHandler from './api/admin/audits/[id]/reject';
 import rerunHandler from './api/audit/[id]/rerun';
 import auditRunHandler from './api/audit/run';
+import intakeStatusHandler from './api/intake/status';
 import approveAndSendHandler from './api/admin/audits/[id]/approve-and-send';
 import publicReportHandler from './api/public/report/[token]';
 import diagramRegenerateHandler from './api/admin/audits/[id]/diagrams/[solutionId]/regenerate';
@@ -432,6 +433,25 @@ function devApiAuditRun(): PluginOption {
   };
 }
 
+/**
+ * Mirror dev pour GET /api/intake/status?auditId=… — utilisé par le
+ * garde-fou de IntakeForm pour invalider un draft localStorage si
+ * l'audit a quitté le statut 'draft'.
+ */
+function devApiIntakeStatus(): PluginOption {
+  return {
+    name: 'dev-api-intake-status',
+    configureServer(server) {
+      const adapted = vercelAdapter(intakeStatusHandler);
+      server.middlewares.use((req, res, next) => {
+        const path = (req.url ?? '').split('?')[0];
+        if (path === '/api/intake/status') return adapted(req, res, next);
+        return next();
+      });
+    },
+  };
+}
+
 export default defineConfig({
   plugins: [
     react(),
@@ -441,5 +461,6 @@ export default defineConfig({
     devApiAdminAudits(),
     devApiAuditRun(),
     devApiPublicReport(),
+    devApiIntakeStatus(),
   ],
 });

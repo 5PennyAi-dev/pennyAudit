@@ -55,6 +55,14 @@ export function resumeIntake(token: string): Promise<ResumeIntakeResponse> {
   );
 }
 
+export function getIntakeStatus(
+  auditId: string,
+): Promise<{ status: string }> {
+  return getJson<{ status: string }>(
+    `/api/intake/status?auditId=${encodeURIComponent(auditId)}`,
+  );
+}
+
 export function sendResumeLink(payload: {
   auditId: string;
   email: string;

@@ -4,6 +4,15 @@ import { useTranslation } from 'react-i18next';
 import { LanguageSwitcher, buttonStyles } from '../ui';
 import { Container } from './Container';
 import { cn } from '../../lib/utils';
+import { useIntakeFormStore } from '../../stores/intakeFormStore';
+
+// Reset du formulaire d'intake avant de naviguer vers /audit/new.
+// Garantit qu'un clic sur "Lancer un audit" depuis n'importe quelle
+// page repart d'un état propre, indépendamment de ce qui traîne en
+// localStorage (audit déjà soumis, draft abandonné, etc.).
+function startNewAudit() {
+  useIntakeFormStore.getState().resetForm();
+}
 
 interface NavItem {
   key: 'why' | 'how' | 'pricing' | 'examples';
@@ -86,7 +95,11 @@ export function Nav() {
               Admin
             </Link>
             <LanguageSwitcher variant="dark" />
-            <Link to="/audit/new" className={buttonStyles({ variant: 'primary' })}>
+            <Link
+              to="/audit/new"
+              onClick={startNewAudit}
+              className={buttonStyles({ variant: 'primary' })}
+            >
               {t('nav.startAudit')}
             </Link>
           </div>
@@ -212,7 +225,10 @@ function MobileDrawer({
         <div className="mt-auto border-t border-white/10 p-4">
           <Link
             to="/audit/new"
-            onClick={onClose}
+            onClick={() => {
+              startNewAudit();
+              onClose();
+            }}
             className={buttonStyles({ variant: 'primary', size: 'lg', className: 'w-full' })}
           >
             {t('nav.startAudit')}
