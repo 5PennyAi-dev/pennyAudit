@@ -9,6 +9,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "seed:patterns": "node scripts/seed-patterns.js",
+    "seed:sector-profiles": "node scripts/seed-sector-profiles.js",
     "embeddings:generate": "tsx scripts/generate-pattern-embeddings.ts"
   },
   "dependencies": {
