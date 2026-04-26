@@ -78,7 +78,13 @@ export function Nav() {
           </ul>
 
           {/* Desktop right */}
-          <div className="hidden items-center gap-3 md:flex">
+          <div className="hidden items-center gap-4 md:flex">
+            <Link
+              to="/admin/login"
+              className="text-sm text-white/55 transition-colors hover:text-white"
+            >
+              Admin
+            </Link>
             <LanguageSwitcher variant="dark" />
             <Link to="/audit/new" className={buttonStyles({ variant: 'primary' })}>
               {t('nav.startAudit')}
@@ -86,7 +92,13 @@ export function Nav() {
           </div>
 
           {/* Mobile right */}
-          <div className="flex items-center gap-2 md:hidden">
+          <div className="flex items-center gap-3 md:hidden">
+            <Link
+              to="/admin/login"
+              className="text-xs text-white/55 transition-colors hover:text-white"
+            >
+              Admin
+            </Link>
             <LanguageSwitcher variant="dark" />
             <button
               type="button"
