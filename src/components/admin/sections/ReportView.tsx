@@ -12,6 +12,7 @@ import {
   pathLabel,
 } from './_shared';
 import { cn } from '../../../lib/utils';
+import { DiagramsPanel } from './DiagramsPanel';
 
 interface ExecutiveSummary {
   opening_paragraph?: string;
@@ -87,6 +88,7 @@ export interface DiagramDisplay {
   title: string;
   signed_url?: string;
   status?: 'ok' | 'failed';
+  failure_reason?: string;
 }
 export type DiagramsByPhase = Record<string, DiagramDisplay>;
 
@@ -114,9 +116,13 @@ const DELIVERABLE_LABELS: Record<string, string> = {
 export function ReportView({
   data,
   diagrams,
+  auditId,
+  onDiagramRegenerated,
 }: {
   data: unknown;
   diagrams?: DiagramsByPhase;
+  auditId?: string;
+  onDiagramRegenerated?: () => void;
 }) {
   const obj = asObject(data);
   if (!obj) {
@@ -367,6 +373,19 @@ export function ReportView({
           <p className="text-sm text-navy-600 whitespace-pre-wrap leading-relaxed">
             {closing}
           </p>
+        </Subsection>
+      )}
+
+      {/* Diagrammes — panneau d'administration (édition + régénération).
+          Affiché uniquement quand auditId est passé (= contexte admin).
+          La page publique ne rend pas ce panneau. */}
+      {auditId && (
+        <Subsection title="Diagrammes d'architecture">
+          <DiagramsPanel
+            auditId={auditId}
+            diagrams={diagrams}
+            onRegenerated={onDiagramRegenerated}
+          />
         </Subsection>
       )}
     </SectionShell>

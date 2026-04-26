@@ -210,6 +210,7 @@ export function AuditDetail() {
         diagramsSignedUrls={diagrams_signed_urls}
         notesCache={notesCache}
         onNoteSaved={handleNoteSaved}
+        onDiagramRegenerated={refetch}
       />
     </div>
   );
@@ -222,9 +223,18 @@ interface TabContentProps {
   diagramsSignedUrls?: DiagramsSignedMap;
   notesCache: Record<NoteSection, string>;
   onNoteSaved: (section: NoteSection, value: string) => void;
+  onDiagramRegenerated?: () => void;
 }
 
-function TabContent({ tab, audit, reviewEvents, diagramsSignedUrls, notesCache, onNoteSaved }: TabContentProps) {
+function TabContent({
+  tab,
+  audit,
+  reviewEvents,
+  diagramsSignedUrls,
+  notesCache,
+  onNoteSaved,
+  onDiagramRegenerated,
+}: TabContentProps) {
   const wrap = (section: NoteSection, view: React.ReactNode) => (
     <SectionWithEditor
       auditId={audit.id}
@@ -249,7 +259,15 @@ function TabContent({ tab, audit, reviewEvents, diagramsSignedUrls, notesCache, 
     case 'stack':
       return wrap('stack', <StackView data={audit.skill_4_output} />);
     case 'report':
-      return wrap('report', <ReportView data={audit.skill_5_output} diagrams={diagramsSignedUrls} />);
+      return wrap(
+        'report',
+        <ReportView
+          data={audit.skill_5_output}
+          diagrams={diagramsSignedUrls}
+          auditId={audit.id}
+          onDiagramRegenerated={onDiagramRegenerated}
+        />,
+      );
     case 'notes':
       return (
         <NotesTabContent
