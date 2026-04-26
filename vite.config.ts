@@ -24,6 +24,7 @@ import rerunHandler from './api/audit/[id]/rerun';
 import auditRunHandler from './api/audit/run';
 import approveAndSendHandler from './api/admin/audits/[id]/approve-and-send';
 import publicReportHandler from './api/public/report/[token]';
+import diagramRegenerateHandler from './api/admin/audits/[id]/diagrams/[solutionId]/regenerate';
 
 /**
  * Adapte un handler Vercel (req: VercelRequest, res: VercelResponse) sur
@@ -298,10 +299,15 @@ function devApiAdminAudits(): PluginOption {
       const rejectAdapted = vercelAdapter(rejectHandler);
       const rerunAdapted = vercelAdapter(rerunHandler);
       const approveAndSendAdapted = vercelAdapter(approveAndSendHandler);
+      const diagramRegenerateAdapted = vercelAdapter(diagramRegenerateHandler);
 
       function injectId(req: any, id: string) {
         const sep = req.url?.includes('?') ? '&' : '?';
         req.url = `${req.url}${sep}id=${encodeURIComponent(id)}`;
+      }
+      function injectIdAndSolutionId(req: any, id: string, solutionId: string) {
+        const sep = req.url?.includes('?') ? '&' : '?';
+        req.url = `${req.url}${sep}id=${encodeURIComponent(id)}&solutionId=${encodeURIComponent(solutionId)}`;
       }
 
       server.middlewares.use((req, res, next) => {
@@ -346,6 +352,15 @@ function devApiAdminAudits(): PluginOption {
         if (approveSendMatch) {
           injectId(req, approveSendMatch[1]);
           return approveAndSendAdapted(req, res, next);
+        }
+
+        // Session 2E : régénération d'un diagramme.
+        const diagramRegenMatch = path.match(
+          /^\/api\/admin\/audits\/([0-9a-f-]{36})\/diagrams\/([a-z0-9-]+)\/regenerate$/i,
+        );
+        if (diagramRegenMatch) {
+          injectIdAndSolutionId(req, diagramRegenMatch[1], diagramRegenMatch[2]);
+          return diagramRegenerateAdapted(req, res, next);
         }
 
         return next();
