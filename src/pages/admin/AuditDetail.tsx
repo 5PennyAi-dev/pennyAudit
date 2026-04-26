@@ -12,6 +12,7 @@ import { ReviewEventsTimeline } from '../../components/admin/sections/ReviewEven
 import { SectionShell, Subsection } from '../../components/admin/sections/_shared';
 import { InlineNoteEditor, type NoteSection } from '../../components/admin/InlineNoteEditor';
 import { AuditActions } from '../../components/admin/AuditActions';
+import { AuditDocxActions } from '../../components/admin/AuditDocxActions';
 
 interface ReviewEvent {
   id: string;
@@ -38,6 +39,8 @@ interface AuditRow {
   public_report_token: string | null;
   created_at: string;
   pipeline_completed_at: string | null;
+  docx_storage_path: string | null;
+  docx_generated_at: string | null;
 }
 
 interface GetResponse {
@@ -175,6 +178,18 @@ export function AuditDetail() {
           />
         }
       />
+
+      {(audit.status === 'pending_review' ||
+        audit.status === 'approved' ||
+        audit.status === 'delivered' ||
+        audit.docx_storage_path) && (
+        <AuditDocxActions
+          auditId={audit.id}
+          docxStoragePath={audit.docx_storage_path}
+          docxGeneratedAt={audit.docx_generated_at}
+          onChanged={refetch}
+        />
+      )}
 
       <AuditTabs active={activeTab} onChange={setTab} />
 

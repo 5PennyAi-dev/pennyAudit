@@ -90,6 +90,8 @@ export interface AuditRow {
   error_at_skill: number | null;
   resume_email_sent_at: string | null;
   pipeline_completed_at: string | null;
+  docx_storage_path: string | null;
+  docx_generated_at: string | null;
 }
 
 export interface AuditInsert {
