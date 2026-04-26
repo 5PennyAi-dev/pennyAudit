@@ -29,7 +29,11 @@ export interface SkillModelParams {
 export const SKILL_MODEL_CONFIG: Record<1 | 2 | 3 | 4 | 5 | 6, SkillModelParams> = {
   1: {
     model: ANTHROPIC_MODEL_DEFAULT,
-    maxTokens: 6000,
+    // 12000 : web_search intercale du raisonnement narratif entre les
+    // recherches, et le JSON final (industry_portrait + benchmarks +
+    // extracted_client_figures) est volumineux. À 6000 la réponse était
+    // tronquée avant le `}` racine → JSON.parse plantait sur le préambule.
+    maxTokens: 12000,
     tools: [
       { type: 'web_search_20250305', name: 'web_search', max_uses: 5 },
     ],
