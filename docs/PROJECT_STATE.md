@@ -1,6 +1,6 @@
 # État du projet 5PennyAi — Audit IA
 
-*Dernière mise à jour : 25 avril 2026 (fin de Session 2C — interface admin de révision)*
+*Dernière mise à jour : 25 avril 2026 (fin de Session 2D — export DOCX automatisé)*
 
 Ce fichier sert d'ancrage pour que chaque nouvelle session Claude puisse
 reprendre le projet là où on s'est arrêté, sans avoir à relire toute
@@ -16,7 +16,8 @@ l'historique des conversations.
 - ✅ Session 2A — Formulaire d'intake (7 écrans, 19 questions, persistence progressive, reprise magic link, cron Vercel)
 - ✅ Session 2B — Pipeline des 5 skills (orchestration SSE, matching sémantique pgvector, écran de progression, 2 courriels de fin de parcours)
 - ✅ Session 2B-bis — Enrichissement éditorial (Portrait sectoriel via web_search, estimations chiffrées personnalisées, livrables actionnables intégrés au rapport)
-- ✅ **Session 2C — Interface admin de révision** (auth mot de passe, liste filtrée, page détail 7 onglets, édition inline reviewer_notes, actions admin, page rapport publique via JWT)
+- ✅ Session 2C — Interface admin de révision (auth mot de passe, liste filtrée, page détail 7 onglets, édition inline reviewer_notes, actions admin, page rapport publique via JWT)
+- ✅ **Session 2D — Export DOCX automatisé** (générateur fidèle au PDF Sophie, bucket Storage privé, génération à l'approbation + pièce jointe courriel, boutons admin Générer/Télécharger/Régénérer, mapping libellés secteurs, business_name dans liste admin, affirmation de révision conditionnelle DOCX + page web)
 
 **Audits complets validés** : 2 personas radicalement différents
 
@@ -56,69 +57,76 @@ vers 199-249 $ après les premiers beta-tests gratuits.
 
 ---
 
-## 🎯 Prochaine session : Session 2D — Export DOCX automatisé
+## 🎯 Prochaine étape : configuration Brevo + beta-tests
 
-**Statut** : priorité actuelle. Dernier bloqueur structurel avant les
-beta-tests sérieux.
+La 2D ferme le dernier bloqueur structurel. Avant les beta-tests réels,
+il reste à activer l'envoi de courriels (Brevo, domaine `5pennyai.com`)
+puis lancer 5-10 audits gratuits ou très bas prix avec de vrais clients
+pour valider le produit en conditions réelles.
 
-**Pourquoi maintenant** : la 2C livre le rapport via une page web
-publique stylée, et l'impression navigateur produit déjà un PDF
-acceptable. Mais pour un produit à 199-249 $ CAD, un fichier DOCX
-attaché au courriel reste l'attente standard du marché PME québécois —
-les clients vont vouloir le déposer dans leur GED, l'imprimer en cabinet,
-ou le faire annoter par leur équipe.
+## Référence — Session 2D livrée
 
-**Scope de la Session 2D** :
+**Statut** : ✅ livrée, 7 étapes commitées (`session-2d: step 1` → `step 7`).
 
-1. **Générateur DOCX côté serveur** basé sur le script de référence
-   `build-report.js` produit manuellement le 25 avril 2026 (disponible
-   dans l'historique de conversation Claude). Réutilise la même
-   structure visuelle (Navy 600 + Orange 500), les callouts cream,
-   les tableaux, etc.
+**Livrables 2D** :
 
-2. **Endpoint `/api/admin/audits/[id]/generate-docx`** déclenché soit
-   automatiquement à l'approbation, soit à la demande depuis l'admin
-   pour régénérer.
+1. **Générateur DOCX** — `src/lib/report/docx-builder.ts` porté du
+   script de référence `docs/references/build-report.js`. Reproduit
+   fidèlement la palette Navy/Orange/Cream, les callouts, les tableaux,
+   le format Letter, le header/footer pagination. 11 sections (page de
+   titre → mot de clôture). 5 types de livrables actionnables supportés
+   (banque de prompts, politique Loi 25, vendor checklist, automation
+   starter, KPI sheet).
 
-3. **Intégration au flux `approve-and-send`** existant :
-   - Génère le DOCX juste avant l'envoi du courriel
-   - Stocke le fichier dans Supabase Storage (bucket privé)
-   - Joint le DOCX au courriel client (en plus du lien vers la page
-     publique qui reste accessible 90 jours)
+2. **Bucket Supabase Storage** privé `audit-reports` + colonnes
+   `audits.docx_storage_path` et `audits.docx_generated_at`
+   (migration `2026-04-25_docx_storage.sql`).
 
-4. **Conversion PDF optionnelle** via LibreOffice pour les clients qui
-   préfèrent. À évaluer : LibreOffice headless dans une fonction
-   serverless ou service externe ? Probablement plus simple de laisser
-   le client convertir lui-même via Word — à trancher pendant la 2D.
+3. **Helpers serveur** `api/_storageAuditReports.ts` :
+   `buildDocxStoragePath`, `uploadDocx`, `downloadDocx`, `getSignedUrl`.
 
-5. **Bouton "Télécharger DOCX" dans l'admin** sur la page détail pour
-   que Christian puisse aussi récupérer le fichier sans devoir relancer
-   l'envoi client.
+4. **Endpoints admin** :
+   - `POST /api/admin/audits/[id]/generate-docx` — génère + upload + URL
+     signée 15 min, met à jour les colonnes de tracking, émet event
+     `docx_generated`.
+   - `GET /api/admin/audits/[id]/docx-url` — retourne une URL signée
+     fraîche sans rien régénérer (utilisé par le bouton Télécharger).
 
-**Effort estimé** : 4-6 étapes Claude Code, 2-3 heures. Plus simple que
-la 2C parce que le script de référence existe et que le scope est focal.
+5. **Intégration `approve-and-send`** : génération du DOCX *avant* le
+   changement de statut. Si génération ou upload KO, l'audit reste en
+   `pending_review`, aucun courriel n'est envoyé. Resend reçoit le
+   buffer en base64 dans `attachments`. Mode dev : log de la taille
+   sans dump du buffer ; le DOCX reste stocké dans Storage.
 
----
+6. **Bandeau admin « Rapport DOCX »** (`AuditDocxActions.tsx`) sur la
+   page détail : Générer / Télécharger / Régénérer + indicateur de
+   fraîcheur (« Généré il y a X min/h/j »). Toasts inline succès/erreur,
+   boutons disabled pendant les requêtes.
 
-## Petits chantiers à coupler avec la 2D ou à régler en marge
+7. **Micro-chantiers couplés** :
+   - Mapping libellés secteurs (`src/lib/labels/industry.ts`) utilisé
+     dans la colonne Secteur de la liste admin et sur la page de titre
+     du DOCX.
+   - `business_name` affiché en seconde ligne sous le prénom dans la
+     liste admin pour distinguer deux clients du même prénom (l'intake
+     n'a pas de champ `last_name`, c'est le compromis pragmatique).
+   - Affirmation de révision conditionnelle (DOCX + page web publique) :
+     n'apparaît que si `reviewed_at` est non null ET qu'il existe au
+     moins une note (globale ou de section). La page publique calcule
+     un booléen `reviewed` côté serveur (les notes ne sont pas exposées
+     au client).
 
-- **Mapping des libellés de secteur** : actuellement la liste admin
-  affiche `services_professionnels`, `sante_bien_etre` en snake_case
-  brut. Ajouter un mapping vers libellés humains (« Services
-  professionnels », « Santé et bien-être »). 5 minutes.
+**Hors scope 2D** (volontaire) :
+- Conversion PDF automatisée (Word ou impression navigateur suffisent).
+- Logo PNG/SVG (placeholder texte « 5PennyAi » pour l'instant).
+- Versioning des rapports (la régénération écrase au niveau de la
+  colonne ; les anciens blobs restent dans Storage pour l'audit trail).
+- Bouton « Télécharger DOCX » sur la page rapport publique (pièce
+  jointe courriel suffit, à voir si les beta-testeurs le réclament).
 
-- **Nom complet client dans la liste admin** : actuellement seul le
-  prénom s'affiche. Ajouter le nom de famille s'il existe dans
-  `intake_data` pour distinguer deux clients du même prénom. 5 minutes.
-
-- **Affirmation de révision conditionnelle dans le rapport** : la phrase
-  finale « Ce rapport a fait l'objet d'une révision humaine par Christian
-  Couillard avant transmission » apparaît dans tous les rapports envoyés.
-  Pour être strictement honnête, la rendre conditionnelle au fait que
-  `reviewed_at` est rempli ET que `admin_notes_global` ou des notes de
-  section existent. Sans urgence — pour les beta-tests réels Christian
-  fera toujours une vraie révision, donc le problème ne se pose pas en
-  pratique. À garder dans le backlog comme dette d'honnêteté.
+**Coût ajouté par audit** : ~0 $ (DOCX généré localement, Storage
+gratuit jusqu'à des volumes très élevés). Latence ajoutée à
+`approve-and-send` : 2-5 secondes pour la génération du DOCX.
 
 ---
 
@@ -387,13 +395,14 @@ et restent la source de vérité pour les détails techniques.
 
 **Démarrage typique** :
 
-- Si Christian dit "on continue" : il veut probablement attaquer la
-  Session 2D (export DOCX). Valide avec lui avant de plonger.
+- Si Christian dit "on continue" : la 2D est livrée. La prochaine
+  étape logique est la configuration Brevo (envoi de courriels réels)
+  puis le lancement des beta-tests. Valide avec lui.
 - S'il veut faire un nouveau test d'audit : propose-lui Julie Martin
   (e-commerce, encore non testé) pour étendre la couverture.
 - S'il veut configurer Brevo : c'est une session courte (vérification
-  domaine, ajustement variables d'env, test d'envoi réel). Indépendante
-  de la 2D mais probablement à faire juste après.
+  domaine, ajustement variables d'env, test d'envoi réel). C'est
+  l'étape qui débloque les beta-tests réels.
 - S'il veut ajouter des patterns : c'est du travail éditorial, pas
   de Claude Code. Discute avec lui des secteurs prioritaires.
 - S'il veut le chatbot : rappelle-lui que c'est explicitement reporté

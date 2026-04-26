@@ -73,8 +73,55 @@ Nouvelles en Session 2C :
    - **Rejeter** → modal avec checkbox de confirmation → `status='rejected'`.
 5. La page rapport publique `/rapport/:token` est accessible sans auth via
    le lien envoyé au client. Bouton « Imprimer » sur la page → PDF
-   navigateur (CSS print A4 dédié, en attendant la génération DOCX en
-   Session 2D).
+   navigateur (CSS print A4 dédié).
+
+## Génération DOCX (Session 2D)
+
+Chaque audit livré est aussi disponible en `.docx` (palette Navy/Orange/Cream,
+12-15 pages, identique au rendu de la page web).
+
+**Stockage** : bucket Supabase Storage privé `audit-reports`. Accès via
+`SUPABASE_SERVICE_ROLE_KEY` uniquement, jamais public. Chemin :
+`<audit_id>/audit-<slug-client>-<timestamp>.docx`. Chaque régénération
+écrit un nouveau blob (historique implicite par timestamp ; cleanup
+manuel pour l'instant).
+
+**Génération automatique** : à l'approbation (« Approuver et envoyer »),
+le DOCX est généré, uploadé, puis joint au courriel client (en plus
+du lien web qui reste valide 90 jours). Si la génération ou l'upload
+échoue, le flux entier est annulé — l'audit reste en `pending_review`
+pour réessai (pas d'envoi sans pièce jointe).
+
+**Génération manuelle / régénération depuis l'admin** : sur la page
+détail d'un audit (`/admin/audits/<id>`), bandeau « Rapport DOCX »
+sous le header :
+- Si aucun DOCX : bouton **Générer DOCX**.
+- Si DOCX existant : boutons **Télécharger** (URL signée 15 min) et
+  **Régénérer** (utile après avoir édité une note de section pour
+  resynchroniser le livrable). Indicateur de fraîcheur (« Généré il
+  y a X min/h/j »).
+
+**Mode dev** : si `RESEND_API_KEY` est absent, la console log la taille
+de la pièce jointe sans dump du buffer ; le DOCX est tout de même
+stocké dans le bucket Storage et accessible via le bouton Télécharger.
+
+**Endpoints** :
+- `POST /api/admin/audits/[id]/generate-docx` — génère + upload + URL
+  signée, met à jour `audits.docx_storage_path` et
+  `audits.docx_generated_at`, émet un event `docx_generated`.
+- `GET /api/admin/audits/[id]/docx-url` — retourne une URL signée
+  fraîche (15 min) sans rien régénérer.
+
+**Debug local** : `npx tsx scripts/test-docx-build.ts [auditId]` génère
+les DOCX dans `tmp/` à partir des audits en `pending_review` /
+`delivered` (ou un audit ciblé). Sert à valider le builder sans
+déployer.
+
+**Affirmation de révision** : la phrase « révisé personnellement par
+Christian Couillard » n'apparaît dans le mot de clôture (DOCX) et le
+footer (page web) que si `audits.reviewed_at` est non null ET qu'au
+moins une note (globale ou de section) existe. Sinon, omise
+silencieusement.
 
 ## Migrations SQL
 
@@ -106,6 +153,11 @@ Supabase SQL Editor par ordre chronologique.
   `delivered_at`, `public_report_token`, `public_report_token_expires_at`),
   crée la table `audit_review_events` avec son index et une policy
   service-role-only.
+
+**Session 2D** :
+- `2026-04-25_docx_storage.sql` — crée le bucket Supabase Storage privé
+  `audit-reports` avec 4 policies RLS service-role-only, ajoute
+  `docx_storage_path` et `docx_generated_at` sur `audits`.
 
 ## Cron : relance des formulaires abandonnés
 
