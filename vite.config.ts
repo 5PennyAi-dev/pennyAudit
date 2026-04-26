@@ -25,6 +25,8 @@ import auditRunHandler from './api/audit/run';
 import approveAndSendHandler from './api/admin/audits/[id]/approve-and-send';
 import publicReportHandler from './api/public/report/[token]';
 import diagramRegenerateHandler from './api/admin/audits/[id]/diagrams/[solutionId]/regenerate';
+import generateDocxHandler from './api/admin/audits/[id]/generate-docx';
+import docxUrlHandler from './api/admin/audits/[id]/docx-url';
 
 /**
  * Adapte un handler Vercel (req: VercelRequest, res: VercelResponse) sur
@@ -300,6 +302,8 @@ function devApiAdminAudits(): PluginOption {
       const rerunAdapted = vercelAdapter(rerunHandler);
       const approveAndSendAdapted = vercelAdapter(approveAndSendHandler);
       const diagramRegenerateAdapted = vercelAdapter(diagramRegenerateHandler);
+      const generateDocxAdapted = vercelAdapter(generateDocxHandler);
+      const docxUrlAdapted = vercelAdapter(docxUrlHandler);
 
       function injectId(req: any, id: string) {
         const sep = req.url?.includes('?') ? '&' : '?';
@@ -352,6 +356,23 @@ function devApiAdminAudits(): PluginOption {
         if (approveSendMatch) {
           injectId(req, approveSendMatch[1]);
           return approveAndSendAdapted(req, res, next);
+        }
+
+        // Session 2D : génération + URL signée du DOCX.
+        const generateDocxMatch = path.match(
+          /^\/api\/admin\/audits\/([0-9a-f-]{36})\/generate-docx$/i,
+        );
+        if (generateDocxMatch) {
+          injectId(req, generateDocxMatch[1]);
+          return generateDocxAdapted(req, res, next);
+        }
+
+        const docxUrlMatch = path.match(
+          /^\/api\/admin\/audits\/([0-9a-f-]{36})\/docx-url$/i,
+        );
+        if (docxUrlMatch) {
+          injectId(req, docxUrlMatch[1]);
+          return docxUrlAdapted(req, res, next);
         }
 
         // Session 2E : régénération d'un diagramme.
