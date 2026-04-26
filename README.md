@@ -125,6 +125,67 @@ section ne sont pas considérées (pré-remplies par l'IA, donc inutilisables
 comme signal). Pour activer la phrase : laisse une note globale dans
 l'onglet « Notes & historique » de l'admin avant d'approuver.
 
+## Génération de diagrammes (Session 2E)
+
+À la fin du pipeline d'audit (après le Skill 5, avant le passage en
+`pending_review`), un Skill 6 produit un prompt Gemini par opportunité
+**phase 1 et phase 2** de la feuille de route, puis le pipeline appelle
+`gemini-3-pro-image-preview` (Nano Banana Pro) en parallèle (3 appels
+concurrents max, timeout 90s par appel) avec la planche
+`docs/references/style-guide-v1.png` jointe à chaque appel. Les PNG/JPEG
+résultants sont uploadés dans le bucket privé `audit-diagrams`
+(`<audit_id>/<solution_id>.{png|jpg}`) et tracés dans
+`audits.diagrams_metadata` (jsonb).
+
+**Ordre de magnitude** : 3-4 diagrammes par audit, ~5 min de génération
+totale (sous parallélisme 3), ~0,54 $ US par audit.
+
+**Pas de Mermaid en fallback** : si Gemini échoue après les 2 retries
+internes, l'audit passe quand même en `pending_review` sans le
+diagramme concerné. L'admin peut le régénérer depuis l'onglet Rapport.
+
+**Régénération admin** : dans l'onglet Rapport d'un audit, le panneau
+« Diagrammes d'architecture » affiche chaque diagramme avec son statut,
+un aperçu, et trois boutons (Voir en grand / Éditer le prompt /
+Régénérer). L'édition du prompt ouvre une modal avec textarea
+préremplie ; soumettre régénère via
+`POST /api/admin/audits/:id/diagrams/:solution_id/regenerate`. Le
+nouveau diagramme écrase l'ancien au même path Storage (pas de
+versioning).
+
+**Test local du pipeline diagrammes** (sans repasser tout le pipeline
+d'audit) :
+
+```bash
+# Génère ou régénère tous les diagrammes d'un audit existant.
+# Sans argument : utilise le pending_review le plus récent.
+npx tsx scripts/test-diagram-pipeline.ts <audit_id?>
+```
+
+Le script affiche pour chaque diagramme le solution_id, le statut, et
+le storage_path résultant. Les fichiers sont visibles dans Supabase
+Storage → bucket `audit-diagrams`.
+
+**Test du DOCX avec diagrammes inclus** :
+
+```bash
+npx tsx scripts/test-docx-build.ts <audit_id?>
+```
+
+Produit `tmp/audit-<slug>-<id>.docx` avec les diagrammes intégrés
+(centrés, légendés en italique muted) après chaque opportunité dans
+les sections phase 1 et phase 2 de la feuille de route. Les solutions
+sans diagramme affichent « *Diagramme non disponible pour cette
+solution.* ».
+
+**Variables d'environnement** : `GEMINI_API_KEY` (Google AI Studio).
+Voir `.env.example`.
+
+**Style guide** : `docs/references/style-guide-v1.png` (planche v3,
+jointe à chaque appel Gemini comme référence visuelle). Si tu la
+regénères, garde le même chemin et les mêmes dimensions pour ne pas
+casser les chemins relatifs résolus dans `src/lib/diagrams/diagram-pipeline.ts`.
+
 ## Migrations SQL
 
 Les migrations versionnées vivent dans `sql/migrations/`. À exécuter dans
@@ -160,6 +221,14 @@ Supabase SQL Editor par ordre chronologique.
 - `2026-04-25_docx_storage.sql` — crée le bucket Supabase Storage privé
   `audit-reports` avec 4 policies RLS service-role-only, ajoute
   `docx_storage_path` et `docx_generated_at` sur `audits`.
+
+**Session 2E** :
+- `2026-04-26_diagrams_storage.sql` — crée le bucket Supabase Storage
+  privé `audit-diagrams` avec 4 policies RLS service-role-only, ajoute
+  `diagrams_metadata` (jsonb) sur `audits`, met à jour le commentaire
+  de `audit_review_events` pour documenter les nouveaux event_type
+  (`diagrams_generation_started`, `diagram_generated`,
+  `diagram_regenerated`, `diagram_failed`).
 
 ## Cron : relance des formulaires abandonnés
 

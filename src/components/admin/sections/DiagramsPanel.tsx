@@ -33,7 +33,6 @@ export function DiagramsPanel({ auditId, diagrams, onRegenerated }: DiagramsPane
   } | null>(null);
   const [editing, setEditing] = useState<{
     solutionId: string;
-    promptInitial: string;
     title: string;
   } | null>(null);
 
@@ -175,11 +174,7 @@ export function DiagramsPanel({ auditId, diagrams, onRegenerated }: DiagramsPane
                   type="button"
                   disabled={isBusy}
                   onClick={() =>
-                    setEditing({
-                      solutionId,
-                      promptInitial: '',
-                      title: d.title,
-                    })
+                    setEditing({ solutionId, title: d.title })
                   }
                   className="inline-flex items-center justify-center rounded-md border border-line bg-white px-3 py-1.5 text-xs font-semibold text-navy-600 hover:bg-cream transition-colors disabled:opacity-50"
                 >
