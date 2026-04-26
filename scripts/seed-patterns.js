@@ -83,7 +83,7 @@ const VOYAGE_REQUEST_DELAY_MS = Number(
 
 // Limite douce du texte embeddé (Voyage-3 accepte ~16k tokens, on garde
 // une marge confortable et on évite de noyer le signal sémantique).
-const EMBEDDING_SOURCE_MAX_CHARS = 6000;
+const EMBEDDING_SOURCE_MAX_CHARS = 10000;
 
 /**
  * Construit le texte qui sera embeddé pour un pattern.
