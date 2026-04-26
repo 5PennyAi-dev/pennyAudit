@@ -285,6 +285,69 @@ ANTI-PATTERNS À ÉVITER
 - Ne pas ajouter dans un livrable des chiffres qui contrediraient
   ceux du consolidated_impact_summary.
 
+INJECTION DES IMPLEMENTATION TEMPLATES (nouveau session 2G)
+
+Pour chaque opportunité de la feuille de route, vérifier si le pattern
+source (présent dans selected_opportunities[].source_pattern_ids et
+candidate_patterns[].content) contient une section
+`implementation_templates`. Si oui, produire une entrée dans
+architectures_de_la_solution pour cette opportunité.
+
+1. SÉLECTION DU SOUS-TEMPLATE
+
+Pour chaque sous-template du pattern, calculer un score de match :
+- +3 si l'industrie du client (context.business_profile.industry_vertical
+  ou équivalent) apparaît dans triggers_when.industry_in
+- +2 par mot-clé du contexte client (challenges_summary.stated_automation_wish,
+  primary_pain_points, time_consuming_tasks ou équivalent) qui apparaît
+  dans triggers_when.automation_wish_keywords
+- +1 si un outil recommandé pour cette opportunité (recommended_tools du
+  Skill 2 ou stack_audit) apparaît dans triggers_when.tools_to_recommend
+
+Sélectionner le sous-template avec le score le plus élevé. En cas
+d'égalité, prendre le premier dans l'ordre du YAML. Si tous les scores
+sont 0 (aucun match), prendre le premier sous-template ET noter
+l'avertissement dans reviewer_notes ("Aucun sous-template du pattern X
+ne match le contexte client ; fallback sur le premier — vérifier la
+pertinence.").
+
+Reporter le score retenu dans sub_template_match_score pour traçabilité.
+
+2. INJECTION DU CONTENU SELON LA VOIE
+
+Selon recommended_path de l'opportunité (ou recommended_path global si
+non disponible par opportunité) :
+- voie_a_self_serve → injecter sub_template.voie_a_self_serve
+- voie_b_accompagne → injecter sub_template.voie_b_accompagnee (qui
+  contient implicitement le contenu voie_a sauf les sections
+  pitfalls/success_criteria)
+- voie_c_custom ou mixte → injecter voie_b_accompagnee par défaut
+
+3. ADAPTATION CONTEXTUELLE DES MARQUEURS
+
+Le contenu des sous-templates contient des marqueurs à substituer :
+- [VOTRE NOM] → first_name + last_name du client si disponibles, sinon
+  business_name
+- [VOTRE BANNIÈRE] → bannière, franchise ou affiliation visible dans
+  le contexte (ex: "RE/MAX du Cartier"). Si rien d'identifiable, garder
+  le marqueur tel quel.
+- [ADAPTER : ...] → produire une suggestion contextuelle si la matière
+  est dans le contexte client ; sinon, garder le marqueur tel quel.
+
+4. PRODUCTION DE adapted_content
+
+Sérialiser le contenu adapté en Markdown structuré (titres, sous-titres,
+listes) reproduisant la structure du sous-template. Le DOCX builder
+consommera ce Markdown pour produire la section « Architecture de la
+solution » du rapport.
+
+5. SI AUCUN implementation_template DANS LE PATTERN
+
+Ne pas ajouter d'entrée pour cette opportunité. Le champ
+architectures_de_la_solution peut être omis ou vide. Transition douce :
+seul le pattern 004 (ai-marketing-content-creation) a des sous-templates
+pour l'instant.
+
 FORMAT DE SORTIE
 
 Réponds uniquement avec un JSON valide. Aucun texte avant ou après.
@@ -368,6 +431,14 @@ différemment. Les valeurs 'enum' doivent être exactement celles listées.
     "rationale": "string",
     "alternative_consideration": "string"
   },
+  "architectures_de_la_solution": [
+    {
+      "opportunity_id": "string",
+      "sub_template_id": "string (id du sous-template choisi)",
+      "sub_template_match_score": 5,
+      "adapted_content": "string (Markdown structuré, marqueurs substitués)"
+    }
+  ],
   "closing_notes": "string (1-2 paragraphes, mentionne Christian Couillard)",
   "confidence_level": "string (enum: low | medium | high)",
   "reviewer_notes": "string (peut être vide '')"
@@ -380,3 +451,7 @@ Notes :
 - `actionable_deliverables` doit contenir 2 à 4 éléments.
 - La structure de `actionable_deliverables[].content` varie selon le
   `deliverable_type` — voir spécifications par type ci-dessus.
+- `architectures_de_la_solution` est OPTIONNEL : ne le produire que
+  pour les opportunités dont le pattern source contient des
+  `implementation_templates`. Omettre le champ ou le laisser vide
+  sinon. Voir section INJECTION DES IMPLEMENTATION TEMPLATES.

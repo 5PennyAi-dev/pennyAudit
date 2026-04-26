@@ -371,6 +371,18 @@ export const skill5OutputSchema = z.object({
     rationale: z.string(),
     alternative_consideration: z.string(),
   }),
+  // Optionnel : présent uniquement pour les opportunités dont le pattern
+  // source contient des `implementation_templates` (session 2G).
+  architectures_de_la_solution: z
+    .array(
+      z.object({
+        opportunity_id: z.string(),
+        sub_template_id: z.string(),
+        sub_template_match_score: z.number().int().min(0),
+        adapted_content: z.string(),
+      }),
+    )
+    .optional(),
   closing_notes: z.string(),
   confidence_level: confidenceLevel,
   reviewer_notes: reviewerNotes,

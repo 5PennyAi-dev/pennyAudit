@@ -386,6 +386,13 @@ export interface ActionableDeliverable {
   content: Record<string, unknown>;
 }
 
+export interface ArchitectureDeLaSolution {
+  opportunity_id: string;
+  sub_template_id: string;
+  sub_template_match_score: number;
+  adapted_content: string;
+}
+
 export interface Skill5Output {
   executive_summary: {
     opening_paragraph: string;
@@ -407,6 +414,7 @@ export interface Skill5Output {
     rationale: string;
     alternative_consideration: string;
   };
+  architectures_de_la_solution?: ArchitectureDeLaSolution[];
   closing_notes: string;
   confidence_level: ConfidenceLevel;
   reviewer_notes: string | null;
