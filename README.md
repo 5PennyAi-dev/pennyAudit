@@ -119,9 +119,11 @@ déployer.
 
 **Affirmation de révision** : la phrase « révisé personnellement par
 Christian Couillard » n'apparaît dans le mot de clôture (DOCX) et le
-footer (page web) que si `audits.reviewed_at` est non null ET qu'au
-moins une note (globale ou de section) existe. Sinon, omise
-silencieusement.
+footer (page web) que si `audits.reviewed_at` est non null ET que
+`audits.admin_notes_global` est non vide. Les `reviewer_notes` par
+section ne sont pas considérées (pré-remplies par l'IA, donc inutilisables
+comme signal). Pour activer la phrase : laisse une note globale dans
+l'onglet « Notes & historique » de l'admin avant d'approuver.
 
 ## Migrations SQL
 

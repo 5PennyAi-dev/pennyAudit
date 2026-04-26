@@ -344,20 +344,19 @@ function clientSlug(intake: IntakeFormData | null): string {
 /**
  * Logique conditionnelle de l'affirmation de révision (Étape 6c) :
  * la phrase de révision n'apparaît que si l'audit a effectivement été
- * révisé ET qu'il existe au moins une note (globale OU de section).
+ * révisé ET que Christian a laissé une note globale (admin_notes_global).
+ *
+ * Pourquoi pas les reviewer_notes par section ? Le pipeline IA pré-remplit
+ * skill_X_output.reviewer_notes (c'est un champ « note de l'IA pour le
+ * réviseur humain », requis dans le schema). L'endpoint admin écrase
+ * cette valeur quand l'admin édite une note. Impossible donc, sans ajouter
+ * une colonne dédiée, de distinguer une note IA d'une note humaine au
+ * niveau section. admin_notes_global est la seule preuve fiable d'une
+ * intervention humaine.
  */
 function shouldIncludeReviewStatement(audit: AuditForDocx): boolean {
   if (!audit.reviewed_at) return false;
-
-  const hasGlobalNote = !!audit.admin_notes_global?.trim();
-  if (hasGlobalNote) return true;
-
-  const sectionNotes = [
-    audit.skill_1_output?.reviewer_notes,
-    audit.skill_2_output?.reviewer_notes,
-    audit.skill_5_output?.reviewer_notes,
-  ];
-  return sectionNotes.some((n) => typeof n === 'string' && n.trim().length > 0);
+  return !!audit.admin_notes_global?.trim();
 }
 
 // ============================================================

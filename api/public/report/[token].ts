@@ -42,7 +42,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const { data: audit, error } = await supabase
     .from('audits')
     .select(
-      'id, status, intake_data, skill_1_output, skill_2_output, skill_5_output, public_report_token, public_report_token_expires_at, delivered_at, reviewed_at, admin_notes_global',
+      'id, status, intake_data, skill_2_output, skill_5_output, public_report_token, public_report_token_expires_at, delivered_at, reviewed_at, admin_notes_global',
     )
     .eq('id', payload.auditId)
     .maybeSingle();
@@ -99,19 +99,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   });
 }
 
+// Affirmation de révision conditionnelle : on n'utilise que
+// admin_notes_global comme preuve fiable d'une intervention humaine.
+// Les skill_X_output.reviewer_notes sont pré-remplis par le pipeline IA
+// (champ requis dans le schema), donc inutilisables pour distinguer.
 function isHumanReviewed(audit: {
   reviewed_at?: string | null;
   admin_notes_global?: string | null;
-  skill_1_output?: unknown;
-  skill_2_output?: unknown;
-  skill_5_output?: unknown;
 }): boolean {
   if (!audit.reviewed_at) return false;
-  if (audit.admin_notes_global?.trim()) return true;
-  const sections = [audit.skill_1_output, audit.skill_2_output, audit.skill_5_output];
-  for (const s of sections) {
-    const note = (s as { reviewer_notes?: unknown } | null)?.reviewer_notes;
-    if (typeof note === 'string' && note.trim().length > 0) return true;
-  }
-  return false;
+  return !!audit.admin_notes_global?.trim();
 }
