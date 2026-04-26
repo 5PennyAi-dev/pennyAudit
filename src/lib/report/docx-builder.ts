@@ -1081,7 +1081,9 @@ function buildClosingNotes(
   blocks.push(HR());
   blocks.push(
     P(
-      'Rapport produit et révisé par Christian Couillard · 5PennyAi · hello@5pennyai.com',
+      includeReviewStatement
+        ? 'Rapport produit et révisé par Christian Couillard · 5PennyAi · hello@5pennyai.com'
+        : 'Rapport produit par 5PennyAi · hello@5pennyai.com',
       { alignment: AlignmentType.CENTER, color: MUTED, size: 18 },
     ),
   );
