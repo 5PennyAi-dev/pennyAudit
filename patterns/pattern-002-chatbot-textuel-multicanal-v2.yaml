@@ -51,6 +51,8 @@ target_industries:
   - cafe
   - traiteur
   - immobilier
+  - agent-immobilier
+  - courtier-immobilier
   - coach-vie
   - coach-business
   - coach-fitness
@@ -369,6 +371,37 @@ tools:
     used_in_paths: [self-serve]
     recommended_priority: 5
     note_fr: Moins orienté IA autonome; à réserver aux clients qui veulent garder des humains au premier plan
+
+  # ── TIER 2 : Spécialisé sectoriel immobilier ──
+
+  - id: structurely
+    tier: 2
+    name: Structurely
+    origin: USA
+    url: https://www.structurely.com
+    interface_fr: limitee
+    starting_price_monthly: null
+    currency: USD
+    target_segment_fr: Courtiers immobiliers voulant chatbot IA spécifique au secteur pour qualification de leads
+    strength_fr: |
+      AI conversationnel construit spécifiquement pour l'immobilier.
+      Qualifie automatiquement les leads (acheteur ou vendeur, urgence,
+      budget, timing, secteur ciblé), identifie l'intention d'achat,
+      programme rendez-vous, déclenche relances automatiques selon
+      comportement. Selon V7 Labs, Structurely fait partie des références
+      pour conversational AI lead nurturing dédié immobilier.
+    weakness_fr: |
+      Interface anglaise, peu adapté à clientèle 100 % francophone.
+      Tarification non publiée.
+    pricing_note_fr: "Tarification sur devis"
+    affiliate_potential: a-verifier
+    source_id: v7labs-real-estate-ai
+    used_in_paths: [accompanied]
+    recommended_priority: null
+    note_fr: |
+      Outil sectoriel immobilier. Voir profil sectoriel
+      « secteur-courtage-immobilier-qc-residentiel » pour le contexte
+      complet et combinaisons recommandées.
 
   # ── TIER 3 : Plateformes de développement (pour voie custom) ──
 
@@ -726,6 +759,16 @@ sources:
     accessed: 2026-04-21
     reliability: medium
     note_fr: "Source québécoise. Métriques agrégées : -40 % appels manqués, +15 h/semaine. Bon benchmark pour contexte local."
+
+  - id: v7labs-real-estate-ai
+    type: comparison-article
+    title: "V7 Labs — Best AI Tools for Real Estate 2026 Field Guide"
+    url: https://www.v7labs.com/blog/best-ai-tools-for-real-estate
+    accessed: 2026-04-26
+    reliability: medium-high
+    note_fr: |
+      Source secteur immobilier reconnue. Référencée pour Structurely.
+      Voir profil sectoriel courtage immobilier QC pour panorama complet.
 
   - id: sba-ai-adoption-2025
     type: government-research

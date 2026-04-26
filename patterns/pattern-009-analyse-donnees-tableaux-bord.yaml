@@ -1,0 +1,1550 @@
+# ═══════════════════════════════════════════════════════════════
+# Pattern 009 — Analyse de données et tableaux de bord par IA
+# Format hybride : structure machine + prose humaine
+# Trois voies d'implémentation (self-serve, accompagné, custom)
+# ═══════════════════════════════════════════════════════════════
+
+id: ai-data-dashboards
+title_fr: Analyse de données et tableaux de bord assistés par IA
+category: analyse-decisionnelle
+version: 1.0
+last_updated: 2026-04-26
+language: fr
+
+# ───── RÉSUMÉS (prose narrative pour livrable client) ─────
+
+summary_short_fr: >
+  Transformation de données dispersées (Excel, ERP, CRM, comptabilité)
+  en tableaux de bord visuels et insights actionnables, avec assistance
+  IA pour poser des questions en langage naturel et obtenir des analyses
+  sans expertise technique avancée.
+
+summary_long_fr: |
+  L'analyse de données par IA couvre quatre fonctions principales :
+  (1) connecter et consolider des données de sources multiples (logiciels
+  comptables, CRM, e-commerce, outils opérationnels), (2) générer des
+  tableaux de bord visuels qui se mettent à jour automatiquement,
+  (3) interroger les données en langage naturel français (« quel
+  produit a le plus contribué à la marge le trimestre dernier ? »)
+  plutôt qu'en SQL ou DAX, (4) détecter automatiquement des anomalies
+  ou des tendances qui méritent attention. Selon Apogea 2026, 60 %
+  des PME françaises naviguent encore à vue sans solution décisionnelle
+  structurée, alors que les entreprises dotées d'une plateforme
+  d'analyse prennent leurs décisions deux fois plus vite selon Dresner
+  Advisory. McKinsey 2024 rapporte que 72 % des organisations adoptent
+  l'IA, mais seulement 26 % la scalent au-delà des pilotes. La valeur
+  réelle pour une PME québécoise n'est pas le « Big BI » d'entreprise
+  (Power BI Premium + Fabric à 263 $ USD/mois et plus), mais plutôt
+  un mix bien dosé : un LLM (Claude, ChatGPT) comme analyste d'Excel
+  au quotidien, un Looker Studio gratuit pour les dashboards récurrents,
+  et possiblement Zoho Analytics ou Drivn pour aller plus loin. Le
+  vrai blocage rarement adressé : seulement 32 % des organisations
+  ont une vraie gouvernance des données (qualité, définitions, droits
+  d'accès). Sans gouvernance, le meilleur outil produit des analyses
+  fausses avec assurance.
+
+# ───── COMPLÉMENTARITÉ AVEC AUTRES PATTERNS ─────
+
+complementary_patterns:
+  - pattern_id: ai-quote-invoice-automation
+    relation_fr: |
+      Les données de facturation (pattern 006) sont une des sources
+      les plus précieuses pour les tableaux de bord. Quand on automatise
+      la facturation, on génère automatiquement les données structurées
+      qui alimentent les tableaux de bord financiers. Les deux patterns
+      se renforcent.
+
+  - pattern_id: ai-email-management
+    relation_fr: |
+      L'analyse du flux courriel (volume, temps de réponse, sujets
+      récurrents) est un cas typique de tableau de bord opérationnel.
+      Pattern 005 produit la donnée, pattern 009 la visualise.
+
+  - pattern_id: ai-marketing-content-creation
+    relation_fr: |
+      Les analyses de performance de campagnes marketing (clics, taux
+      de conversion, ROAS) reposent sur des dashboards. Pattern 004
+      produit le contenu, pattern 009 mesure son impact.
+
+# ───── CIBLAGE (tags structurés pour recherche vectorielle) ─────
+
+target_industries:
+  - commerce-detail
+  - epicerie
+  - boutique-en-ligne
+  - restauration
+  - traiteur
+  - hotellerie
+  - manufacturier-petit
+  - manufacturier-moyen
+  - distribution-b2b
+  - logistique
+  - construction
+  - renovation
+  - paysagement
+  - cabinet-comptable
+  - cabinet-conseil
+  - cabinet-juridique
+  - cabinet-rh
+  - agence-marketing
+  - agence-creative
+  - agence-evenementielle
+  - agence-immobiliere
+  - agent-immobilier
+  - courtier-immobilier
+  - agence-voyage
+  - clinique-dentaire
+  - clinique-medicale
+  - clinique-veterinaire
+  - centre-physiotherapie
+  - garderie-cpe
+  - dirigeant-pme
+  - directeur-finances
+  - controleur
+  - obnl
+  - cooperative
+  - association
+
+target_business_sizes:
+  - petite-10-49
+  - moyenne-50-249
+
+tech_comfort_required: faible-a-eleve
+requires_existing_data: true
+high_priority_segments:
+  - pme-10-100-employes-avec-erp-crm-ou-comptabilite-numerique-mais-peu-visibilite-strategique
+  - cabinets-comptables-qui-veulent-offrir-services-bi-a-leurs-clients
+  - e-commerce-avec-30k-plus-revenu-mensuel-multiples-canaux
+  - restaurants-multi-sites-3-plus-locations
+  - agences-marketing-avec-multiples-clients-kpis-recurrents
+  - obnl-avec-rapports-aux-bailleurs-de-fonds-trimestriels-ou-annuels
+  - manufacturiers-avec-suivi-production-qualite-inventaire
+  - courtiers-immobiliers-residentiels-volume-suivi-pipeline-et-commissions
+
+# Pour les courtiers immobiliers, KPIs typiques pertinents pour les
+# tableaux de bord : transactions fermées par mois, mandats actifs
+# (acheteurs vs vendeurs), durée moyenne d'un mandat vendeur, commission
+# moyenne par transaction, taux de conversion lead → rendez-vous, prix
+# de vente vs prix demandé, sources de leads par performance. Voir le
+# profil sectoriel courtage immobilier QC pour la liste complète des
+# KPIs sectoriels et des combinaisons recommandées.
+
+# ───── PROBLÈME (voix du client pour narratif) ─────
+
+pain_point_fr: |
+  Je dirige une PME en distribution. J'ai un ERP, un CRM HubSpot,
+  Acomba pour la compta, et plusieurs fichiers Excel que mes
+  contrôleurs maintiennent à la main. Chaque mois, on prend trois
+  jours à monter le rapport de gestion : exports, copier-coller,
+  formules Excel, et au final personne n'est sûr que les chiffres
+  réconcilient entre les systèmes. Je sens qu'il y a des informations
+  importantes cachées dans nos données — quels clients sont les plus
+  rentables, quels produits sont en perte de vitesse — mais je n'ai
+  pas la visibilité. J'ai entendu parler de Power BI, mais quand
+  j'ai demandé à un consultant un devis, ça frôlait les 30 000 $
+  juste pour le setup, et après il faut une licence pour chaque
+  utilisateur. Il doit exister quelque chose entre Excel et un projet
+  enterprise à 30 000 $.
+
+problem_facts:
+  - claim_fr: "60 % des PME françaises naviguent encore à vue sans solution décisionnelle structurée selon Apogea 2026"
+    source_id: apogea-outils-bi
+  - claim_fr: "Les entreprises dotées d'une plateforme d'analyse prennent leurs décisions deux fois plus vite que leurs concurrents selon Dresner Advisory"
+    source_id: apogea-outils-bi
+  - claim_fr: "67 % des professionnels de la BI jonglent avec près de quatre outils différents selon Webintelligence 2026"
+    source_id: webintelligence-tableau-business
+  - claim_fr: "Seulement 32 % des organisations ont une vraie gouvernance des données selon Webintelligence 2026"
+    source_id: webintelligence-tableau-business
+  - claim_fr: "72 % des organisations ont adopté l'IA dans au moins une fonction, mais seulement 26 % scalent au-delà des pilotes selon McKinsey 2024"
+    source_id: hungyichen-chatgpt-enterprise
+  - claim_fr: "Seulement 4 % des clients Microsoft Copilot M365 décrivent leurs déploiements comme générant une 'valeur significative et large' selon Gartner novembre 2024"
+    source_id: hungyichen-chatgpt-enterprise
+  - claim_fr: "Les logiciels de tableau de bord modernes peuvent réduire de 30 % le temps passé à collecter et traiter les données, et augmenter la productivité des équipes de 25 % selon Apogea 2026"
+    source_id: apogea-tableau-bord
+  - claim_fr: "Pour les entreprises avec plusieurs sites ou un e-commerce, connecter un tableau de bord à un ERP peut booster l'efficacité opérationnelle de 23 % selon Webintelligence 2026"
+    source_id: webintelligence-tableau-business
+  - claim_fr: "L'intégration de l'IA dans Tableau peut générer jusqu'à 19 % de croissance des revenus selon Webintelligence 2026"
+    source_id: webintelligence-tableau-business
+  - claim_fr: "Microsoft a augmenté les prix de Power BI de 40 % en avril 2025 selon AI Agent Brief"
+    source_id: ai-agent-brief-pricing
+  - claim_fr: "Le marché mondial de la BI passera de 37,96 milliards USD en 2026 à 72,21 milliards en 2034 selon Webintelligence"
+    source_id: webintelligence-tableau-business
+
+# ───── SOLUTION (prose + structure) ─────
+
+solution_summary_fr: |
+  L'approche dépend du profil. Pour la majorité des PME québécoises,
+  le « Big BI » d'entreprise (Power BI Premium + Microsoft Fabric)
+  est massivement surdimensionné et hors budget. Trois voies
+  pragmatiques émergent. (1) Auto-service léger : un dirigeant utilise
+  Claude ou ChatGPT comme analyste d'Excel quotidien (poser des
+  questions en français à ses fichiers, générer graphiques, identifier
+  tendances), et déploie Looker Studio gratuit pour quelques tableaux
+  de bord récurrents connectés à Google Sheets ou Google Analytics.
+  Coût : 0 à 50 $/mois. (2) Solution structurée : Zoho Analytics
+  (excellent rapport qualité-prix, IA Zia incluse dès 48 $/mois pour
+  5 utilisateurs) OU Drivn (français, basé sur Power BI Embedded,
+  connectivité native Pennylane/Sage/Cegid, économie de 92 % sur les
+  licences) OU Power BI Pro classique si le client est déjà dans
+  l'écosystème Microsoft. Coût : 200-1 500 $/mois. (3) Solution
+  custom pour cas complexes : entrepôt de données + IA générative
+  via API + dashboards sur mesure. Coût : 18 000-50 000 $ initial.
+  Dans tous les cas, le travail invisible mais critique est la
+  gouvernance : définir clairement les KPIs, leurs sources, leur
+  fréquence de rafraîchissement, qui peut voir quoi, et comment
+  gérer les données client en respectant la Loi 25.
+
+deployment_modes:
+  - id: llm-comme-analyste
+    name_fr: LLM comme analyste de données ad hoc
+    description_fr: |
+      Claude (Pro/Max), ChatGPT (Plus/Team), Gemini Advanced. Le
+      dirigeant ou contrôleur uploade un Excel ou CSV et pose des
+      questions en français : tendances, outliers, comparaisons,
+      visualisations. Pas un dashboard récurrent, mais un assistant
+      analytique au quotidien. Coût quasi nul.
+
+  - id: dashboards-gratuits
+    name_fr: Dashboards gratuits avec IA
+    description_fr: |
+      Looker Studio (gratuit, intègre Gemini AI), Power BI version
+      gratuite avec limites, Zoho Analytics free tier. Permet de
+      créer des tableaux de bord visuels connectés à Google Sheets,
+      Google Analytics, fichiers Excel/CSV, sans coût de licence.
+
+  - id: bi-pme-tout-en-un
+    name_fr: Plateforme BI tout-en-un pour PME
+    description_fr: |
+      Zoho Analytics, MyReport (France), Drivn (France, white-label
+      Power BI). Inclut connecteurs nombreux, modèles préfabriqués,
+      IA conversationnelle, multi-utilisateurs. Idéal PME 10-100
+      employés.
+
+  - id: ecosysteme-microsoft
+    name_fr: Power BI dans écosystème Microsoft
+    description_fr: |
+      Power BI Pro (14 $ USD/utilisateur/mois) avec ou sans Copilot
+      (Fabric F2 à partir de 263 $/mois). Idéal si client déjà sur
+      Microsoft 365 E3/E5 (où Pro est inclus). Attention : Copilot
+      réservé aux capacités Premium ou Fabric, ce qui multiplie le coût.
+
+  - id: ecosysteme-google
+    name_fr: Looker + Gemini dans écosystème Google
+    description_fr: |
+      Looker Studio gratuit ou Looker (Google Cloud) avec Gemini
+      intégré. Idéal si client déjà sur Google Workspace et BigQuery.
+      Modélisation LookML pour cas avancés.
+
+  - id: ai-natives
+    name_fr: Plateformes IA-natives autonomes
+    description_fr: |
+      Anomaly AI, ThoughtSpot Spotter, Julius AI, Holistics AI. Plutôt
+      orientées entreprises moyennes, prix variables. Promesse :
+      analyse autonome end-to-end sans modélisation préalable.
+
+  - id: custom-agent-data
+    name_fr: Agent IA custom + entrepôt de données
+    description_fr: |
+      Pipeline custom : entrepôt de données (PostgreSQL ou BigQuery)
+      + Claude API ou OpenAI API pour analyses + dashboards sur mesure
+      (Streamlit, Plotly Dash, Metabase). Pour cas avec logique métier
+      vraiment unique ou conformité Loi 25 stricte.
+
+typical_capabilities:
+  - Connexion à sources multiples (Excel, comptabilité, CRM, e-commerce, ERP)
+  - Consolidation automatique de données dispersées
+  - Tableaux de bord visuels avec mise à jour automatique
+  - Questions en langage naturel français (« quel produit a le plus contribué à la marge ? »)
+  - Génération automatique de visualisations pertinentes
+  - Détection d'anomalies et alertes proactives
+  - Prévisions de séries temporelles (ventes, trésorerie, inventaire)
+  - Narrations générées (« explique ce graphique »)
+  - Export PDF/Excel pour rapports périodiques
+  - Partage sécurisé avec parties prenantes (équipe, comptable, conseil)
+  - Drill-down (zoomer sur un mois, un produit, un client)
+  - Comparaison période vs période, segment vs segment
+  - Modèles préfabriqués sectoriels (financier, ventes, opérations, RH)
+
+# ───── VOIES D'IMPLÉMENTATION (core du pattern) ─────
+
+implementation_paths:
+
+  - id: self-serve
+    name_fr: Voie A — Auto-service léger (Excel + LLM + Looker Studio gratuit)
+    ideal_profile_fr: |
+      PME 5-30 employés, dirigeant ou contrôleur seul gère les données,
+      pas de département IT, données déjà majoritairement dans Excel
+      ou Google Sheets. Souvent : commerces de détail indépendants,
+      restaurants single-site, cabinets professionnels en croissance,
+      OBNL avec rapports trimestriels. Veut « voir clair » sans
+      investissement majeur.
+    description_fr: |
+      Le client utilise Claude Pro (20 $/mois) ou ChatGPT Plus
+      (20 $/mois) comme analyste de données au quotidien : il uploade
+      ses fichiers Excel ou CSV de comptabilité, ventes, production,
+      et pose des questions en français. Pour les tableaux de bord
+      récurrents, il déploie Looker Studio (gratuit, Google) connecté
+      à Google Sheets ou directement à ses sources (Google Analytics,
+      Shopify, Stripe). 5PennyAi fournit l'audit qui définit les KPIs
+      clés, les sources de données à connecter, les modèles de prompts
+      utiles (« analyse mes ventes mensuelles et identifie les
+      tendances »), et un guide de gouvernance simple (à ne pas envoyer
+      les données client sensibles dans un LLM public sans précaution).
+    setup_duration: 4-12-heures
+    client_time_required_hours:
+      min: 4
+      max: 15
+    total_cost_cad:
+      setup_range:
+        min: 0
+        max: 500
+      monthly_min: 0
+      monthly_max: 80
+      first_year: "0 à 1 460 $"
+    recommended_tools_priority:
+      - tool_id: claude-ai
+        reason_fr: Excellence en français pour analyses ad hoc d'Excel et CSV
+      - tool_id: chatgpt
+        reason_fr: Alternative avec Advanced Data Analysis Python plus profond
+      - tool_id: looker-studio
+        reason_fr: Dashboards gratuits avec connexion native Google Analytics, Sheets
+      - tool_id: power-bi-pro
+        reason_fr: Si client déjà sur Microsoft 365 (souvent inclus E3/E5)
+    fivepennyai_service_fr: |
+      Audit payant (199-499 $) : identification des KPIs prioritaires
+      selon le secteur, audit des sources de données existantes, choix
+      d'outil(s), modèles de prompts pour LLM analyste, configuration
+      de 1-3 tableaux de bord Looker Studio simples, formation 2 h,
+      protocole de gouvernance simple (1 page).
+    fivepennyai_revenue_potential: faible-a-moyen-par-client
+
+  - id: accompanied
+    name_fr: Voie B — Plateforme BI pour PME (Zoho/Drivn/Power BI)
+    ideal_profile_fr: |
+      PME 30-100 employés avec sources multiples (CRM, ERP, e-commerce,
+      comptabilité), équipe finance ou opérations qui consomme des
+      rapports, données qui justifient un outil dédié multi-utilisateurs.
+      Souvent : distributeurs B2B, manufacturiers, e-commerce 30 k$+/mois,
+      restaurants 3+ locations, agences marketing avec multiples clients,
+      cabinets comptables voulant offrir BI à leurs clients.
+    description_fr: |
+      5PennyAi configure une plateforme BI adaptée au profil. Trois
+      options principales : (a) Zoho Analytics si le client veut un
+      excellent rapport qualité-prix avec IA Zia incluse et écosystème
+      cohérent (CRM, finance, RH chez Zoho), (b) Drivn si le client
+      utilise Pennylane, Sage, Cegid ou autre logiciel comptable
+      français/européen — avantage : licences illimitées à coût fixe
+      (économie de 92 % vs Power BI Pro multi-utilisateurs), (c) Power
+      BI Pro avec ou sans Copilot si le client est déjà fortement
+      Microsoft. Inclut : (1) audit complet des sources de données,
+      (2) configuration des connecteurs et nettoyage initial,
+      (3) modélisation de données (relations, mesures, hiérarchies),
+      (4) 5-10 tableaux de bord adaptés au métier, (5) configuration
+      multi-utilisateurs avec droits d'accès, (6) intégration de l'IA
+      conversationnelle (Zia, Copilot, Gemini selon outil), (7) protocole
+      de gouvernance complet (Loi 25, qualité données, qui maintient),
+      (8) formation équipe 4-6 h, (9) support 30-60 jours.
+    setup_duration: 2-6-semaines
+    client_time_required_hours:
+      min: 15
+      max: 40
+    total_cost_cad:
+      setup_range:
+        min: 3000
+        max: 8000
+      monthly_tool_range:
+        min: 100
+        max: 1500
+      first_year: "4 200 à 26 000 $"
+    recommended_tools_priority:
+      - tool_id: zoho-analytics
+        reason_fr: Meilleur rapport qualité-prix pour PME, IA Zia incluse, multi-canal
+      - tool_id: drivn
+        reason_fr: Si client utilise Pennylane/Sage/Cegid, économie majeure sur licences
+      - tool_id: power-bi-pro
+        reason_fr: Si client déjà fortement Microsoft, Copilot via Fabric si volume justifie
+      - tool_id: looker-google
+        reason_fr: Si client est sur Google Cloud / BigQuery
+      - tool_id: tableau
+        reason_fr: Pour besoins de visualisation très avancés (rare en PME)
+    fivepennyai_service_fr: |
+      Forfait « Tableau de bord PME » : audit + setup plateforme +
+      modélisation + 5-10 dashboards + IA conversationnelle + formation
+      + protocole de gouvernance + support 30-60 jours. Différenciation
+      5PennyAi : on n'impose pas Power BI par défaut. On évalue selon
+      le profil (Zoho pour rapport qualité-prix, Drivn pour PME
+      françaises, Power BI pour Microsoft-natifs) — vs cabinets BI
+      traditionnels qui poussent toujours Power BI ou Tableau.
+    fivepennyai_revenue_potential: moyen-a-eleve-par-client
+
+  - id: custom
+    name_fr: Voie C — Solution sur mesure / souveraine
+    ideal_profile_fr: |
+      PME 100+ employés ou entreprise moyenne avec exigences spécifiques :
+      logique métier propre (calculs sectoriels uniques), volumes de
+      données importants (millions de lignes), besoin d'analyses
+      prédictives sophistiquées, intégration profonde à un système
+      métier propriétaire, ou exigences Loi 25 strictes nécessitant
+      hébergement Canada et explicabilité documentée.
+    description_fr: |
+      5PennyAi déploie une solution custom : entrepôt de données
+      (PostgreSQL ou BigQuery sur AWS Canada Central), pipelines ETL
+      automatisés (Make/n8n ou Airbyte), couche IA via API Anthropic
+      ou OpenAI pour analyses conversationnelles, dashboards sur mesure
+      (Streamlit, Plotly Dash, ou Metabase open source). Inclut
+      modèles prédictifs (séries temporelles avec Prophet, classification
+      avec scikit-learn) si pertinent, documentation de gouvernance
+      complète Loi 25, droits d'accès granulaires.
+    setup_duration: 8-16-semaines
+    client_time_required_hours:
+      min: 40
+      max: 100
+    total_cost_cad:
+      setup_range:
+        min: 18000
+        max: 60000
+      monthly_hosting_range:
+        min: 200
+        max: 2000
+      first_year: "20 400 à 84 000 $"
+    recommended_tools_priority:
+      - tool_id: anthropic-api
+        reason_fr: Claude pour analyses conversationnelles en français de qualité
+      - tool_id: bigquery-postgresql
+        reason_fr: Entrepôt de données scalable et conforme
+      - tool_id: streamlit-metabase
+        reason_fr: Dashboards customs ou open source pour éviter licences enterprise
+    fivepennyai_service_fr: |
+      AI Sprint 8-16 semaines : audit, conception architecture, ETL,
+      modélisation, dashboards, IA conversationnelle, déploiement,
+      formation, documentation Loi 25.
+    fivepennyai_revenue_potential: tres-eleve-par-client-mais-volume-faible
+    honest_note_fr: |
+      Voie réservée à <5 % des clients. Pour la majorité, la voie B
+      avec Zoho ou Drivn couvre amplement. La voie C se justifie
+      quand : (a) volume de données >10 millions de lignes, (b) logique
+      métier vraiment unique non couverte par les outils du marché,
+      (c) exigences Loi 25 strictes (hébergement Canada, explicabilité
+      auditée), (d) besoin de modèles prédictifs sectoriels propres.
+
+# ───── OUTILS DU MARCHÉ (HIÉRARCHISÉS) ─────
+
+tools:
+
+  # ── TIER 1 : Plateformes BI accessibles PME (cœur de la recommandation) ──
+
+  - id: zoho-analytics
+    tier: 1
+    name: Zoho Analytics
+    origin: Inde / USA
+    url: https://www.zoho.com/analytics/
+    interface_fr: oui
+    starting_price_usd_monthly: 48
+    currency: USD
+    target_segment_fr: PME voulant BI tout-en-un avec IA incluse et bon rapport qualité-prix
+    strength_fr: |
+      Plateforme BI hybride entre datavisualisation et BI légère.
+      Connecte 500+ sources. IA Zia incluse dans tous les plans payants
+      (analyses en langage naturel, suggestions de visualisations,
+      détection d'anomalies, prévisions). Modèles préfabriqués pour
+      ventes, marketing, finance. Intégration profonde avec écosystème
+      Zoho (CRM, Books, People). Selon AI Agent Brief 2026, Zoho est
+      « l'exception notable » dans le marché en incluant l'IA dans
+      tous les plans payants.
+    plans:
+      - name: Standard
+        price_usd: 48
+        per_unit: "mois (5 utilisateurs)"
+      - name: Premium
+        price_usd: 115
+        per_unit: "mois (15 utilisateurs)"
+    weakness_fr: |
+      Moins puissant que Power BI ou Tableau pour visualisations
+      très avancées. Interface moins polie que Tableau. Écosystème
+      Zoho fort, mais moins ouvert que Microsoft ou Google.
+    affiliate_potential: a-verifier
+    source_id: ai-agent-brief-pricing
+    used_in_paths: [accompanied]
+    recommended_priority: 1
+    note_fr: |
+      Premier choix par défaut pour PME québécoise voulant une
+      plateforme BI structurée à coût raisonnable. Zia est suffisamment
+      bonne pour la majorité des cas. À privilégier si client n'est
+      pas déjà profondément Microsoft ou Google.
+
+  - id: drivn
+    tier: 1
+    name: Drivn
+    origin: France (Bordeaux)
+    url: https://drivn.fr
+    interface_fr: oui
+    starting_price_monthly: null
+    currency: EUR
+    target_segment_fr: PME et cabinets comptables utilisant Pennylane, Sage, Cegid ou logiciels français
+    strength_fr: |
+      SaaS français basé sur Power BI Embedded (technologie Microsoft
+      pour intégrer dashboards sans licence par utilisateur). Modèle
+      différenciant : licences illimitées à coût fixe, économie de
+      92 % sur les licences vs Power BI Pro multi-utilisateurs.
+      Connecteurs natifs : Pennylane, Tiime, ACD, Sage, Cegid Quadra,
+      MyUnisoft, Silae, et 30+ autres logiciels français/européens.
+      Modèles de tableaux de bord financiers et de pilotage construits
+      pour PME : trésorerie, marge, DG, reporting expert-comptable.
+      Tableaux de bord maintenus par Drivn, pas par le client.
+    pricing_note_fr: "Tarification fixe mensuelle, contact ventes pour devis (non publié)"
+    weakness_fr: |
+      Connecteurs québécois non documentés (Acomba, Kiwili, Bilano,
+      Momenteo) — à valider avant recommandation. Présence canadienne
+      à confirmer. Outil français : peut nécessiter adaptation pour
+      contexte fiscal canadien (TPS/TVQ vs TVA française).
+    affiliate_potential: a-verifier
+    source_id: drivn-pme-france
+    used_in_paths: [accompanied]
+    recommended_priority: 2
+    note_fr: |
+      Alternative très intéressante à Power BI Pro pour PME québécoises
+      qui ont beaucoup d'utilisateurs (10+) ou qui utilisent des
+      logiciels comptables français/européens. À tester sur un cas
+      réel pour valider connecteurs québécois. Si confirmé, peut devenir
+      premier choix pour le segment cabinets comptables.
+
+  - id: power-bi-pro
+    tier: 1
+    name: Microsoft Power BI Pro (avec ou sans Copilot)
+    origin: USA
+    url: https://www.microsoft.com/power-bi
+    interface_fr: oui
+    starting_price_usd_monthly: 14
+    currency: USD
+    target_segment_fr: PME déjà sur Microsoft 365, organisations Microsoft-natives
+    strength_fr: |
+      Référence du marché BI selon Gartner Magic Quadrant 2024 et 2025.
+      Power BI Pro à 14 $ USD/utilisateur/mois est le prix d'entrée.
+      Pro est inclus gratuitement dans Microsoft 365 E5 (57 $ USD/user/
+      mois) — pour clients déjà E5, Power BI Pro est essentiellement
+      gratuit. Connecteurs nombreux, écosystème mature, communauté
+      énorme, formations abondantes. Copilot (génération de DAX en
+      langage naturel, narratives automatiques, création de pages de
+      rapport par prompt) bien noté pour cas standards.
+    plans:
+      - name: Pro
+        price_usd: 14
+        per_unit: "utilisateur/mois"
+      - name: Premium Per User
+        price_usd: 24
+        per_unit: "utilisateur/mois"
+      - name: Fabric F2 (capacité, pour Copilot)
+        price_usd: 263
+        per_unit: "mois minimum"
+        note_fr: Requis pour activer Copilot dans Power BI
+    weakness_fr: |
+      Microsoft a augmenté les prix de 40 % en avril 2025. Q&A en
+      langage naturel sera déprécié en décembre 2026. Copilot exige
+      Premium ou Fabric (263 $+/mois USD), ce qui multiplie le coût
+      pour PME. Copilot peut générer du DAX incorrect ou halluciner
+      sur modèles de données ambigus selon NeuralFlow 2026. Selon
+      Gartner novembre 2024, seulement 4 % des clients Copilot M365
+      décrivent leurs déploiements comme générant une « valeur
+      significative et large ».
+    affiliate_potential: a-verifier
+    source_id: ai-agent-brief-pricing
+    used_in_paths: [accompanied]
+    recommended_priority: 3
+    note_fr: |
+      À recommander quand le client est déjà sur Microsoft 365 E5
+      ou prévoit de l'adopter. Pour PME pure-Google ou utilisant
+      logiciels québécois (Acomba, Kiwili), Zoho Analytics est plus
+      cohérent. Avant de pousser Copilot, valider que le client a
+      vraiment le volume justifiant Fabric F2 à 263 $/mois.
+
+  - id: looker-studio
+    tier: 1
+    name: Looker Studio (Google)
+    origin: USA
+    url: https://lookerstudio.google.com
+    interface_fr: oui
+    starting_price_monthly: 0
+    currency: USD
+    target_segment_fr: Toute PME pour dashboards récurrents simples sans budget
+    strength_fr: |
+      Gratuit. Intégrations natives avec Google Analytics, Google Ads,
+      Google Sheets, BigQuery, et 800+ connecteurs partenaires (Stripe,
+      Shopify, etc.). Interface intuitive, prise en main rapide. Gemini
+      AI intégré (sur plans Google AI Pro/Ultra) pour génération de
+      rapports en langage naturel.
+    plans:
+      - name: Looker Studio (web)
+        price_usd: 0
+      - name: Looker Studio Pro
+        price_usd: 9
+        per_unit: "utilisateur/mois (gestion entreprise)"
+    weakness_fr: |
+      Moins puissant que Power BI ou Tableau pour cas avancés.
+      Modélisation de données limitée (vs Looker payant ou Power BI).
+      Pas de mesures complexes type DAX. Sécurité granulaire limitée
+      en version gratuite.
+    affiliate_potential: non-applicable
+    source_id: improvado-ai-dashboard
+    used_in_paths: [self-serve, accompanied]
+    recommended_priority: 4
+    note_fr: |
+      À recommander systématiquement comme première brique gratuite,
+      quel que soit le profil. Beaucoup de clients qui pensent avoir
+      besoin de Power BI réalisent que Looker Studio gratuit couvre
+      80 % de leurs besoins. Pour les autres 20 %, on monte à Zoho ou
+      Power BI.
+
+  # ── TIER 1 bis : LLMs comme analystes de données ──
+
+  - id: claude-ai
+    tier: 1
+    name: Claude (Anthropic)
+    origin: USA
+    url: https://claude.ai
+    interface_fr: oui
+    starting_price_usd_monthly: 0
+    currency: USD
+    target_segment_fr: Toute taille pour analyses ad hoc en français de fichiers Excel/CSV
+    strength_fr: |
+      Excellent pour analyses ad hoc en français : uploader un Excel
+      ou CSV (jusqu'à 30 MB en plan Pro), poser des questions, obtenir
+      analyses, graphiques interactifs (artifacts JavaScript), résumés.
+      Contexte 200K+ tokens permet d'ingérer des dizaines de feuilles
+      ou plusieurs fichiers. Add-in Microsoft Excel disponible. Excel
+      avec Claude (produit Anthropic en bêta) intègre Claude directement
+      dans Excel pour analyses sans copier-coller.
+    plans:
+      - name: Free
+        price_usd: 0
+      - name: Pro
+        price_usd: 20
+        per_unit: mois
+      - name: Max
+        price_usd: 100
+        per_unit: mois
+    weakness_fr: |
+      Pas un dashboard récurrent — chaque analyse est ad hoc dans le
+      chat. Pour partager une vue persistante avec une équipe, il faut
+      un autre outil. Limite de 30 MB par fichier en Pro.
+    affiliate_potential: non-applicable
+    source_id: datastudios-chatgpt-claude-excel
+    used_in_paths: [self-serve, accompanied, custom]
+    recommended_priority: 1
+    note_fr: |
+      Outil parfait pour démarrer la pratique d'analyse de données
+      sans investissement. À recommander à tous les profils en
+      complément d'un outil de dashboard. Excellence en français
+      vs ChatGPT pour rapports rédigés.
+
+  - id: chatgpt
+    tier: 1
+    name: ChatGPT avec Advanced Data Analysis
+    origin: USA
+    url: https://chat.openai.com
+    interface_fr: oui
+    starting_price_usd_monthly: 0
+    currency: USD
+    target_segment_fr: Alternative à Claude pour analyses techniques avec sandbox Python
+    strength_fr: |
+      Advanced Data Analysis (ex Code Interpreter) exécute du Python
+      en sandbox : nettoie données, calcule, modélise, prévoit, exporte
+      Excel/CSV/PDF. Limite 50 MB par fichier en plan Plus. Plus profond
+      techniquement que Claude pour ML/statistiques. Sandbox conserve
+      variables entre messages (pipeline multi-étapes : filtrer →
+      prévoir → visualiser).
+    plans:
+      - name: Free
+        price_usd: 0
+      - name: Plus
+        price_usd: 20
+        per_unit: mois
+      - name: Pro
+        price_usd: 200
+        per_unit: mois
+    affiliate_potential: non-applicable
+    source_id: datastudios-chatgpt-claude-excel
+    used_in_paths: [self-serve, accompanied, custom]
+    recommended_priority: 2
+    note_fr: |
+      À recommander pour clients voulant analyses statistiques
+      sophistiquées (régression, classification, prévisions). Pour
+      reporting en français nuancé, Claude est meilleur.
+
+  - id: microsoft-365-copilot
+    tier: 1
+    name: Microsoft 365 Copilot
+    origin: USA
+    url: https://www.microsoft.com/microsoft-365/copilot
+    interface_fr: oui
+    starting_price_usd_monthly: 30
+    currency: USD
+    target_segment_fr: Organisations sur Microsoft 365 voulant AI dans Excel/Word/PowerPoint
+    strength_fr: |
+      Copilot intégré dans Excel : analyses en langage naturel,
+      suggestions de formules, génération de tableaux croisés, résumés.
+      Aussi dans Word, PowerPoint, Outlook, Teams. Données restent
+      dans le data boundary Microsoft 365 du client (atout conformité).
+    plans:
+      - name: Microsoft 365 Copilot
+        price_usd: 30
+        per_unit: "utilisateur/mois (requiert M365 E3/E5 ou Business Standard/Premium)"
+    weakness_fr: |
+      Selon Gartner novembre 2024, seulement 4 % des clients décrivent
+      leurs déploiements comme générant une « valeur significative
+      et large ». Coûts cachés (licence M365 base requise). Qualité
+      inconsistante entre applications.
+    affiliate_potential: a-verifier
+    source_id: hungyichen-chatgpt-enterprise
+    used_in_paths: [accompanied]
+    recommended_priority: 3
+    note_fr: |
+      À considérer avec prudence : si le client est déjà sur M365
+      E3/E5, ça peut faire sens. Mais pour la majorité des PME, Claude
+      Pro ou ChatGPT Plus à 20 $/mois fait mieux pour analyse de
+      données spécifiquement.
+
+  # ── TIER 2 : BI haut de gamme et IA-natives ──
+
+  - id: tableau
+    tier: 2
+    name: Tableau (Salesforce)
+    origin: USA
+    url: https://www.tableau.com
+    interface_fr: oui
+    starting_price_usd_monthly: null
+    currency: USD
+    target_segment_fr: Entreprises avec équipe data analyste et besoins de visualisation très avancés
+    strength_fr: |
+      Référence pour visualisations sophistiquées et exploration de
+      données. Tableau Agent (IA) pour génération automatique
+      d'analyses. Reconnu Gartner Leader. Communauté énorme.
+    pricing_note_fr: |
+      Plans nombreux. Tableau+ bundle premium (Tableau Agent, Pulse
+      avancé) ajoute typiquement 30-50 % au prix Enterprise. Déploiements
+      enterprise courants : 20 000-40 000 $ USD/an pour 25 utilisateurs.
+    weakness_fr: |
+      Coût élevé. Licence viewer à 15 $/utilisateur/mois (devient cher
+      à grande échelle). Courbe d'apprentissage importante pour exploiter
+      la puissance.
+    affiliate_potential: a-verifier
+    source_id: ai-agent-brief-pricing
+    used_in_paths: [accompanied, custom]
+    recommended_priority: 1
+    note_fr: |
+      Hors cible standard PME 5PennyAi. À considérer pour clients
+      moyennes entreprises avec équipe data dédiée et budget. Pour
+      majorité PME, Zoho Analytics ou Power BI Pro suffisent.
+
+  - id: looker-google
+    tier: 2
+    name: Looker (Google Cloud)
+    origin: USA
+    url: https://cloud.google.com/looker
+    interface_fr: oui
+    starting_price_monthly: null
+    currency: USD
+    target_segment_fr: Organisations sur Google Cloud / BigQuery
+    strength_fr: |
+      Plateforme BI Google Cloud avec Gemini AI intégré. Modélisation
+      LookML créant une couche sémantique réutilisable. Conversational
+      analytics avancée. Idéal si data warehouse en BigQuery.
+    pricing_note_fr: "Tarification enterprise sur devis"
+    affiliate_potential: a-verifier
+    source_id: improvado-ai-dashboard
+    used_in_paths: [accompanied, custom]
+    recommended_priority: 2
+    note_fr: |
+      Hors cible standard PME. À considérer pour clients déjà fortement
+      Google Cloud.
+
+  - id: thoughtspot
+    tier: 2
+    name: ThoughtSpot
+    origin: USA
+    url: https://www.thoughtspot.com
+    interface_fr: limitee
+    starting_price_monthly: null
+    currency: USD
+    target_segment_fr: Entreprises moyennes voulant recherche en langage naturel native
+    strength_fr: |
+      Recherche en langage naturel (Spotter AI) comme fonctionnalité
+      centrale, pas un add-on. Excellent pour utilisateurs non
+      techniques. Worksheets servent de couche sémantique légère.
+    pricing_note_fr: |
+      Contrats enterprise. Selon AI Agent Brief, contrat médian annuel
+      ~68 400 $ USD. Mid-market typique 100 000-300 000 $ USD/an.
+      Implémentation 50 000-200 000 $ USD additionnels.
+    affiliate_potential: a-verifier
+    source_id: ai-agent-brief-pricing
+    used_in_paths: [custom]
+    recommended_priority: 3
+    note_fr: |
+      Hors cible PME. À mentionner pour transparence concurrentielle.
+
+  - id: anomaly-ai
+    tier: 2
+    name: Anomaly AI
+    origin: USA
+    url: https://www.findanomaly.ai
+    interface_fr: limitee
+    starting_price_monthly: null
+    currency: USD
+    target_segment_fr: Entreprises voulant analyse autonome end-to-end sans modélisation
+    strength_fr: |
+      Plateforme AI-native qui analyse données end-to-end sans DAX,
+      sans modélisation, sans configuration de dashboards. Promesse :
+      uploader données et obtenir insights immédiatement. Particulièrement
+      pour grands datasets « messy ».
+    pricing_note_fr: "Tarification non publiée"
+    affiliate_potential: a-verifier
+    source_id: anomaly-ai-glossary
+    used_in_paths: [accompanied, custom]
+    recommended_priority: 4
+
+  - id: julius-ai
+    tier: 2
+    name: Julius AI
+    origin: USA
+    url: https://julius.ai
+    interface_fr: limitee
+    starting_price_usd_monthly: 20
+    currency: USD
+    target_segment_fr: Analystes voulant text-to-SQL simple et accessible
+    strength_fr: |
+      Plateforme AI-native focalisée sur text-to-SQL et analyses ad
+      hoc. Plus simple qu'une plateforme BI complète. Pricing accessible.
+    affiliate_potential: a-verifier
+    source_id: anomaly-ai-glossary
+    used_in_paths: [self-serve, accompanied]
+    recommended_priority: 5
+
+  - id: holistics-ai
+    tier: 2
+    name: Holistics AI
+    origin: Singapour
+    url: https://www.holistics.io
+    interface_fr: limitee
+    starting_price_monthly: null
+    currency: USD
+    target_segment_fr: Équipes data voulant semantic layer fort avec AI
+    strength_fr: |
+      Plateforme BI avec semantic layer AQL (Analytics Query Language)
+      composable. AI génère définitions de métriques que l'équipe data
+      revoit et valide. Approche « governed AI ».
+    affiliate_potential: a-verifier
+    source_id: holistics-ai-bi
+    used_in_paths: [custom]
+    recommended_priority: 6
+
+  # ── TIER 2 bis : Outils français/européens PME ──
+
+  - id: myreport
+    tier: 2
+    name: MyReport (anciennement Report One)
+    origin: France
+    url: https://www.report-one.fr
+    interface_fr: oui
+    starting_price_eur_monthly: 50
+    currency: EUR
+    target_segment_fr: PME et ETI françaises voulant BI self-service intégrée à Excel
+    strength_fr: |
+      Solution BI conçue pour les PME, automatise reportings sans
+      architecture complexe. Manipulation des données dans
+      l'environnement familier d'Excel. Connecte ERP (SAP, Sage, Cegid),
+      bases SQL, fichiers Excel, services web, cloud. Permet aux
+      équipes métier de prendre leur reporting en charge.
+    plans:
+      - name: Plan d'entrée
+        price_eur: 50
+        per_unit: "utilisateur/mois"
+      - name: Plans avancés
+        price_eur: 150
+        per_unit: "utilisateur/mois"
+    weakness_fr: |
+      Présence canadienne limitée. Connecteurs Acomba, Kiwili, Bilano,
+      Momenteo non documentés. Approche Excel peut sembler datée vs
+      Power BI ou Tableau natif cloud.
+    affiliate_potential: a-verifier
+    source_id: solutions-bi-comparatif
+    used_in_paths: [accompanied]
+    recommended_priority: 7
+    note_fr: |
+      À considérer pour clients qui restent ancrés dans Excel. Mais
+      pour PME québécoise standard, Zoho Analytics est plus moderne
+      et accessible.
+
+  - id: sage-bi-reporting
+    tier: 2
+    name: Sage BI Reporting
+    origin: France
+    url: https://www.sage.com
+    interface_fr: oui
+    starting_price_eur_monthly: 50
+    currency: EUR
+    target_segment_fr: PME utilisant ERP Sage (Sage 100, Sage FRP 1000, SBCP)
+    strength_fr: |
+      Outil BI libre-service intégré à Excel, conçu pour exploiter
+      données des solutions de gestion Sage. À partir de 50 €/utilisateur/
+      mois.
+    affiliate_potential: a-verifier
+    source_id: apogea-tableau-bord
+    used_in_paths: [accompanied]
+    recommended_priority: 8
+    note_fr: À recommander uniquement si client est sur Sage.
+
+  # ── TIER 3 : Custom / API / open source ──
+
+  - id: anthropic-api
+    tier: 3
+    name: Anthropic API (Claude)
+    origin: USA
+    url: https://docs.anthropic.com
+    interface_fr: documentation-en
+    starting_price_monthly: 0
+    currency: USD
+    target_segment_fr: Développement custom d'analystes de données conversationnels
+    strength_fr: |
+      Claude Sonnet 4 ou Opus pour analyses conversationnelles
+      sophistiquées en français. Compatible AWS Bedrock Canada
+      (conformité Loi 25 stricte). Excellence sur explicabilité.
+    pricing_note_fr: "Facturation à l'usage, typique 50-500 $/mois selon volume"
+    affiliate_potential: non-applicable
+    source_id: null
+    used_in_paths: [custom]
+    recommended_priority: 1
+
+  - id: bigquery-postgresql
+    tier: 3
+    name: BigQuery (Google) ou PostgreSQL (open source)
+    origin: USA / open source
+    url: https://cloud.google.com/bigquery
+    interface_fr: limitee
+    starting_price_monthly: 0
+    currency: USD
+    target_segment_fr: Entrepôts de données pour solutions custom
+    strength_fr: |
+      BigQuery : entrepôt cloud Google, scaling automatique, intégration
+      Looker. PostgreSQL : open source, peut être déployé sur AWS Canada
+      Central (conformité Loi 25), gratuit en licence.
+    pricing_note_fr: "BigQuery : facturation usage. PostgreSQL : hébergement seul (50-500 $/mois)"
+    affiliate_potential: non-applicable
+    source_id: null
+    used_in_paths: [custom]
+    recommended_priority: 2
+
+  - id: streamlit-metabase
+    tier: 3
+    name: Streamlit, Plotly Dash, ou Metabase
+    origin: open source
+    url: https://www.metabase.com
+    interface_fr: oui
+    starting_price_monthly: 0
+    currency: USD
+    target_segment_fr: Dashboards customs ou alternative open source aux outils enterprise
+    strength_fr: |
+      Streamlit : framework Python pour dashboards rapides custom.
+      Plotly Dash : équivalent plus avancé. Metabase : alternative
+      open source à Power BI/Tableau (gratuit auto-hébergé, ou cloud
+      à partir de 85 $/mois). Évite licences enterprise.
+    plans:
+      - name: Metabase open source (auto-hébergé)
+        price_usd: 0
+      - name: Metabase Cloud Starter
+        price_usd: 85
+        per_unit: "mois"
+    affiliate_potential: non-applicable
+    source_id: null
+    used_in_paths: [custom]
+    recommended_priority: 3
+
+  - id: make-zapier-airbyte
+    tier: 3
+    name: Make, Zapier, ou Airbyte
+    origin: USA / international
+    url: https://www.make.com
+    interface_fr: oui
+    starting_price_monthly: 0
+    currency: USD
+    target_segment_fr: Pipelines ETL pour consolider données entre systèmes
+    strength_fr: |
+      Make/Zapier : automatisation no-code de transferts données
+      (CRM → entrepôt, etc.). Airbyte : open source pour ETL
+      structuré. Make typiquement moins cher que Zapier.
+    pricing_note_fr: "Gratuit à 100 $/mois selon volume"
+    affiliate_potential: confirme
+    source_id: null
+    used_in_paths: [accompanied, custom]
+    recommended_priority: 4
+
+# ───── INTÉGRATEURS IA QUÉBÉCOIS (CONCURRENCE DIRECTE) ─────
+
+quebec_competitors:
+  - name: Cabinets BI traditionnels (Keyrus, Saegus, autres)
+    url: null
+    positioning_fr: Conseil BI haut de gamme, projets 50K-500K$
+    note_fr: |
+      Concurrents indirects : ils ciblent moyennes/grandes entreprises
+      avec gros budgets. 5PennyAi se positionne sur le segment PME
+      qu'ils ne servent pas. Approche complémentaire.
+
+  - name: Intégrateurs Power BI / Tableau au Québec
+    url: null
+    positioning_fr: Intégration outils enterprise, projets 30K-100K$
+    note_fr: |
+      Concurrents directs sur la voie C custom. Différenciation
+      5PennyAi : on offre la voie A et B accessibles que les cabinets
+      ignorent (audit léger, Looker Studio gratuit, Zoho).
+
+  - name: FloatAI, Gestisoft, EvoluAI, autres intégrateurs IA québécois
+    url: null
+    positioning_fr: IA généraliste pour PME, peut inclure analyse de données
+    note_fr: |
+      Concurrents indirects. Aucun ne semble structurer son offre
+      autour d'un audit BI accessible avec phasage progressif.
+
+strategic_note_fr: |
+  L'analyse de données est un domaine où le marché PME québécois est
+  mal servi par deux types d'acteurs : (1) les cabinets BI traditionnels
+  qui poussent Power BI/Tableau à 30K-100K$ projets (trop cher),
+  (2) les éditeurs comme Zoho ou Drivn qui n'ont pas de présence locale.
+  Différenciation 5PennyAi possible : (a) audit indépendant qui
+  recommande l'outil le plus adapté (pas vendor-locked sur Power BI),
+  (b) approche progressive (commencer par Claude/ChatGPT + Looker
+  Studio gratuit avant de monter à plateforme payante), (c) gouvernance
+  Loi 25 incluse (rare dans les offres BI traditionnelles), (d) pour
+  cabinets comptables québécois : positionnement comme partenaire
+  pour offrir des services BI à leurs clients, en utilisant Drivn
+  ou Zoho.
+
+# ───── COÛTS (RÉSUMÉ TROIS VOIES) ─────
+
+cost_summary_cad:
+  voie_a_self_serve:
+    first_year: "0 à 1 460 $"
+    recurring_monthly: "0 à 80 $"
+  voie_b_accompanied:
+    first_year: "4 200 à 26 000 $"
+    recurring_monthly: "100 à 1 500 $"
+  voie_c_custom:
+    first_year: "20 400 à 84 000 $"
+    recurring_monthly: "200 à 2 000 $"
+
+# ───── VALEUR DOCUMENTÉE ─────
+
+documented_benefits:
+  decision_speed_multiplier: 2  # Dresner Advisory
+  time_savings_data_collection_percent: 30  # Apogea 2026
+  team_productivity_increase_percent: 25  # Apogea 2026
+  operational_efficiency_with_erp_dashboard_percent: 23  # Webintelligence 2026
+  revenue_growth_with_ai_in_tableau_percent: 19  # Webintelligence 2026
+  smb_without_structured_bi_percent: 60  # Apogea 2026 (France)
+  smb_bi_adoption_rate_percent: 26  # Webintelligence 2026 (France)
+  data_governance_rate_percent: 32  # Webintelligence 2026
+  copilot_m365_significant_value_percent: 4  # Gartner novembre 2024
+  ai_adoption_organizations_percent: 72  # McKinsey 2024
+  ai_scaling_beyond_pilots_percent: 26  # McKinsey 2024
+  bi_market_size_2026_usd_billions: 37.96  # Webintelligence
+  bi_market_size_2034_usd_billions: 72.21  # Webintelligence
+  typical_payback_months:
+    min: 3
+    max: 12
+  note_fr: |
+    Le ROI d'un projet BI vient de plusieurs leviers : (1) heures
+    économisées sur la production de rapports (souvent 1-3 jours/mois
+    pour le contrôleur), (2) décisions prises plus rapidement (Dresner :
+    2x), (3) identification d'opportunités cachées (clients à fort
+    potentiel sous-exploités, produits en perte de vitesse), (4)
+    réduction des erreurs dans les chiffres consolidés. Pour une PME
+    de 50 employés, économiser 3 jours/mois × 12 mois × ~600 $/jour
+    contrôleur = environ 21 600 $/an, sans compter les meilleures
+    décisions.
+
+customer_cases:
+  - company: PME industrielle de 200 collaborateurs (cas Apogea)
+    industry: manufacturier-moyen
+    segment_fr: PME industrielle française avec ERP et CRM
+    result_fr: |
+      Selon Apogea, après déploiement Power BI connecté à l'ERP et au
+      CRM, les managers suivent leurs KPI en temps réel — automatisation
+      de rapports financiers et commerciaux qui étaient produits
+      manuellement sous Excel.
+    source_id: apogea-tableau-bord
+    relevance_for_micro: faible-pertinent-moyennes-pme
+    confidence: medium
+
+  - company: PME françaises avec ERP/e-commerce (cas Webintelligence)
+    industry: distribution-multi-sites
+    segment_fr: PME multi-sites avec ERP
+    result_fr: |
+      Selon Webintelligence 2026, les entreprises avec plusieurs sites
+      ou e-commerce qui connectent un tableau de bord à leur ERP
+      rapportent jusqu'à 23 % d'amélioration de leur efficacité
+      opérationnelle.
+    source_id: webintelligence-tableau-business
+    relevance_for_micro: moyenne-elevee
+    confidence: medium
+
+  - company: Cabinets comptables clients de Drivn
+    industry: cabinet-comptable
+    segment_fr: Cabinets comptables français utilisant Drivn pour offrir BI à leurs clients PME
+    result_fr: |
+      Selon Drivn, l'approche Power BI Embedded leur permet d'offrir
+      à leurs clients PME les mêmes outils analytiques que les grandes
+      entreprises sans la complexité, sans les licences à l'unité,
+      sans les délais.
+    source_id: drivn-pme-france
+    relevance_for_micro: tres-elevee
+    confidence: medium
+
+# ───── RISQUES ─────
+
+risks:
+  - type: gouvernance-donnees
+    title_fr: Qualité et gouvernance des données — le grand non-dit
+    severity: important
+    description_fr: |
+      Selon Webintelligence 2026, seulement 32 % des organisations ont
+      une vraie gouvernance des données. « Garbage in, garbage out » :
+      le meilleur outil BI produit des analyses fausses si les données
+      sources sont incohérentes (doublons, formats variables, définitions
+      ambiguës). Pour une PME, le travail de gouvernance peut représenter
+      40-60 % du projet BI total, et il est rarement budgété.
+    mitigation_fr: |
+      (1) Audit initial des sources de données et de leur qualité avant
+      de toucher à un outil. (2) Définition claire et documentée des
+      KPIs prioritaires (formule, source, périodicité). (3) Désignation
+      d'un responsable de la qualité par source. (4) Acceptation honnête
+      qu'un projet BI n'est jamais « terminé » — la gouvernance est
+      continue.
+
+  - type: reglementaire-qc
+    title_fr: Loi 25 — agrégation de données clients et consentement
+    severity: important
+    description_fr: |
+      Quand une PME analyse ses données clients (achats, comportements,
+      interactions), elle traite des renseignements personnels au sens
+      de la Loi 25. Si l'analyse est faite via un LLM public (ChatGPT,
+      Claude version web) sans politique d'utilisation des données
+      claire, ou via une plateforme BI hébergée hors Canada, des
+      questions de conformité émergent. Aussi : profilage automatisé
+      (segmenter clients) tombe sous les obligations de transparence
+      de la section 12.1.
+    mitigation_fr: |
+      (1) Anonymiser les données clients avant analyse dans un LLM
+      public (remplacer noms, courriels, par identifiants). (2) Pour
+      analyses sensibles, utiliser API Anthropic ou OpenAI avec
+      politique de non-rétention (Anthropic Workspaces ou OpenAI
+      Enterprise avec Zero Data Retention). (3) Pour conformité stricte,
+      hébergement Canada via AWS Bedrock (Claude) ou solution custom.
+      (4) Documenter les profilages automatisés et offrir mécanisme
+      de révision selon section 12.1 Loi 25.
+
+  - type: technique
+    title_fr: Hallucinations IA dans analyses
+    severity: moyen
+    description_fr: |
+      Les LLMs et les copilotes BI peuvent halluciner : générer des
+      chiffres qui semblent plausibles mais sont incorrects, inventer
+      des relations entre données qui n'existent pas, mal interpréter
+      les colonnes. Power BI Copilot peut générer du DAX incorrect
+      sur modèles ambigus selon NeuralFlow 2026. ChatGPT peut produire
+      des analyses fausses sur fichiers complexes selon DataStudios.
+    mitigation_fr: |
+      (1) Toujours valider les chiffres clés issus d'IA contre une
+      source de vérité (Excel, comptabilité). (2) Demander à l'IA
+      d'expliquer son raisonnement (« montre-moi le calcul »). (3)
+      Pour décisions importantes, double-check par humain. (4)
+      Privilégier les outils avec semantic layer (Looker, Holistics)
+      ou pricing transparent (Zoho Zia avec règles métier configurées)
+      vs text-to-SQL pure qui infère le schéma.
+
+  - type: economique
+    title_fr: Coûts cachés Power BI Copilot et licences viewers
+    severity: moyen
+    description_fr: |
+      Power BI Pro à 14 $ USD est trompeur : pour activer Copilot, il
+      faut Fabric F2 (263 $/mois USD minimum) ou Premium. Tableau
+      facture 15 $/utilisateur/mois pour viewers (peut représenter
+      des dizaines de milliers de dollars à grande échelle).
+      L'augmentation Microsoft de 40 % en avril 2025 a pris beaucoup
+      de PME par surprise.
+    mitigation_fr: |
+      (1) Calculer le coût total sur 3 ans avec scénarios de croissance
+      d'utilisateurs avant de signer. (2) Évaluer Drivn comme alternative
+      si beaucoup d'utilisateurs (économie 92 % vs Power BI Pro
+      multi-utilisateurs documentée). (3) Évaluer Looker Studio gratuit
+      pour cas simples avant de payer. (4) Considérer Metabase open
+      source pour clients budget-conscients.
+
+  - type: technique
+    title_fr: Faible adoption Copilot Microsoft 365 documentée
+    severity: faible-a-moyen
+    description_fr: |
+      Selon Gartner novembre 2024, seulement 4 % des clients Copilot
+      M365 décrivent leurs déploiements comme générant une « valeur
+      significative et large ». Causes : manque de personnalisation,
+      qualité inconsistante entre apps, ROI difficile à mesurer.
+    mitigation_fr: |
+      (1) Ne pas vendre Copilot M365 comme solution miracle. (2) Pour
+      analyse de données spécifiquement, Claude Pro ou ChatGPT Plus
+      à 20 $/mois fait souvent mieux que Copilot Excel à 30 $/mois.
+      (3) Valider avec un pilote 30 jours avant de déployer
+      organisation-large.
+
+  - type: business
+    title_fr: Dépendance écosystème (vendor lock-in)
+    severity: moyen
+    description_fr: |
+      Choisir Power BI engage à long terme dans Microsoft. Looker
+      attache à Google Cloud / BigQuery. Tableau lie à Salesforce.
+      Changer de plateforme BI 5 ans plus tard est un projet majeur
+      (recréer dashboards, retravailler modèles).
+    mitigation_fr: |
+      (1) Évaluer où le client est déjà ancré (Microsoft, Google,
+      indépendant). (2) Privilégier les outils avec exports faciles
+      des modèles et dashboards. (3) Pour clients voulant indépendance,
+      Metabase open source ou approche custom avec PostgreSQL.
+
+  - type: organisationnel
+    title_fr: Personne pour maintenir
+    severity: moyen
+    description_fr: |
+      Selon Drivn 2026, dans les PME, souvent personne n'est responsable
+      de maintenir les tableaux de bord quand une source change ou
+      qu'un nouveau besoin émerge. Résultat : les dashboards deviennent
+      obsolètes en 6-12 mois et personne ne les utilise.
+    mitigation_fr: |
+      (1) Désigner un responsable BI interne (souvent contrôleur ou
+      directeur opérations). (2) Pour clients sans capacité interne,
+      proposer un forfait maintenance mensuel 5PennyAi (ou via Drivn
+      qui maintient lui-même les dashboards). (3) Démarrer petit
+      (3-5 dashboards) plutôt que viser exhaustivité.
+
+# ───── PRÉREQUIS ─────
+
+prerequisites:
+  - Données numérisées dans au moins un système structuré (comptabilité, CRM, ERP, ou Excel maintenu)
+  - Volume de données minimum justifiant l'investissement (ventes mensuelles 30 k$+ pour e-commerce, 50 k$+ pour B2B)
+  - Identification d'un responsable BI interne (contrôleur, directeur opérations, ou propriétaire)
+  - Définitions claires des KPIs prioritaires avant de toucher à un outil
+  - Politique de protection des renseignements personnels à jour pour analyses de données clients
+  - Pour Voie B : engagement de l'équipe à utiliser les dashboards (sans utilisation, ROI nul)
+  - Pour Voie C : volume de données justifiant entrepôt dédié (>1 million de lignes typique)
+  - Compréhension que la BI est un projet continu, pas un livrable ponctuel
+
+# ───── SOURCES (référentiel central) ─────
+
+sources:
+  - id: anomaly-ai-glossary
+    type: vendor-article
+    title: "Anomaly AI — AI in Power BI: Features, Copilot, Pricing & Limitations 2026"
+    url: https://www.findanomaly.ai/glossary/ai-in-powerbi
+    accessed: 2026-04-26
+    reliability: medium
+    key_facts_fr: |
+      Power BI Copilot : génération DAX, narratives, requêtes naturelles,
+      forecasting time series. Limites : Q&A dépend qualité semantic
+      layer, Copilot peut halluciner DAX, requiert Fabric/Premium
+      coûteux. Anomaly AI positionné comme AI-native autonome.
+
+  - id: improvado-ai-dashboard
+    type: comparison-article
+    title: "Improvado — 12 Best AI Dashboards for Marketing Analytics 2026"
+    url: https://improvado.io/blog/ai-dashboard
+    accessed: 2026-04-26
+    reliability: medium
+    key_facts_fr: |
+      Power BI Pro 14 $/utilisateur/mois, Premium ~5000 $/mois. Copilot
+      requiert Microsoft Fabric. Looker (Google) intègre Gemini, optimal
+      BigQuery. Top 12 : Improvado, Tableau Einstein, Power BI, Looker,
+      ThoughtSpot, Domo, Qlik Sense, Sisense, Klipfolio, GoodData,
+      Dundas BI, Yellowfin.
+
+  - id: holistics-ai-bi
+    type: vendor-article
+    title: "Holistics — AI-Powered BI Tools: A Fact-Based Comparison 2026"
+    url: https://www.holistics.io/bi-tools/ai-powered/
+    accessed: 2026-04-26
+    reliability: medium
+    key_facts_fr: |
+      AI-powered BI 2026 : Holistics AI, Power BI Copilot, Tableau
+      Einstein, Looker Gemini, ThoughtSpot Spotter, Sigma Computing,
+      Qlik AutoML, Zenlytics ZOE, Luzmo IQ, Julius AI. Trois patterns
+      : text-to-SQL, semantic layer, AI-native. Conversation
+      multi-turn vs single-turn.
+
+  - id: ai-agent-brief-pricing
+    type: comparison-article
+    title: "AI Agent Brief — AI Business Intelligence Pricing 2026"
+    url: https://www.ai-agent-brief.com/industry/data-analysis/pricing/
+    accessed: 2026-04-26
+    reliability: medium
+    key_facts_fr: |
+      Microsoft +40 % prix Power BI avril 2025. Power BI Pro 14 $,
+      Fabric F2 262 $/mois pour Copilot. M365 E5 (57 $) inclut Pro.
+      Zoho Analytics Standard 48 $/mois 5 users avec Zia AI inclus,
+      Premium 115 $/mois 15 users. Tableau enterprise 20-40K $/an
+      pour 25 users, Tableau+ ajoute 30-50 %. ThoughtSpot médian
+      68 400 $/an, mid-market 100-300K $/an.
+
+  - id: neuralflow-power-bi-copilot
+    type: vendor-article
+    title: "NeuralFlow — Power BI Copilot in 2026: Cost, Setup, Honest Review"
+    url: https://neuralflow.es/en/blog/power-bi-copilot-guide/
+    accessed: 2026-04-26
+    reliability: medium
+    key_facts_fr: |
+      Copilot dès F2 (~263 $/mois) depuis avril 2025. Q&A déprécié
+      décembre 2026. Cas d'usage : génération DAX, explication code
+      legacy, création pages rapport. Limitations : DAX complexe avec
+      variables, modèles ambigus, pas d'analyse causale. Tenant settings
+      requis.
+
+  - id: hungyichen-chatgpt-enterprise
+    type: research-article
+    title: "Hung-Yi Chen — ChatGPT Enterprise vs Business 2026 Guide"
+    url: https://www.hungyichen.com/en/insights/chatgpt-enterprise-guide
+    accessed: 2026-04-26
+    reliability: medium-high
+    key_facts_fr: |
+      McKinsey 2024 : 72 % organisations adoptent IA, seulement 26 %
+      scalent au-delà des pilotes. Gartner novembre 2024 : seulement
+      4 % clients Copilot M365 décrivent déploiements comme « broad
+      and significant value ». M365 Copilot 30 $/user/mois (requiert
+      M365 base). Gemini Business 24 $/user/mois, Enterprise 30-36 $.
+      Plateforme licensing 20-40 % coût total déploiement.
+
+  - id: aiviewer-pricing
+    type: comparison-article
+    title: "AIViewer — AI Pricing Compared: Every Plan 2026"
+    url: https://aiviewer.ai/guides/ai-pricing-comparison-2026/
+    accessed: 2026-04-26
+    reliability: medium
+    key_facts_fr: |
+      Claude Pro 20 $, Max 100 $. ChatGPT Plus 20 $, Pro 200 $.
+      Gemini Business 20 $/user/mois (Workspace add-on), Enterprise
+      30-36 $/mois. Microsoft 365 Copilot 30 $/user/mois.
+
+  - id: cognitivefuture-ai-viz
+    type: comparison-article
+    title: "Cognitive Future — 10 Best AI Tools for Data Visualization 2026"
+    url: https://cognitivefuture.ai/best-ai-tools-for-data-visualization/
+    accessed: 2026-04-26
+    reliability: medium
+    key_facts_fr: |
+      Power BI + Copilot et Tableau AI pour enterprise. Looker Studio
+      et Visme strong free. Tableau visualisation supérieure mais
+      coûteuse, Power BI accessibilité Microsoft, Qlik moteur associatif.
+
+  - id: solutions-bi-comparatif
+    type: comparison-article
+    title: "Solutions BI — Comparatif outils d'analyse de données 2026"
+    url: https://solutions-business-intelligence.fr/outil-analyse-donnees/
+    accessed: 2026-04-26
+    reliability: medium
+    key_facts_fr: |
+      Power BI reconnu Gartner Leader 2024-2025. Power BI Premium dès
+      18,70 €/utilisateur/mois ou capacité dédiée. MyReport France pour
+      PME automatisation reportings. Sage BI Reporting intégré Sage 100.
+      Zoho Analytics positionnement BI légère pour PME.
+
+  - id: sqorus-benchmark-bi
+    type: comparison-article
+    title: "Sqorus — Benchmark Data & BI 2026 quelle solution choisir"
+    url: https://www.sqorus.com/benchmark-solutions-data-bi-choisir/
+    accessed: 2026-04-26
+    reliability: medium
+    key_facts_fr: |
+      Marché Data & BI riche en 2026 : Power BI, Tableau, Qlik Sense,
+      Looker Studio, MyReport. Choix dépend maturité data, taille
+      entreprise, finesse analyses. Tableau pour data analystes
+      expérimentés. Qlik moteur associatif pour liens subtils.
+
+  - id: apogea-outils-bi
+    type: comparison-article
+    title: "Apogea — Top 6 outils BI 2026 PME ETI"
+    url: https://www.apogea.fr/outils-bi/
+    accessed: 2026-04-26
+    reliability: medium
+    key_facts_fr: |
+      Marché BI 2026 dépasse 35 milliards USD, croissance 8 %/an.
+      60 % PME françaises sans solution décisionnelle structurée.
+      Entreprises avec BI 2x plus vite décisions (Dresner). Top 6 :
+      Power BI, MyReport, Sage BI Reporting, Tableau, Qlik, IBM Cognos.
+
+  - id: apogea-tableau-bord
+    type: comparison-article
+    title: "Apogea — Meilleurs logiciels tableau de bord 2026"
+    url: https://www.apogea.fr/comment-marche-un-logiciel-de-tableau-de-bord/
+    accessed: 2026-04-26
+    reliability: medium
+    key_facts_fr: |
+      Logiciels dashboard 2026 : -30 % temps collecte/traitement, +25 %
+      productivité équipes. MyReport 50-150 €/utilisateur/mois pour
+      PME. Sage BI Reporting dès 50 €/user/mois. Cas PME industrielle
+      200 collaborateurs : Power BI ERP+CRM = automatisation rapports.
+
+  - id: drivn-pme-france
+    type: vendor-article
+    title: "Drivn — Meilleure solution BI pour PME en France 2026"
+    url: https://drivn.fr/blog/meilleure-solution-bi-pme-france
+    accessed: 2026-04-26
+    reliability: medium
+    key_facts_fr: |
+      Drivn : SaaS Bordeaux, Power BI Embedded white-label. Économie
+      92 % sur licences vs Power BI Pro multi-utilisateurs. Connecteurs
+      Pennylane, Tiime, ACD, Sage, Cegid Quadra, MyUnisoft, Silae
+      (30+ logiciels français). Modèles dashboards PME français.
+      Tableaux maintenus par Drivn, pas le client.
+
+  - id: webintelligence-tableau-business
+    type: vendor-article
+    title: "Webintelligence — Tableau business dashboard guide PME 2026"
+    url: https://www.webintelligence.fr/2026/02/20/tableau-business-dashboard/
+    accessed: 2026-04-26
+    reliability: medium
+    key_facts_fr: |
+      Adoption BI TPE/PME françaises : 26 %. 67 % pros BI jonglent
+      avec ~4 outils. Marché BI mondial : 37,96 → 72,21 milliards USD
+      2034. Tableau IA peut générer +19 % croissance revenus. 32 %
+      organisations ont vraie gouvernance données. Connexion ERP +
+      tableau de bord : +23 % efficacité opérationnelle.
+
+  - id: limpida-comparatif-bi
+    type: comparison-article
+    title: "Limpida — Comparatif 15 outils BI les plus utilisés"
+    url: https://www.limpida.com/blog/comparatif-outils-bi
+    accessed: 2026-04-26
+    reliability: medium
+    key_facts_fr: |
+      Top BI : Power BI, Tableau, Qlik Sense, Looker, Sisense, SAP
+      BusinessObjects, Oracle Analytics, Zoho Analytics. Pour PME/
+      startups : cloud rapide à déployer (Power BI, Tableau Cloud,
+      Zoho Analytics, Domo BI).
+
+  - id: datastudios-chatgpt-claude-excel
+    type: comparison-article
+    title: "Data Studios — ChatGPT vs Claude for Excel Analysis"
+    url: https://www.datastudios.org/post/chatgpt-vs-claude-for-excel-analysis-calculations-text-extraction-and-multi-sheet-workflows
+    accessed: 2026-04-26
+    reliability: medium
+    key_facts_fr: |
+      Claude Pro/Max/Team avec Analysis Tool : Excel jusqu'à 30 MB,
+      contexte 200K+ tokens, JavaScript artifacts. ChatGPT Plus/Team/
+      Enterprise : Excel jusqu'à 50 MB, Python sandbox, multi-step
+      pipelines. ChatGPT plus profond techniquement, Claude meilleur
+      raisonnement sur grands datasets. Claude visualisations Artifacts
+      panel, ChatGPT charts via Python. Add-ins Excel disponibles.
+
+  - id: shrm-mckinsey-2024
+    type: research-article
+    title: "McKinsey 2024 — État de l'IA dans les organisations"
+    url: null
+    accessed: 2026-04-26
+    reliability: high
+    note_fr: Référence sectorielle reconnue. Données reprises dans plusieurs sources.
+
+  - id: gartner-copilot-2024
+    type: research-article
+    title: "Gartner novembre 2024 — Évaluation Microsoft Copilot M365"
+    url: null
+    accessed: 2026-04-26
+    reliability: high
+    note_fr: Référence Gartner reconnue.
+
+  - id: dresner-advisory
+    type: research-article
+    title: "Dresner Advisory — État de la BI dans les organisations"
+    url: null
+    accessed: 2026-04-26
+    reliability: high
+    note_fr: Référence reconnue dans le secteur BI.
+
+# ───── MÉTADONNÉES INTERNES ─────
+
+confidence_level: high
+source_diversity: vendor-officials + comparison-articles + research-publications
+
+adaptation_needed_for_qc:
+  - Privilégier les outils accessibles (Looker Studio gratuit, Zoho Analytics) avant Power BI/Tableau
+  - Pour clients sur logiciels comptables québécois (Acomba, Kiwili, Bilano, Momenteo) : valider si Drivn ou Zoho ont des connecteurs natifs avant de recommander
+  - Toujours inclure le volet Loi 25 dans le protocole de gouvernance pour analyses de données clients
+  - Pour cabinets comptables québécois : explorer Drivn comme outil pour offrir BI à leurs clients PME
+  - Mentionner explicitement : pas de plateforme BI native québécoise identifiée — opportunité de marché potentielle
+  - Pour OBNL et coopératives : modèles de tableaux de bord adaptés aux rapports aux bailleurs de fonds (subventions, gouvernance, impact)
+  - Pour clients en construction (CCQ) : intégrer données SST CNESST et heures CCQ dans les dashboards
+
+# ───── NOTES HONNÊTES (usage interne uniquement) ─────
+
+internal_notes_fr: |
+  ANGLE DIFFÉRENCIATEUR PRINCIPAL : APPROCHE PROGRESSIVE
+  La plupart des cabinets BI vendent Power BI ou Tableau d'emblée
+  (30K-100K $ projets). 5PennyAi peut se positionner comme l'auditeur
+  qui dit honnêtement « commencez par Claude/ChatGPT + Looker Studio
+  gratuit, montez à Zoho ou Power BI seulement si nécessaire ». Cette
+  approche progressive est rare et précieuse.
+
+  ANGLE COMPLÉMENTAIRE : DRIVN POUR CABINETS COMPTABLES
+  Drivn est très intéressant pour les cabinets comptables québécois :
+  modèle Power BI Embedded à coût fixe, connecteurs nombreux. Si
+  validation des connecteurs québécois (Acomba notamment) est positive,
+  Drivn peut devenir un outil clé pour le segment B2B cabinets
+  comptables — qui peuvent ensuite revendre la BI à leurs clients PME.
+  À explorer comme partenariat possible.
+
+  ANGLE LOI 25 SUR DONNÉES CLIENTS
+  Beaucoup d'analyses BI consomment des données clients. Loi 25 +
+  section 12.1 (profilage automatisé) s'applique. Les cabinets BI
+  traditionnels ignorent largement cet angle. Pour cabinets dentaires,
+  cliniques, e-commerce : expliquer comment structurer la gouvernance
+  pour rester conforme tout en exploitant les données.
+
+  PIÈGES À ÉVITER :
+  - Ne PAS pousser Power BI Premium ou Fabric d'emblée. Pour 80 %
+    des PME, Looker Studio gratuit + Zoho Analytics (115 $/mois 15
+    users) couvre amplement.
+  - Ne PAS sous-estimer l'effort de gouvernance. Promettre « tableaux
+    de bord en 2 semaines » sans avoir nettoyé les données est un
+    piège classique qui mène à des projets qui échouent.
+  - Ne PAS recommander Tableau aux PME standard. Trop cher, trop
+    complexe pour le besoin.
+  - Ne PAS déployer Microsoft 365 Copilot juste pour analyse de données.
+    Selon Gartner, seulement 4 % rapportent valeur significative.
+    Claude/ChatGPT à 20 $/mois fait mieux pour ce cas spécifique.
+
+  CHIFFRES À NUANCER :
+  - « 60 % des PME françaises sans BI structurée » est une stat France,
+    pas Québec — à valider ou à présenter comme indication.
+  - Les chiffres « 2x plus vite » et « +19 % revenue growth » viennent
+    d'études vendeur (Dresner, Tableau). Présenter avec recul.
+  - « Microsoft 365 E5 inclut Power BI Pro » : E5 coûte 57 $/user/mois,
+    donc Pro est inclus mais le E5 lui-même est cher.
+
+  CIBLE PRIORITAIRE COMMERCIALE :
+  - Cabinets comptables québécois (gros marché B2B, peuvent revendre)
+  - PME multi-sites (restaurants, retail, services) avec 50K+ revenu
+    mensuel
+  - E-commerce avec 30K+/mois
+  - Manufacturiers et distributeurs avec ERP
+
+  TENDANCES À SURVEILLER :
+  - Q&A natural language Power BI sera déprécié décembre 2026 —
+    impact sur clients qui en dépendent.
+  - Microsoft +40 % prix Power BI avril 2025 — ouvre une fenêtre
+    pour Drivn et Zoho de gagner des parts.
+  - Hausse continue de l'open source (Metabase) — alternative crédible
+    pour clients budget-conscients.
+
+  CROSS-SELL :
+  Client qui adopte la voie B sur analyse de données = excellent
+  prospect pour :
+  - Pattern 006 (devis/factures) → automatiser la source des données
+    financières
+  - Pattern 005 (courriels) → analyser les flux de communication
+  - Pattern 008 (RH) → analyser les KPIs RH
+  Pattern 009 est central dans la « stack pilotage » d'une PME en
+  croissance.
+
+# ───── EMBEDDING (généré automatiquement au seed Supabase) ─────
+
+embedding: null

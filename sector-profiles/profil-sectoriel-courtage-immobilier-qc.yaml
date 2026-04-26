@@ -1,0 +1,1011 @@
+# ═══════════════════════════════════════════════════════════════
+# Profil sectoriel — Courtage immobilier résidentiel au Québec
+# Document de contexte sectoriel consommé par le Skill 1 (Context Builder)
+# Format : YAML hybride structure + prose française
+# Cible primaire : courtier solo ou très petite équipe (1-3 pers), résidentiel volume
+# ═══════════════════════════════════════════════════════════════
+
+id: secteur-courtage-immobilier-qc-residentiel
+title_fr: Courtage immobilier résidentiel au Québec
+type: profil-sectoriel
+version: 1.0
+last_updated: 2026-04-26
+language: fr
+
+# ───── CIBLAGE ─────
+
+primary_segment_fr: |
+  Courtier ou courtière immobilière résidentiel(le) sous l'égide d'une
+  bannière (RE/MAX, Royal LePage, Sutton, Via Capitale, Centris, Engel
+  & Völkers, KW, exp Realty, etc.), opérant solo ou en très petite
+  équipe (1-3 personnes : courtier + adjoint, ou paire de co-courtiers).
+  Marché : transactions résidentielles standards (premier achat,
+  familles, condos urbains, maisons unifamiliales, jeunes acheteurs).
+  Volume typique : 15-30 transactions par année.
+
+secondary_segments_fr:
+  - Équipes de 4-15 personnes (courtiers, adjoints administratifs)
+  - Courtiers de luxe et haut de gamme (besoins similaires mais focus marketing premium)
+  - Bannières et agences (15+ courtiers) — angle B2B où la bannière équipe ses courtiers
+
+excluded_segments_fr:
+  - Courtage commercial et industriel (réalités très différentes — analyses financières, négociations longues, écosystème distinct)
+  - Promoteurs immobiliers et constructeurs neufs (autre métier, autres outils)
+  - Investisseurs immobiliers (besoins data différents — focus rendement, multi-logements)
+
+# ───── PROFIL DU COURTIER CIBLE ─────
+
+courtier_persona_fr: |
+  Bachelier ou DEC, 30-55 ans, autonome, organisé mais souvent débordé
+  pendant les hautes saisons (mars-juin et septembre-octobre). Travaille
+  en moyenne 50-60 heures par semaine, avec pics jusqu'à 70 heures lors
+  des semaines à fortes transactions. Revenus variables (commissions),
+  ce qui crée une pression constante pour gérer le pipeline. Souvent
+  bilingue selon le marché (West Island, Outaouais, certaines parties
+  de Montréal). Souvent membre d'un team chez sa bannière, mais
+  responsable de son propre stack technologique.
+
+  Profil technologique typique : utilisateur d'iPhone, app Centris,
+  Authentisign, Outlook ou Gmail, CRM Excel ou Google Sheets, Mailchimp
+  pour newsletters, photographe externe, présence Facebook/Instagram
+  pour personal branding. Connaît les fondamentaux de l'IA mais n'a
+  pas le temps de s'y plonger. A souvent essayé ChatGPT pour rédiger
+  une fiche, mais sans approche structurée.
+
+typical_volume_fr:
+  leads_per_year: 50-200
+  active_mandates: 15-30
+  transactions_per_year: 15-30
+  showings_per_week_high_season: 10-20
+  showings_per_week_low_season: 3-5
+  emails_per_day: 50-100
+  phone_calls_per_day: 15-30
+  social_media_posts_per_week: 3-7
+
+# ───── ÉCOSYSTÈME RÉGLEMENTAIRE QUÉBÉCOIS ─────
+
+regulatory_framework:
+
+  - id: oaciq
+    name: OACIQ (Organisme d'autoréglementation du courtage immobilier du Québec)
+    url: https://www.oaciq.com
+    description_fr: |
+      Organisme régulateur unique au Québec qui supervise tous les
+      courtiers et agences immobilières. Tout courtier doit détenir
+      un permis OACIQ valide, suivre des formations continues, et
+      respecter le Code de déontologie. L'OACIQ peut suspendre un
+      permis pour faute professionnelle.
+    key_obligations_fr:
+      - Archivage de tous les dossiers de transaction pendant 6 ans minimum
+      - Respect du Code de déontologie (intégrité, transparence, conflits d'intérêts)
+      - Tenue de dossiers conforme (formulaires obligatoires, traces de communications)
+      - Formations continues annuelles (OBC — Obligations de formation continue)
+      - Divulgation au client des liens d'agence (vendeur ou acheteur)
+      - Respect des règles publicitaires (pas de promesses trompeuses, divulgation du statut)
+    ai_implications_fr: |
+      Tout système IA qui génère des communications avec un client
+      (courriels, messages texte, suggestions de propriétés) doit
+      laisser une trace exploitable pour l'archivage 6 ans. Tout
+      contenu publicitaire généré par IA doit respecter les règles
+      OACIQ (pas de promesses, statut OACIQ visible). Le courtier
+      reste responsable des communications, même si générées par IA.
+
+  - id: loi-25-quebec
+    name: Loi 25 — Loi modernisant des dispositions législatives en matière de protection des renseignements personnels
+    url: https://www.cai.gouv.qc.ca
+    description_fr: |
+      Législation québécoise en vigueur depuis 2022 (et progressivement
+      jusqu'en 2024) qui encadre la collecte, l'utilisation et la
+      divulgation de renseignements personnels. Particulièrement
+      pertinente en immobilier où les courtiers collectent énormément
+      de données sensibles : revenus, situation familiale, capacité
+      d'emprunt, intentions d'achat ou de vente, antécédents.
+    key_obligations_fr:
+      - Désigner un responsable de la protection des renseignements personnels
+      - Politique de confidentialité accessible et compréhensible
+      - Consentement éclairé à la collecte (chaque finalité doit être documentée)
+      - Évaluation des facteurs relatifs à la vie privée (EFVP) pour projets sensibles
+      - Section 12.1 — Décisions automatisées doivent être divulguées au client, avec droit à révision humaine
+      - Notification des incidents de confidentialité à la CAI et aux personnes concernées
+      - Sanctions jusqu'à 25 millions $ ou 4 % du chiffre d'affaires mondial
+    ai_implications_fr: |
+      Si un courtier utilise un outil IA qui prend des décisions
+      automatisées sur les clients (par exemple, scoring automatique
+      de leads pour décider qui contacter en priorité, segmentation
+      automatique pour recommandations), il doit informer le client
+      et offrir un mécanisme de révision humaine. L'usage de LLMs
+      publics (ChatGPT, Claude version web) avec données client
+      sensibles est délicat — préférer anonymisation ou versions API
+      avec politique de non-rétention.
+
+  - id: lcjti
+    name: Loi sur les courtiers en immeubles et la Loi sur le courtage immobilier
+    url: https://www.legisquebec.gouv.qc.ca/fr/document/lc/c-73.2
+    description_fr: |
+      Cadre législatif qui définit les obligations spécifiques des
+      courtiers immobiliers au Québec. Contient des dispositions sur
+      les promesses d'achat, les conditions de vente, les déclarations
+      du vendeur, les inspections, et les obligations de bonne foi.
+    ai_implications_fr: |
+      Tout outil IA qui aide à générer ou réviser des promesses
+      d'achat, contre-offres, ou autres documents légaux doit être
+      utilisé avec précaution — l'IA peut commettre des erreurs
+      juridiques. Le courtier reste personnellement responsable de
+      la conformité légale des documents.
+
+# ───── ÉCOSYSTÈME DES OUTILS METIER (NON-IA) ─────
+
+industry_specific_tools:
+
+  - id: centris
+    name: Centris.ca (Système national d'inscriptions Québec)
+    url: https://www.centris.ca
+    type: mls-systeme-listing
+    description_fr: |
+      Système national d'inscriptions des propriétés au Québec, opéré
+      par les chambres immobilières. Quasi-obligatoire pour tout
+      courtier résidentiel — c'est là que les propriétés sont listées
+      et que les acheteurs cherchent. Site grand public et système
+      back-office (Matrix) pour les courtiers.
+    ai_compatibility_fr: |
+      Les conditions d'utilisation de Centris sont strictes —
+      l'extraction automatique (scraping) des données pour usage
+      commercial est généralement interdite. Tout outil IA qui
+      prétend extraire des données de Centris doit être validé sur
+      le plan légal avant déploiement. Centris a son propre IDX
+      (Internet Data Exchange) pour intégrations légitimes sur les
+      sites web des courtiers.
+
+  - id: matrix
+    name: Matrix (Système MLS)
+    url: null
+    type: mls-systeme-back-office
+    description_fr: |
+      Système back-office utilisé par les courtiers pour gérer leurs
+      inscriptions, faire des recherches comparatives, créer des CMA
+      (analyses comparatives de marché). Accessible uniquement aux
+      courtiers actifs.
+
+  - id: synbad
+    name: Synbad (OACIQ)
+    url: https://www.oaciq.com
+    type: gestion-transactions
+    description_fr: |
+      Outil de gestion des transactions de l'OACIQ — formulaires
+      réglementaires, suivi des dossiers, archivage. Obligatoire
+      pour la conformité OACIQ.
+
+  - id: authentisign
+    name: Authentisign / DocuSign
+    url: https://www.authentisign.com
+    type: signature-electronique
+    description_fr: |
+      Outils de signature électronique adoptés massivement par les
+      courtiers québécois. Authentisign est intégré nativement à
+      WEBForms (système de formulaires standardisés OACIQ).
+      DocuSign est l'alternative internationale.
+
+  - id: brokerbay
+    name: BrokerBay
+    url: https://www.brokerbay.com
+    type: gestion-visites
+    description_fr: |
+      Application mobile populaire au Canada pour la gestion des
+      visites de propriétés (showings). Permet aux courtiers
+      acheteurs de demander des visites, et aux courtiers vendeurs
+      de gérer les confirmations. Spécifique au marché canadien.
+
+  - id: weblead-leadpages
+    name: WebLeads, LeadPages, et formulaires de capture
+    url: null
+    type: capture-leads
+    description_fr: |
+      Outils de capture de leads via formulaires web, alertes nouvelles
+      propriétés, demandes d'évaluation gratuite. Souvent intégrés à
+      la bannière du courtier.
+
+  - id: ciq-jlr
+    name: CIQ et JLR (analyses de marché)
+    url: https://www.jlr.ca
+    type: analyse-marche
+    description_fr: |
+      Plateformes québécoises d'analyse du marché immobilier. JLR est
+      souvent utilisé par les courtiers pour produire des CMA (analyses
+      comparatives de marché) et des rapports d'évaluation. CIQ
+      (Centris Intelligence Québec) fournit des statistiques de marché.
+
+  - id: hellosafe-rates
+    name: HelloSafe, ratehub.ca (taux hypothécaires)
+    url: https://www.ratehub.ca
+    type: taux-hypothecaires
+    description_fr: |
+      Plateformes de comparaison des taux hypothécaires que les
+      courtiers utilisent pour informer leurs clients acheteurs sur
+      les options de financement.
+
+# ───── OUTILS IA SPECIFIQUES IMMOBILIER ─────
+
+ai_specific_tools:
+
+  # ── CRM IMMOBILIERS AVEC IA ──
+
+  - id: follow-up-boss
+    tier: 1
+    name: Follow Up Boss (par Zillow)
+    origin: USA
+    url: https://www.followupboss.com
+    interface_fr: limitee
+    starting_price_usd_monthly: 69
+    currency: USD
+    target_segment_fr: Courtier solo ou petite équipe voulant CRM immo avec IA
+    strength_fr: |
+      Référence du marché pour CRM immobilier solo/petite équipe. IA
+      générée pour réponses email/SMS personnalisées basées sur
+      l'historique du courtier. Résumés automatiques d'appels,
+      suggestions de tâches, capture leads de 250+ sources.
+    affiliate_potential: a-verifier
+    suitable_for_qc_fr: |
+      Interface anglaise — fonctionnel pour courtiers bilingues
+      (Montréal, West Island), moins pour clientèle 100 % francophone.
+
+  - id: lofty
+    tier: 2
+    name: Lofty (anciennement Chime)
+    origin: USA
+    url: https://lofty.com
+    interface_fr: limitee
+    starting_price_monthly: null
+    currency: USD
+    target_segment_fr: Équipes de 5+ courtiers voulant tout-en-un (CRM, IDX, marketing)
+    strength_fr: |
+      Plateforme proche Salesforce dans son approche. Inclut CRM,
+      site IDX optimisé SEO, automatisations marketing, prévisions
+      de performance. 3 types d'assistants IA en add-ons.
+    affiliate_potential: a-verifier
+
+  - id: top-producer
+    tier: 2
+    name: Top Producer
+    origin: Canada
+    url: https://www.topproducer.com
+    interface_fr: limitee
+    starting_price_usd_monthly: 60
+    currency: USD
+    target_segment_fr: Courtiers canadiens voulant CRM avec marketing automation
+    strength_fr: |
+      CRM canadien établi de longue date dans l'immobilier. Smart
+      Targeting (suggestions IA pour leads à prioriser), Farming
+      (campagnes automatiques par quartier), intégration MLS canadiens.
+    affiliate_potential: a-verifier
+    suitable_for_qc_fr: Présence canadienne, à valider la qualité de l'interface française.
+
+  - id: rex-software
+    tier: 2
+    name: Rex Software
+    origin: Australie / international
+    url: https://www.rexsoftware.com
+    interface_fr: limitee
+    starting_price_monthly: null
+    currency: USD
+    target_segment_fr: Brokerages voulant CRM avec IA pour génération de contenu
+    strength_fr: |
+      CRM avec IA spécifique pour générer descriptions de propriétés,
+      communications vendeur/acheteur, recherches en langage naturel
+      basées sur les données CRM.
+
+  - id: smartzip
+    tier: 2
+    name: SmartZip
+    origin: USA
+    url: https://www.smartzip.com
+    interface_fr: limitee
+    starting_price_monthly: null
+    currency: USD
+    target_segment_fr: Courtiers voulant identifier propriétaires susceptibles de vendre dans 12 mois
+    strength_fr: |
+      Analyses prédictives qui identifient les propriétaires les plus
+      susceptibles de vendre dans les 12 prochains mois. CRM intégré
+      et automation marketing. Tarification sur devis selon territoire.
+    weakness_fr: |
+      Ne fonctionne probablement pas au Québec (modèles entraînés sur
+      données US). À valider avant recommandation.
+
+  # ── VIRTUAL STAGING ──
+
+  - id: virtual-staging-ai
+    tier: 1
+    name: Virtual Staging AI
+    origin: USA (Harvard Innovation Lab)
+    url: https://www.virtualstagingai.app
+    interface_fr: limitee
+    starting_price_usd_monthly: 29
+    currency: USD
+    target_segment_fr: Courtiers volume voulant virtual staging abordable et illimité
+    strength_fr: |
+      Référence du marché pour virtual staging IA. Photo pièce vide
+      → version stagée en 4-8 styles (moderne, mid-century, luxury,
+      coastal) en moins de 5 minutes. Plan illimité à 29 $/mois USD.
+      Sortie 4K photoréaliste.
+    affiliate_potential: a-verifier
+    use_case_fr: |
+      Idéal pour propriétés vides ou rénovations. Selon NAR : virtual
+      staging augmente les demandes de visite jusqu'à 200 %, réduit
+      le temps sur le marché de 50 %.
+
+  - id: collov-ai
+    tier: 2
+    name: Collov AI
+    origin: USA
+    url: https://collov.com
+    interface_fr: limitee
+    starting_price_monthly: null
+    currency: USD
+    target_segment_fr: Courtiers voulant virtual staging avec édition photo avancée
+    strength_fr: |
+      Virtual staging + édition photo (changement plancher, armoires,
+      remplacement meubles, twilight conversion, amélioration ciel).
+      Donne 72 % de hausse vues listing après staging selon Collov.
+
+  - id: boxbrownie
+    tier: 2
+    name: BoxBrownie
+    origin: Australie
+    url: https://www.boxbrownie.com
+    interface_fr: limitee
+    starting_price_monthly: null
+    currency: USD
+    target_segment_fr: Courtiers haut de gamme voulant virtual staging hybride IA + humain
+    strength_fr: |
+      Plateforme hybride IA + designers humains qui produit des
+      résultats MLS-acceptables au premier essai. Plus cher que pure
+      AI mais qualité plus consistante.
+
+  - id: reimagine-home
+    tier: 2
+    name: REimagineHome
+    origin: USA
+    url: https://www.reimaginehome.ai
+    interface_fr: limitee
+    starting_price_monthly: null
+    currency: USD
+    strength_fr: Alternative virtual staging avec édition photo intégrée et plans d'étage.
+
+  # ── VOICE AI POUR LEADS ──
+
+  - id: ylopo
+    tier: 2
+    name: Ylopo
+    origin: USA
+    url: https://www.ylopo.com
+    interface_fr: limitee
+    starting_price_monthly: null
+    currency: USD
+    target_segment_fr: Courtiers avec budget marketing pour automation IA voix + ads
+    strength_fr: |
+      AI voice assistant qui appelle les nouveaux leads avec une voix
+      quasi-indistinguable d'un humain. Crée des publicités vidéo
+      pour Meta automatiquement à partir du listing. Lead generation
+      + nurturing premium.
+    weakness_fr: Coût enterprise, plus pertinent pour équipes que solo budget-limité.
+
+  # ── CHATBOTS QUALIFICATION IMMOBILIER ──
+
+  - id: structurely
+    tier: 2
+    name: Structurely
+    origin: USA
+    url: https://www.structurely.com
+    interface_fr: limitee
+    starting_price_monthly: null
+    currency: USD
+    target_segment_fr: Courtiers voulant chatbot IA spécifique immo pour qualification
+    strength_fr: |
+      AI conversationnel spécifique immobilier — qualifie automatiquement
+      les leads, identifie urgence d'achat, programme rendez-vous,
+      relance automatique.
+
+  # ── VISITES VIRTUELLES 3D ──
+
+  - id: matterport
+    tier: 2
+    name: Matterport
+    origin: USA
+    url: https://matterport.com
+    interface_fr: oui
+    starting_price_usd_monthly: 0
+    currency: USD
+    target_segment_fr: Courtiers voulant offrir visites 3D immersives (différenciation marketing)
+    strength_fr: |
+      Référence mondiale pour visites virtuelles 3D. Création de
+      digital twins photoréalistes des propriétés. Intégration MLS,
+      sites web, réseaux sociaux.
+    plans:
+      - name: Free
+        price_usd: 0
+        note_fr: Plan gratuit pour 1 espace actif
+      - name: Starter
+        price_usd: 9.99
+        per_unit: mois
+      - name: Professional
+        price_usd: 69
+        per_unit: mois
+    use_case_fr: |
+      Différenciation pour courtier solo qui veut se démarquer. Investissement
+      caméra Matterport (~3 000 $) ou utilisation de l'app iPhone.
+
+  # ── LEAD GENERATION IA GENERIQUE ──
+
+  - id: lindy
+    tier: 2
+    name: Lindy
+    origin: USA
+    url: https://www.lindy.ai
+    interface_fr: limitee
+    starting_price_monthly: null
+    currency: USD
+    target_segment_fr: Courtiers avec besoin spécifique d'agents IA personnalisés
+    strength_fr: |
+      Plateforme no-code pour créer des agents IA qui gèrent
+      lead generation, qualification, scheduling, mises à jour CRM.
+      4 000+ intégrations.
+
+  # ── CONTENU IMMOBILIER ──
+
+  - id: valpal
+    tier: 2
+    name: ValPal
+    origin: UK
+    url: https://www.valpal.co.uk
+    interface_fr: limitee
+    starting_price_monthly: null
+    currency: GBP
+    target_segment_fr: Courtiers voulant générer descriptions SEO automatiquement
+    strength_fr: |
+      Génère descriptions de propriétés avec mots-clés SEO. Inclut
+      ChatPal pour capture de leads et nurturing CRM.
+
+  # ── ANALYSE MARCHE IA ──
+
+  - id: housecanary
+    tier: 2
+    name: HouseCanary
+    origin: USA
+    url: https://www.housecanary.com
+    interface_fr: limitee
+    starting_price_monthly: null
+    currency: USD
+    target_segment_fr: Courtiers voulant valuations institutionnelles
+    strength_fr: |
+      Plateforme d'analyse data immobilière. Évaluations de propriétés
+      basées sur historiques de ventes, tendances marché, caractéristiques.
+      Aide pricing compétitif.
+    weakness_fr: Couverture US — à valider pour le Québec.
+
+# ───── PATTERNS 5PENNYAI RECOMMANDÉS POUR CE PROFIL ─────
+
+recommended_patterns_combinations:
+
+  - combination_id: solo-essentiel
+    name_fr: Combo « Solo essentiel » — démarrage à coût minimal
+    target_fr: Courtier solo qui veut moderniser son stack sans grand investissement
+    patterns_priorities:
+      - pattern_id: ai-voice-receptionist
+        priority: 1
+        rationale_fr: |
+          Capter les appels prospects 24/7 quand il est en visite ou
+          en négociation. AgentZap ou Avoca selon le profil. Filet de
+          sécurité essentiel pour ne pas perdre de leads.
+      - pattern_id: ai-text-chatbot-multichannel
+        priority: 2
+        rationale_fr: |
+          Chatbot Crisp ou Tidio sur le site personnel pour qualifier
+          les visiteurs (acheteur ou vendeur, urgence, secteur d'intérêt).
+      - pattern_id: ai-marketing-content-creation
+        priority: 3
+        rationale_fr: |
+          Claude ou ChatGPT pour générer descriptions Centris en
+          quelques minutes au lieu d'une heure. Canva pour images
+          réseaux sociaux.
+      - pattern_id: ai-email-management
+        priority: 4
+        rationale_fr: |
+          Gmail ou Outlook avec filtres et templates. Mailchimp ou
+          Brevo pour newsletters mensuelles aux clients passés.
+    estimated_cost_cad:
+      setup: "499 $ (audit 5PennyAi)"
+      monthly: "150-300 $"
+      first_year: "2 300-4 100 $"
+    fivepennyai_offering_fr: Audit Voie A à 499 $ + accompagnement 1 mois.
+
+  - combination_id: solo-volume
+    name_fr: Combo « Solo volume » — courtier établi visant croissance
+    target_fr: Courtier solo avec 15+ transactions/an voulant scaler vers 30+
+    patterns_priorities:
+      - pattern_id: ai-voice-receptionist
+        priority: 1
+        rationale_fr: AgentZap ou Avoca avec volumes élevés
+      - pattern_id: ai-text-chatbot-multichannel
+        priority: 2
+        rationale_fr: Crisp avec routing avancé
+      - pattern_id: ai-appointment-scheduling
+        priority: 3
+        rationale_fr: Cal.com pour visites de propriétés avec préparation
+      - pattern_id: ai-marketing-content-creation
+        priority: 4
+        rationale_fr: Claude + Canva + Make pour distribution multi-canal
+      - pattern_id: ai-email-management
+        priority: 5
+        rationale_fr: Mailchimp avec segmentation acheteurs/vendeurs/anciens clients
+      - pattern_id: ai-meeting-transcription-summary
+        priority: 6
+        rationale_fr: |
+          Fathom ou Otter pour transcrire les rencontres avec vendeurs
+          (briefing initial) et acheteurs (qualification besoins).
+          Souvent oublié, mais énorme gain.
+    additional_industry_specific_tools:
+      - virtual-staging-ai
+      - matterport
+      - follow-up-boss
+    estimated_cost_cad:
+      setup: "2 500-4 000 $ (forfait 5PennyAi Voie B)"
+      monthly: "400-800 $"
+      first_year: "7 300-13 600 $"
+    fivepennyai_offering_fr: Forfait Voie B + intégration outils sectoriels immobiliers.
+
+  - combination_id: petite-equipe
+    name_fr: Combo « Petite équipe » — duo ou trio (courtier + adjoints)
+    target_fr: 1-3 personnes (courtier + adjoint admin, ou paire de courtiers)
+    patterns_priorities:
+      - pattern_id: ai-voice-receptionist
+        priority: 1
+      - pattern_id: ai-text-chatbot-multichannel
+        priority: 2
+      - pattern_id: ai-appointment-scheduling
+        priority: 3
+      - pattern_id: ai-marketing-content-creation
+        priority: 4
+      - pattern_id: ai-email-management
+        priority: 5
+      - pattern_id: ai-meeting-transcription-summary
+        priority: 6
+      - pattern_id: ai-data-dashboards
+        priority: 7
+        rationale_fr: |
+          Tableau de bord pipeline (mandats actifs, leads, transactions
+          fermées vs prévues, commissions à recevoir). Looker Studio
+          gratuit avec Google Sheets, ou Zoho Analytics.
+    additional_industry_specific_tools:
+      - follow-up-boss
+      - virtual-staging-ai
+      - matterport
+      - structurely
+    estimated_cost_cad:
+      setup: "3 500-6 000 $"
+      monthly: "500-1 200 $"
+      first_year: "9 500-20 400 $"
+
+# ───── KPIs SECTORIELS PERTINENTS ─────
+
+sectoral_kpis:
+
+  acquisition:
+    - leads_generes_par_mois
+    - cout_par_lead
+    - taux_conversion_lead_a_rendez-vous
+    - taux_conversion_rendez-vous_a_mandat
+    - sources_de_leads_top_3
+
+  pipeline:
+    - mandats_actifs_acheteurs
+    - mandats_actifs_vendeurs
+    - duree_moyenne_mandat_vendeur_en_jours
+    - duree_moyenne_recherche_acheteur_en_jours
+    - taux_de_renouvellement_mandats_expires
+
+  performance:
+    - transactions_fermees_par_mois
+    - prix_moyen_des_transactions
+    - commissions_recues_par_mois
+    - taux_de_commission_moyen
+    - delta_prix_demande_vs_prix_de_vente
+
+  satisfaction:
+    - net_promoter_score_clients
+    - taux_de_references_par_clients_passes
+    - reviews_google_recues_par_mois
+    - taux_de_clients_repeats_5_ans
+
+  efficience_temporelle:
+    - heures_par_transaction_completee
+    - ratio_heures_visites_vs_admin
+    - delai_de_reponse_moyen_aux_leads_en_minutes
+
+# ───── PAIN POINTS SPÉCIFIQUES À CE SEGMENT ─────
+
+sector_specific_pain_points:
+
+  - pain_id: leads-perdus
+    pain_fr: Leads perdus dans la boîte courriel ou téléphone non répondu
+    severity: critique
+    frequency: quotidien
+    description_fr: |
+      Le courtier solo manque environ 30 % de ses appels en haute
+      saison. Les courriels de qualification arrivent souvent tard
+      le soir et restent sans réponse pendant 12-24 h. Selon Lindy,
+      la vitesse de réponse est le déterminant #1 de la conversion
+      des leads.
+    relevant_pattern: ai-voice-receptionist + ai-text-chatbot-multichannel
+
+  - pain_id: suivi-inconsistant
+    pain_fr: Suivi inconsistant des leads chauds et tièdes
+    severity: critique
+    frequency: hebdomadaire
+    description_fr: |
+      Sans CRM structuré, le courtier oublie de relancer un lead
+      tiède 3 semaines après le premier contact. Ces leads partent
+      chez la concurrence. Excel n'aide pas — il faut un CRM avec
+      automatisation des relances.
+    relevant_tools: [follow-up-boss, top-producer, ai-email-management]
+
+  - pain_id: descriptions-redondantes
+    pain_fr: Rédaction de fiches Centris répétitive et chronophage
+    severity: moyen
+    frequency: par-mandat
+    description_fr: |
+      Une fiche Centris bien rédigée prend 30-60 minutes en mode
+      manuel. Pour un courtier qui ouvre 20 mandats par an, c'est
+      10-20 heures annuelles. Claude ou ChatGPT peut faire un premier
+      draft en 5 minutes que le courtier ajuste.
+    relevant_pattern: ai-marketing-content-creation
+
+  - pain_id: photos-mediocres
+    pain_fr: Photos de propriétés faibles ou pièces vides peu attractives
+    severity: moyen
+    frequency: par-mandat
+    description_fr: |
+      Pour les propriétés vides ou en rénovation, les photos brutes
+      ne vendent pas. Le virtual staging AI résout ce problème à un
+      coût marginal. Selon NAR, virtual staging augmente les visites
+      jusqu'à 200 %.
+    relevant_tool: virtual-staging-ai
+
+  - pain_id: visites-mal-coordonnees
+    pain_fr: Coordination des visites manuelle et stressante
+    severity: moyen
+    frequency: hebdomadaire
+    description_fr: |
+      Coordonner une visite implique : confirmer disponibilité du
+      vendeur, du courtier acheteur, du courtier vendeur, gérer les
+      annulations et reports. Un outil comme BrokerBay (canadien)
+      automatise ça.
+    relevant_pattern: ai-appointment-scheduling
+    relevant_tool: brokerbay
+
+  - pain_id: rencontres-non-documentees
+    pain_fr: Rencontres avec vendeurs/acheteurs non documentées correctement
+    severity: moyen
+    frequency: hebdomadaire
+    description_fr: |
+      Les briefings initiaux avec vendeurs (état souhaité, prix
+      espéré, motivations) et la qualification des acheteurs
+      (besoins, budget, timing) reposent sur la mémoire ou des notes
+      manuscrites. La transcription automatique avec Fathom ou Otter
+      change la donne.
+    relevant_pattern: ai-meeting-transcription-summary
+
+  - pain_id: revenus-imprevisibles
+    pain_fr: Stress des revenus variables et pipeline imprécis
+    severity: critique
+    frequency: continu
+    description_fr: |
+      Le courtier solo vit avec un stress constant : combien de
+      transactions vais-je fermer ce mois-ci ? Un tableau de bord
+      pipeline avec prévisions (mandats × probabilité × commission
+      moyenne) donne de la visibilité.
+    relevant_pattern: ai-data-dashboards
+
+  - pain_id: marketing-personnel-chronophage
+    pain_fr: Personal branding et présence sociale exigeants en temps
+    severity: moyen
+    frequency: hebdomadaire
+    description_fr: |
+      Le courtier doit publier 3-7 posts/semaine pour rester visible.
+      Souvent fait en mode improvisé. Claude ou ChatGPT pour idées
+      et premiers drafts, Canva pour visuels.
+    relevant_pattern: ai-marketing-content-creation
+
+# ───── RISQUES SECTORIELS À INTERNALISER ─────
+
+sector_risks:
+
+  - type: oaciq-conformite
+    title_fr: Archivage 6 ans des communications
+    severity: critique
+    description_fr: |
+      Toute communication avec un client (courriel, message texte,
+      voicemail) liée à une transaction doit être archivée 6 ans.
+      Si un chatbot IA répond à un client, ces interactions doivent
+      être logguées et accessibles.
+    mitigation_fr: |
+      Choisir des outils IA avec export et historique consultable.
+      Configurer une politique de rétention 7+ ans. Documenter les
+      interactions importantes dans le CRM.
+
+  - type: oaciq-publicite
+    title_fr: Règles publicitaires OACIQ pour contenu généré
+    severity: important
+    description_fr: |
+      Toute publicité d'un courtier doit respecter les règles OACIQ :
+      mention du statut de courtier, nom de l'agence, pas de promesses
+      trompeuses. Si l'IA génère du contenu publicitaire, le courtier
+      doit le réviser pour conformité.
+    mitigation_fr: |
+      Inclure dans les prompts IA les règles OACIQ comme contraintes.
+      Réviser systématiquement avant publication. Templates pré-validés
+      par la bannière.
+
+  - type: loi-25-donnees-clients
+    title_fr: Loi 25 — collecte de données financières et personnelles
+    severity: important
+    description_fr: |
+      Les courtiers collectent des données très sensibles : revenus,
+      capacité d'emprunt, situation familiale, motivations. Tout
+      outil IA traitant ces données est sous Loi 25.
+    mitigation_fr: |
+      (1) Préférer outils avec hébergement Canada quand possible.
+      (2) Anonymiser les données avant envoi à un LLM public.
+      (3) Documenter les finalités de collecte. (4) Consentement
+      éclairé du client. (5) Si profilage automatisé (ex: scoring
+      leads), divulgation et droit à révision.
+
+  - type: scraping-centris
+    title_fr: Restrictions Centris/Matrix sur usage automatisé
+    severity: moyen
+    description_fr: |
+      Les conditions d'utilisation de Centris et Matrix interdisent
+      généralement l'extraction automatique pour usage commercial.
+      Tout outil IA qui prétend extraire des données de Centris est
+      à valider légalement.
+    mitigation_fr: |
+      Utiliser uniquement les intégrations officielles (Centris IDX
+      pour sites web). Éviter les outils qui scrapent. Quand un
+      outil propose d'extraire de Centris, demander la documentation
+      légale et la conformité avec les TOS.
+
+  - type: erreurs-juridiques-iaa
+    title_fr: Erreurs IA dans documents légaux (promesses d'achat, etc.)
+    severity: critique
+    description_fr: |
+      Si l'IA aide à rédiger ou réviser des promesses d'achat,
+      contre-offres, déclarations du vendeur, elle peut commettre
+      des erreurs juridiques avec impact financier important.
+    mitigation_fr: |
+      Ne jamais utiliser une IA générative pour produire un document
+      légal final. Limiter à : (a) résumés de documents existants,
+      (b) explications en langage simple aux clients, (c) première
+      ébauche de clauses standards à valider avec un notaire.
+
+# ───── COMPETITION DANS LE SEGMENT ─────
+
+competitive_landscape_fr: |
+  Le segment IA + immobilier est en croissance rapide mais peu
+  pénétré au Québec. Les courtiers québécois moyens utilisent peu
+  d'IA en 2026, malgré 87 % d'adoption mondiale rapportée par Delta
+  Media. Causes principales : (1) outils principalement en anglais
+  (Follow Up Boss, Top Producer, Lofty), (2) intégrations limitées
+  avec Centris/Matrix (vs MLS US), (3) bannières québécoises (RE/MAX
+  Québec, Royal LePage Québec) qui n'ont pas encore poussé l'IA
+  fortement, (4) méfiance vis-à-vis de l'IA dans une profession
+  réglementée (OACIQ). Ce gap crée une opportunité pour 5PennyAi de
+  se positionner comme l'auditeur indépendant qui aide le courtier
+  québécois à choisir et configurer la bonne stack — sans dépendance
+  à une bannière ou à un fournisseur unique.
+
+  Concurrents potentiels :
+  - Bannières (RE/MAX, Royal LePage) qui pourraient pousser des
+    outils IA propres : à surveiller, mais souvent en retard sur
+    l'adoption
+  - Cabinets-conseil immobilier généralistes : pas spécialisés IA
+  - Intégrateurs IA québécois généralistes (FloatAI, etc.) : pas
+    spécialisés immobilier
+  - Coaches immobiliers (Tom Ferry, Mike Ferry) qui poussent des
+    pratiques sans nécessairement de stack IA technique
+
+# ───── ANGLES COMMERCIAUX 5PENNYAI ─────
+
+fivepennyai_positioning_fr: |
+  L'angle commercial le plus fort : positionner 5PennyAi comme
+  « l'auditeur indépendant qui démystifie l'IA pour les courtiers
+  québécois ». La majorité des courtiers savent qu'ils devraient
+  utiliser plus d'IA mais ne savent pas par où commencer ni quels
+  outils choisir. Un audit 5PennyAi à 199-499 $ leur donne :
+  (1) un diagnostic de leur situation actuelle, (2) une recommandation
+  d'outils adaptés à leur profil (résidentiel volume, solo), (3) un
+  plan d'implémentation par étapes, (4) un protocole de gouvernance
+  OACIQ + Loi 25.
+
+  Cibles commerciales prioritaires :
+  - Courtiers solo établis (5+ ans dans le métier, 15+ transactions/
+    an) qui plafonnent en volume — l'IA débloque la croissance.
+  - Nouvelles bannières disruptives (exp Realty, EXIT) qui valorisent
+    la technologie comme différenciation.
+  - Équipes de 2-3 personnes qui se professionnalisent et ont besoin
+    d'un stack cohérent.
+
+  Cross-sell naturel :
+  - Si le courtier a des contacts dans d'autres métiers (notaires,
+    inspecteurs, hypothécaires), 5PennyAi peut les approcher avec
+    les mêmes patterns adaptés.
+
+# ───── SOURCES SECTORIELLES ─────
+
+sources:
+
+  - id: ascendix-ai-real-estate
+    type: comparison-article
+    title: "Ascendix — AI for Real Estate Agents: 35+ Tools to Use in 2026"
+    url: https://ascendix.com/blog/ai-real-estate-agents/
+    accessed: 2026-04-26
+    reliability: medium
+    key_facts_fr: |
+      87 % brokerages et agents utilisent AI quotidiennement (Delta
+      Media 2026). CRM IA projetés à 89 % adoption top agents 2026.
+      Goal : booster conversions de 67 % et réduire travail
+      administratif. Liste : Lofty, HubSpot Breeze, Rex Software,
+      ValPal, REimagineHome, Virtual Staging AI.
+
+  - id: gptprompts-ai-real-estate
+    type: comparison-article
+    title: "GPT Prompts AI — 50+ Best AI Tools for Real Estate 2026"
+    url: https://gptprompts.ai/ai-tools-for-real-estate
+    accessed: 2026-04-26
+    reliability: medium
+    key_facts_fr: |
+      Top producer 2022 : 40 transactions/60h sem → 2026 : 70
+      transactions même temps grâce à AI. Stack solo agent <20
+      transactions/an : Follow Up Boss 69 $/mois + Zillow Premier
+      Agent 300-500 $/mois + nurture program. Virtual Staging AI
+      29 $/mois unlimited.
+
+  - id: theclose-ai-real-estate
+    type: comparison-article
+    title: "The Close — 10 Best AI Tools for Real Estate 2026"
+    url: https://theclose.com/best-real-estate-ai-tools/
+    accessed: 2026-04-26
+    reliability: medium-high
+    note_fr: Auteur Sophia Doyle, courtière agréée NJ — perspective terrain.
+
+  - id: housingwire-ai-real-estate
+    type: comparison-article
+    title: "Housing Wire — 16 Indispensable AI Tools for Real Estate Agents"
+    url: https://www.housingwire.com/articles/ai-tools-real-estate/
+    accessed: 2026-04-26
+    reliability: high
+    note_fr: Source industrie reconnue.
+
+  - id: gptbots-ai-real-estate
+    type: comparison-article
+    title: "GPTBots — 11 Best AI Tools for Real Estate Agents 2026"
+    url: https://www.gptbots.ai/blog/ai-tools-for-real-estate
+    accessed: 2026-04-26
+    reliability: medium
+
+  - id: lindy-real-estate-leadgen
+    type: vendor-article
+    title: "Lindy — AI for Real Estate Lead Generation 2026"
+    url: https://www.lindy.ai/blog/how-to-use-ai-for-real-estate-lead-generation
+    accessed: 2026-04-26
+    reliability: medium
+
+  - id: v7labs-real-estate-ai
+    type: comparison-article
+    title: "V7 Labs — Best AI Tools for Real Estate 2026 Field Guide"
+    url: https://www.v7labs.com/blog/best-ai-tools-for-real-estate
+    accessed: 2026-04-26
+    reliability: medium-high
+    key_facts_fr: |
+      NAR : virtual staging +1-5 % offer prices, 81 % buyers helped,
+      72 % listing agents consider important. Follow Up Boss (Zillow)
+      référence CRM IA. SmartZip predictive seller identification
+      12 mois.
+
+  - id: tommasomariaricci-ai-real-estate
+    type: comparison-article
+    title: "Tommaso Maria Ricci — AI for Real Estate Complete Guide 2026"
+    url: https://www.tommasomariaricci.com/blog/ai-for-real-estate-guide
+    accessed: 2026-04-26
+    reliability: medium
+    key_facts_fr: |
+      Marché AI immobilier : 2,9 G$ 2024 → 41,5 G$ 2033 (CAGR >30 %).
+      Virtual staging : -50 % temps sur le marché, -70-80 % coût vs
+      staging traditionnel. Coûts indicatifs : chatbot 50-200 $/mois,
+      CRM IA 100-500 $/agent/mois, virtual staging 10-50 $/propriété.
+
+  - id: oaciq-officiel
+    type: regulatory
+    title: "OACIQ — Organisme d'autoréglementation du courtage immobilier du Québec"
+    url: https://www.oaciq.com
+    accessed: 2026-04-26
+    reliability: very-high
+    note_fr: Source officielle régulatrice.
+
+  - id: cai-loi-25
+    type: regulatory
+    title: "Commission d'accès à l'information — Loi 25 Québec"
+    url: https://www.cai.gouv.qc.ca
+    accessed: 2026-04-26
+    reliability: very-high
+
+# ───── NOTES INTERNES ─────
+
+internal_notes_fr: |
+  USAGE DE CE PROFIL DANS LE PIPELINE 5PENNYAI
+
+  Ce profil est consommé par le Skill 1 (Context Builder) lorsqu'il
+  identifie l'industrie du client comme « courtage immobilier »,
+  « agent immobilier », « courtier immobilier », ou termes proches.
+
+  Le Skill 1 doit :
+  1. Charger ce profil sectoriel en entier
+  2. Combiner avec les réponses du formulaire d'intake du client
+  3. Produire un Portrait sectoriel enrichi qui inclut :
+     - Volumes typiques attendus pour ce profil
+     - Pain points sectoriels probables
+     - Outils d'écosystème déjà présents (Centris, Matrix, Authentisign)
+     - Cadre réglementaire (OACIQ + Loi 25 immobilier)
+  4. Le Skill 2 (Opportunity matcher) utilise ces informations pour
+     adapter le matching des patterns horizontaux et leur priorité
+
+  POINTS À VALIDER LORS DES BETA-TESTS
+
+  - Validation que les volumes typiques (15-30 transactions/an)
+    correspondent au marché québécois réel
+  - Adoption réelle des CRM IA (Follow Up Boss, Top Producer) chez
+    les courtiers québécois — peut-être plus faible que rapporté
+    aux USA
+  - Tolérance aux outils anglais — beaucoup de courtiers québécois
+    sont bilingues, mais leur clientèle peut ne pas l'être
+  - Pertinence des combinaisons « solo essentiel » vs « solo volume »
+    vs « petite équipe » — calibrer en fonction des retours
+
+  GAPS À COMBLER DANS LES PATTERNS HORIZONTAUX
+
+  Modifications recommandées (à appliquer en revue groupée) :
+  - Pattern 001 : ajouter agent-immobilier et courtier-immobilier
+    aux target_industries; ajouter Ylopo en Tier 2 immo
+  - Pattern 002 : ajouter target_industries; mention Structurely en
+    Tier 2 immo
+  - Pattern 003 : ajouter target_industries; mention BrokerBay et
+    ShowingTime AI en Tier 2 immo
+  - Pattern 004 : ajouter target_industries; mention spécifique des
+    fiches Centris dans description; mention ValPal en Tier 2 immo
+  - Pattern 005 : ajouter target_industries
+  - Pattern 007 : ajouter target_industries; exemple briefing vendeur
+  - Pattern 009 : ajouter target_industries; mention KPIs immo
+    spécifiques (transactions/mois, mandats actifs, commission moyenne)
+
+  Pattern 006 (devis/factures) : peu pertinent pour courtier solo
+  (commissions traitées par bannière). Ne pas modifier sauf cas
+  d'équipe organisée.
+
+  Pattern 008 (RH) : non pertinent pour solo (1-3 pers). Pertinent
+  uniquement à partir de 5+ employés.
+
+  PATTERNS FUTURS QUI COMBLERONT LES TROUS RESTANTS
+
+  - Pattern 015 (Vente B2B) : Tier 2 dédié aux CRM immobiliers
+    (Follow Up Boss, Top Producer, Lofty, Rex Software, SmartZip)
+  - Pattern 020 (Création visuelle générative) : section dédiée
+    virtual staging (Virtual Staging AI, Collov, REimagineHome,
+    BoxBrownie) et photographie immobilière
+
+  ÉTUDE COMMERCIALE FUTURE
+
+  Si les beta-tests valident ce profil, considérer :
+  - Partenariat avec une bannière québécoise (RE/MAX Québec, Royal
+    LePage Québec) pour distribuer les audits 5PennyAi à leurs
+    courtiers
+  - Webinaires dédiés courtiers : « IA pour courtiers résidentiels —
+    par où commencer »
+  - Contenu pour réseaux sociaux LinkedIn ciblant les courtiers
+    établis en croissance plateau

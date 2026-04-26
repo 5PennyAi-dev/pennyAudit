@@ -74,6 +74,8 @@ target_industries:
   - photographe
   - designer-freelance
   - immobilier
+  - agent-immobilier
+  - courtier-immobilier
   - plomberie-estimation
   - electricite-estimation
   - renovation-estimation
@@ -494,6 +496,62 @@ tools:
     source_id: null
     used_in_paths: [self-serve, accompanied]
     recommended_priority: 6
+
+  # ── TIER 2 : Spécialisé sectoriel immobilier ──
+
+  - id: brokerbay
+    tier: 2
+    name: BrokerBay
+    origin: Canada
+    url: https://www.brokerbay.com
+    interface_fr: limitee
+    starting_price_monthly: null
+    currency: CAD
+    target_segment_fr: Courtiers immobiliers canadiens voulant gérer les visites de propriétés (showings)
+    strength_fr: |
+      Application mobile populaire au Canada pour la gestion des
+      visites de propriétés. Permet aux courtiers acheteurs de demander
+      des visites, et aux courtiers vendeurs de gérer les confirmations,
+      annulations, et reports. Spécifique au marché immobilier canadien.
+      Intégrations avec systèmes MLS canadiens.
+    weakness_fr: |
+      Outil métier dédié au showing management — ne remplace pas un
+      Cal.com pour les autres types de RDV (rencontre vendeur, qualification
+      acheteur, etc.).
+    pricing_note_fr: "Tarification typiquement liée à la bannière du courtier"
+    affiliate_potential: a-verifier
+    source_id: null
+    used_in_paths: [accompanied]
+    recommended_priority: null
+    note_fr: |
+      Outil sectoriel immobilier canadien. Voir profil sectoriel
+      « secteur-courtage-immobilier-qc-residentiel » pour le contexte
+      complet et l'écosystème (Centris, Matrix, Authentisign).
+
+  - id: showingtime-ai
+    tier: 2
+    name: ShowingTime AI (par Zillow)
+    origin: USA
+    url: https://www.showingtime.com
+    interface_fr: limitee
+    starting_price_monthly: null
+    currency: USD
+    target_segment_fr: Courtiers immobiliers voulant automatiser la coordination des visites
+    strength_fr: |
+      Plateforme de Zillow qui automatise complètement le processus
+      de booking de visites : synchronisation calendriers, demandes
+      acheteurs, confirmations vendeurs, rappels automatiques. Intégrations
+      MLS multiples (US principalement, présence canadienne à valider).
+    weakness_fr: |
+      Couverture canadienne et québécoise limitée vs BrokerBay (canadien).
+      Interface anglaise.
+    affiliate_potential: a-verifier
+    source_id: null
+    used_in_paths: [accompanied]
+    recommended_priority: null
+    note_fr: |
+      Outil sectoriel immobilier. Pour clients canadiens, BrokerBay
+      est typiquement plus pertinent. Voir profil sectoriel.
 
   # ── TIER 3 : Infrastructure pour voie custom ──
 

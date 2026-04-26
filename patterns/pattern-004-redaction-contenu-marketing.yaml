@@ -44,6 +44,8 @@ target_industries:
   - traiteur
   - boulangerie
   - immobilier
+  - agent-immobilier
+  - courtier-immobilier
   - coach-vie
   - coach-business
   - coach-fitness
@@ -140,8 +142,15 @@ content_subcategories:
     typical_time_saved_per_newsletter_hours: 1-3
 
   - id: product-descriptions
-    name_fr: Descriptions de produits
-    description_fr: Pour e-commerce, descriptions attractives et optimisées SEO à l'échelle (10-1000 produits).
+    name_fr: Descriptions de produits ou de propriétés
+    description_fr: |
+      Pour e-commerce, descriptions attractives et optimisées SEO à l'échelle
+      (10-1000 produits). Pour courtage immobilier au Québec, génération
+      de fiches Centris (descriptions des propriétés mises en marché) qui
+      passent typiquement de 30-60 minutes manuelles à 5-10 minutes avec
+      un LLM bien prompté — tout en respectant les règles publicitaires
+      OACIQ. Voir le profil sectoriel courtage immobilier QC pour le
+      contexte réglementaire.
     typical_frequency: une-fois-puis-mise-a-jour
     typical_time_saved_per_100_products_hours: 10-20
 
@@ -579,6 +588,39 @@ tools:
       À recommander comme alternative Mailchimp pour clients québécois
       francophones qui veulent une interface en français.
 
+  # ── TIER 2 : Spécialisé sectoriel immobilier ──
+
+  - id: valpal
+    tier: 2
+    name: ValPal
+    origin: UK
+    url: https://www.valpal.co.uk
+    interface_fr: limitee
+    starting_price_monthly: null
+    currency: GBP
+    target_segment_fr: Courtiers immobiliers voulant générer descriptions de propriétés SEO automatiquement
+    strength_fr: |
+      Génère descriptions de propriétés avec mots-clés SEO optimisés
+      pour améliorer le classement dans les recherches des portails
+      immobiliers. Inclut ChatPal pour capture de leads et nurturing
+      via CRM. Selon Ascendix, ValPal est référencé parmi les outils
+      AI immobiliers de référence pour la génération de contenu.
+    weakness_fr: |
+      Origine UK, optimisé pour le marché britannique. Adaptation
+      nécessaire pour les fiches Centris au Québec (formats, mentions
+      OACIQ obligatoires, terminologie locale).
+    pricing_note_fr: "Tarification sur devis"
+    affiliate_potential: a-verifier
+    source_id: ascendix-ai-real-estate
+    used_in_paths: [accompanied]
+    recommended_priority: null
+    note_fr: |
+      Outil sectoriel immobilier. Pour la majorité des courtiers
+      québécois, Claude ou ChatGPT (Tier 1) avec un prompt structuré
+      « rédige une fiche Centris pour [propriété] selon les règles
+      OACIQ » donnent souvent un meilleur résultat que ValPal qui
+      n'est pas adapté au marché québécois. Voir profil sectoriel.
+
   # ── TIER 3 : Infrastructure pour voie custom ──
 
   - id: anthropic-api
@@ -942,6 +984,17 @@ sources:
     accessed: 2026-04-22
     reliability: medium
     note_fr: Cas multi-pattern, référence partagée avec pattern chatbot
+
+  - id: ascendix-ai-real-estate
+    type: comparison-article
+    title: "Ascendix — AI for Real Estate Agents 35+ Tools 2026"
+    url: https://ascendix.com/blog/ai-real-estate-agents/
+    accessed: 2026-04-26
+    reliability: medium
+    note_fr: |
+      Source secteur immobilier. Référencée pour ValPal et autres outils
+      sectoriels. Voir profil sectoriel courtage immobilier QC pour
+      panorama complet.
 
 # ───── MÉTADONNÉES INTERNES ─────
 

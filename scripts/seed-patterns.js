@@ -81,34 +81,111 @@ const VOYAGE_REQUEST_DELAY_MS = Number(
 // FONCTIONS UTILITAIRES
 // ─────────────────────────────────────────────────────────────
 
+// Limite douce du texte embeddé (Voyage-3 accepte ~16k tokens, on garde
+// une marge confortable et on évite de noyer le signal sémantique).
+const EMBEDDING_SOURCE_MAX_CHARS = 10000;
+
 /**
  * Construit le texte qui sera embeddé pour un pattern.
- * On concatène les champs les plus descriptifs pour maximiser la précision
- * de la recherche sémantique.
+ *
+ * Stratégie :
+ *   - Sections nommées en français (TITRE, RÉSUMÉ, PROBLÈME, SOLUTION, …)
+ *     pour aider Voyage-3 à interpréter la sémantique.
+ *   - Sections optionnelles : si le champ est absent du YAML on saute
+ *     la section sans crasher (les patterns récents ont plus de champs
+ *     que les patterns initiaux).
+ *   - Sections ordonnées par priorité décroissante : si on dépasse
+ *     EMBEDDING_SOURCE_MAX_CHARS, on tronque les sections de queue
+ *     (industries/capacités/outils restent moins critiques que le
+ *     pain point ou la solution).
  */
 function buildEmbeddingSource(pattern) {
-  const parts = [
-    pattern.title_fr,
-    pattern.summary_long_fr,
-    pattern.pain_point_fr,
-    pattern.solution_summary_fr,
-  ].filter(Boolean);
+  const sections = [];
 
-  // Ajouter les industries cibles en phrase naturelle
-  if (pattern.target_industries?.length) {
-    parts.push(
-      `Secteurs pertinents : ${pattern.target_industries.join(', ')}.`
-    );
+  const pushSection = (label, value) => {
+    if (!value) return;
+    const text = String(value).trim();
+    if (!text) return;
+    sections.push(`${label} :\n${text}`);
+  };
+
+  const joinList = (list, sep = ', ') =>
+    Array.isArray(list) ? list.filter(Boolean).join(sep) : '';
+
+  // ── Identité du pattern ──────────────────────────────────────
+  pushSection('TITRE', pattern.title_fr);
+  pushSection('CATÉGORIE', pattern.category);
+
+  // ── Résumés ──────────────────────────────────────────────────
+  pushSection('RÉSUMÉ', pattern.summary_short_fr);
+  pushSection('DESCRIPTION', pattern.summary_long_fr);
+
+  // ── Le cœur sémantique : problème + solution ─────────────────
+  pushSection('PROBLÈME TYPE', pattern.pain_point_fr);
+  pushSection('SOLUTION', pattern.solution_summary_fr);
+
+  // ── Cibles ───────────────────────────────────────────────────
+  const industries = joinList(pattern.target_industries);
+  if (industries) pushSection('INDUSTRIES CIBLES', industries);
+
+  const sizes = joinList(pattern.target_business_sizes);
+  if (sizes) pushSection('TAILLES CIBLES', sizes);
+
+  const segments = joinList(pattern.high_priority_segments);
+  if (segments) pushSection('SEGMENTS PRIORITAIRES', segments);
+
+  // ── Capacités ───────────────────────────────────────────────
+  const capabilities = joinList(pattern.typical_capabilities, '. ');
+  if (capabilities) pushSection('CAPACITÉS', capabilities);
+
+  // ── Modes de déploiement (name_fr + description_fr) ─────────
+  if (Array.isArray(pattern.deployment_modes) && pattern.deployment_modes.length) {
+    const modesText = pattern.deployment_modes
+      .map((m) => {
+        const name = m?.name_fr || m?.id || '';
+        const desc = (m?.description_fr || '').trim();
+        if (!name && !desc) return '';
+        return desc ? `${name} — ${desc}` : name;
+      })
+      .filter(Boolean)
+      .join('\n\n');
+    if (modesText) pushSection('MODES DE DÉPLOIEMENT', modesText);
   }
 
-  // Ajouter les capabilities typiques
-  if (pattern.typical_capabilities?.length) {
-    parts.push(
-      `Capacités : ${pattern.typical_capabilities.join('. ')}.`
-    );
+  // ── Outils Tier 1 (name + target_segment_fr) ────────────────
+  if (Array.isArray(pattern.tools) && pattern.tools.length) {
+    const tier1 = pattern.tools
+      .filter((t) => t?.tier === 1)
+      .map((t) => {
+        const name = t?.name || t?.id || '';
+        const seg = (t?.target_segment_fr || '').trim();
+        if (!name) return '';
+        return seg ? `${name} : ${seg}` : name;
+      })
+      .filter(Boolean)
+      .join('\n');
+    if (tier1) pushSection('OUTILS PRINCIPAUX', tier1);
   }
 
-  return parts.join('\n\n');
+  // Assemblage avec troncature douce : on conserve les sections en
+  // ordre, et on coupe net dès qu'on dépasse la limite.
+  let total = 0;
+  const kept = [];
+  for (const section of sections) {
+    const len = section.length + (kept.length ? 2 : 0); // +2 pour \n\n
+    if (total + len > EMBEDDING_SOURCE_MAX_CHARS) {
+      // Si la section ne rentre pas, on essaye de la tronquer
+      const remaining = EMBEDDING_SOURCE_MAX_CHARS - total - (kept.length ? 2 : 0);
+      if (remaining > 200) {
+        kept.push(section.slice(0, remaining - 1) + '…');
+      }
+      break;
+    }
+    kept.push(section);
+    total += len;
+  }
+
+  return kept.join('\n\n');
 }
 
 /**

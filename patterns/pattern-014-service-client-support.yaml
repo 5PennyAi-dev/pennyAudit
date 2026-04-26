@@ -1,0 +1,1518 @@
+# ═══════════════════════════════════════════════════════════════
+# Pattern 014 — Service client et support après-vente assisté par IA
+# Format hybride : structure machine + prose humaine
+# Trois voies d'implémentation (self-serve, accompagné, custom)
+# ═══════════════════════════════════════════════════════════════
+
+id: ai-customer-support-helpdesk
+title_fr: Service client et support après-vente assistés par IA (helpdesk, base de connaissances, résolution autonome)
+category: relation-client-support
+version: 1.0
+last_updated: 2026-04-26
+language: fr
+
+# ───── RÉSUMÉS (prose narrative pour livrable client) ─────
+
+summary_short_fr: >
+  Système de gestion des demandes clients après-vente avec ticketing
+  centralisé, base de connaissances intelligente et agent IA qui peut
+  résoudre 30 à 70 % des questions courantes de manière autonome,
+  laissant les agents humains se concentrer sur les cas complexes.
+
+summary_long_fr: |
+  Le service client par IA dépasse largement le simple chatbot du
+  pattern 002 : il s'agit d'orchestrer un système complet où chaque
+  demande client (courriel, chat, formulaire, parfois téléphone)
+  devient un ticket trackable, où une base de connaissances bien
+  alimentée permet aux clients de s'auto-servir, et où un agent IA
+  bien entraîné peut résoudre les questions récurrentes (statut de
+  commande, retours, mots de passe, FAQ produits) de bout en bout
+  sans intervention humaine. L'objectif réaliste pour 2026 : 60-80 %
+  de résolution autonome sur les questions de niveau 1, libérant les
+  agents humains pour le traitement complex et empathique. Selon
+  Twig, le marché distingue désormais clairement les « agents IA »
+  qui résolvent des cas (Twig, Intercom Fin, Zendesk AI Advanced)
+  des simples « chatbots » qui répondent. Les modèles de tarification
+  sont volatils : facturation par résolution (Intercom Fin à 0,99 $
+  USD/résolution), à l'agent ($29-115/mois USD), ou hybride. Pour
+  une PME québécoise typique, le coeur stratégique reste : (1) bien
+  choisir l'outil selon le volume de tickets et le profil, (2)
+  investir dans la qualité de la base de connaissances en français
+  (le facteur #1 de succès), (3) maintenir un humain dans la boucle
+  pour les cas sensibles, (4) respecter Loi 25 sur les données
+  client.
+
+# ───── COMPLÉMENTARITÉ AVEC AUTRES PATTERNS ─────
+
+complementary_patterns:
+  - pattern_id: ai-text-chatbot-multichannel
+    relation_fr: |
+      Le pattern 002 traite la qualification de prospects en première
+      ligne (visiteur web qui pose une question). Le pattern 014 va
+      plus loin : ticketing structuré, base de connaissances, résolution
+      autonome de problèmes après-vente. Les deux peuvent se chevaucher
+      dans certains outils (Tidio Lyro, Crisp), mais le pattern 014
+      cible spécifiquement le client existant qui a un problème, pas
+      le prospect qui s'informe.
+
+  - pattern_id: ai-email-management
+    relation_fr: |
+      Beaucoup de demandes clients arrivent par courriel. Le pattern
+      005 traite la gestion globale d'inbox; le pattern 014 prend le
+      relais quand un courriel devient un ticket de support qui doit
+      être tracké, archivé, et résolu avec SLA.
+
+  - pattern_id: ai-voice-receptionist
+    relation_fr: |
+      Pour les clients préférant le téléphone, le pattern 001 capte
+      l'appel et peut générer un ticket dans le système du pattern
+      014. Les deux patterns orchestrés couvrent l'ensemble des canaux.
+
+  - pattern_id: ai-data-dashboards
+    relation_fr: |
+      Les KPIs de service client (volume, temps de résolution, CSAT,
+      sujets récurrents) sont des données précieuses pour le pattern
+      009. Un bon helpdesk alimente automatiquement les tableaux de bord.
+
+# ───── CIBLAGE (tags structurés pour recherche vectorielle) ─────
+
+target_industries:
+  - commerce-en-ligne
+  - boutique-vetements
+  - bijouterie
+  - epicerie-en-ligne
+  - cosmetiques
+  - electronique
+  - meubles-decoration
+  - logiciel-saas
+  - logiciel-pme
+  - hebergement-web
+  - telecommunications-fai
+  - distribution-b2b
+  - manufacturier-petit
+  - manufacturier-moyen
+  - service-apres-vente-industriel
+  - electromenager
+  - outillage
+  - sport-loisirs
+  - hotellerie
+  - tourisme-voyage
+  - assurance
+  - finance-services
+  - centre-appels-externalise
+  - service-public-municipalite
+  - obnl
+  - association
+  - cooperative
+  - club-membres
+  - garderie-cpe
+  - residence-aines
+
+target_business_sizes:
+  - micro-2-9
+  - petite-10-49
+  - moyenne-50-249
+
+tech_comfort_required: faible-a-moyen
+requires_existing_customer_base: true
+requires_existing_knowledge_base: false
+high_priority_segments:
+  - e-commerce-100-plus-tickets-mois-questions-recurrentes-sur-commandes-retours-livraisons
+  - saas-pme-avec-base-utilisateurs-active-et-questions-techniques
+  - manufacturiers-avec-service-apres-vente-pieces-installation-garanties
+  - obnl-avec-membres-questions-recurrentes-cotisation-evenements-services
+  - cooperatives-et-associations-avec-membres-multi-canaux
+  - distributeurs-b2b-avec-clients-professionnels-recurrents
+
+# ───── PROBLÈME (voix du client pour narratif) ─────
+
+pain_point_fr: |
+  Je gère une boutique en ligne. Mon adjointe et moi recevons une
+  centaine de courriels par jour : « où est ma commande », « comment
+  je retourne », « est-ce que ce produit existe en bleu », et des
+  variations infinies des mêmes 20 questions. On répond en mode
+  pompier, on copie-colle des réponses depuis un Word qui n'est jamais
+  à jour, et on oublie systématiquement de répondre à 5-10 % des
+  courriels qui se perdent dans la masse. Les clients se plaignent
+  des délais. Quand ma collègue est en vacances, c'est l'enfer. J'ai
+  entendu parler de helpdesks comme Zendesk, mais quand j'ai regardé
+  le prix, c'était 115 $ par agent par mois plus 50 $ pour l'IA, plus
+  un projet d'implantation à 8 000 $. Pour ma taille d'entreprise,
+  c'est complètement disproportionné.
+
+problem_facts:
+  - claim_fr: "Le coût moyen d'une interaction de service client par humain est de 6,00 $ USD vs 0,50 $ USD pour un chatbot selon Fin.ai"
+    source_id: fin-ai-pricing-comparison
+  - claim_fr: "Selon Twig, l'objectif réaliste pour les outils de support IA en 2026 est 60-80 % de résolution autonome sur les questions de niveau 1"
+    source_id: twig-ai-customer-support
+  - claim_fr: "Selon Hiver, les helpdesks AI réduisent les temps de résolution de 30 à 60 %, mais seulement quand l'IA s'entraîne sur la base de connaissances réelle de l'entreprise"
+    source_id: groove-helpdesk-smb
+  - claim_fr: "Selon Fin.ai, le marché de l'AI customer service devrait atteindre 15,12 milliards USD en 2026"
+    source_id: fin-ai-pricing-comparison
+  - claim_fr: "Intercom rapporte que Fin AI résout en moyenne 67 % des conversations à travers ses 7 000+ clients, avec une amélioration d'environ 1 % par mois"
+    source_id: fin-ai-pricing-comparison
+  - claim_fr: "Selon Pylon, les meilleures plateformes IA cuvent les temps de résolution jusqu'à 50 %"
+    source_id: pylon-ai-ticketing
+  - claim_fr: "Selon Groove, 70 % des professionnels d'affaires ont regretté un achat technologique dans les 18 derniers mois, généralement parce que l'outil était trop complexe pour leur workflow réel"
+    source_id: groove-helpdesk-smb
+
+# ───── SOLUTION (prose + structure) ─────
+
+solution_summary_fr: |
+  L'approche dépend du volume de tickets et de l'écosystème déjà en
+  place. Pour une micro ou petite PME (moins de 100 tickets/mois),
+  trois options réalistes : (a) Crisp ou Tidio Lyro qui combinent
+  chatbot et helpdesk léger en français pour 25-60 $ CAD/mois, (b)
+  Help Scout pour les boîtes courriel partagées avec base de
+  connaissances simple à 25 $ USD/utilisateur/mois, (c) Zoho Desk
+  qui offre un plan gratuit pour 3 agents et inclut Zia AI dès les
+  plans payants. Pour une moyenne PME (100-1 000 tickets/mois),
+  trois directions principales : (a) Freshdesk avec Freddy AI
+  (excellent compromis fonctionnalités-prix), (b) Groove (AI-native,
+  très bien noté pour les PME en croissance, 29 $/siège/mois USD avec
+  AI inclus), (c) Intercom + Fin AI si la stratégie est conversationnelle
+  et orientée produit (modèle hybride siège + 0,99 $/résolution).
+  Pour les e-commerce sur Shopify avec gros volume, Gorgias (10 $/mois
+  starter) est purpose-built pour le secteur. La pièce critique : la
+  qualité de la base de connaissances en français. Sans elle, l'IA
+  ne peut rien résoudre de manière autonome.
+
+deployment_modes:
+  - id: helpdesk-leger-pme
+    name_fr: Helpdesk léger pour PME (volume modéré)
+    description_fr: |
+      Crisp, Tidio Lyro, Help Scout, Zoho Desk plan gratuit. Pour
+      micro-entreprises et petites PME avec moins de 100 tickets/mois.
+      Inclut ticketing simple, FAQ ou base de connaissances de base,
+      réponses suggérées par IA, parfois chatbot intégré.
+
+  - id: helpdesk-complet-pme
+    name_fr: Helpdesk complet PME avec IA native
+    description_fr: |
+      Groove, Freshdesk avec Freddy AI, Zoho Desk plans payants. Pour
+      PME 25-100 employés avec 100-1 000 tickets/mois. Inclut
+      multi-canaux, automatisation des règles, base de connaissances
+      avancée, AI agent qui résout en autonomie, rapports et SLAs.
+
+  - id: helpdesk-conversationnel
+    name_fr: Helpdesk conversationnel (Intercom Fin)
+    description_fr: |
+      Intercom + Fin AI Agent. Pour SaaS, produits numériques, services
+      avec relation client conversationnelle. Modèle hybride :
+      29-139 $/siège/mois USD + 0,99 $/résolution USD. AI Fin résoudrait
+      en moyenne 67 % des conversations selon Intercom.
+
+  - id: helpdesk-ecommerce
+    name_fr: Helpdesk spécialisé e-commerce
+    description_fr: |
+      Gorgias, Shopify Inbox AI. Pour boutiques en ligne avec gros
+      volume de questions WISMO (Where Is My Order), retours, tracking.
+      Intégration native Shopify, WooCommerce. Actions directes sur
+      les commandes (remboursement, modification d'adresse) depuis le
+      ticket.
+
+  - id: helpdesk-enterprise
+    name_fr: Helpdesk enterprise (Zendesk, Salesforce Service Cloud)
+    description_fr: |
+      Zendesk AI, Salesforce Service Cloud Einstein. Pour moyennes
+      entreprises 100+ employés ou volumes >1 000 tickets/mois. Très
+      personnalisable, mais coûteux et complexe à déployer (1-3 mois
+      d'implantation, 8 000 $+ de setup).
+
+  - id: ai-agent-standalone
+    name_fr: Agent IA autonome ajouté à un helpdesk existant
+    description_fr: |
+      Twig, Decagon, Sierra, Ada, Forethought, Maven AGI. Le client
+      garde son helpdesk actuel; l'agent IA se connecte par API et
+      résout les tickets de manière autonome. Modèle 0,99-5 $/résolution
+      ou contrats enterprise (95 000 $+ USD/an pour Decagon, 150 000 $+
+      pour Sierra).
+
+  - id: custom-agent
+    name_fr: Agent IA custom
+    description_fr: |
+      Pipeline custom : Claude API ou OpenAI API + base de connaissances
+      vectorielle (Pinecone, Supabase pgvector) + intégration helpdesk
+      via webhooks. Pour cas avec exigences Loi 25 strictes (hébergement
+      Canada), logique métier propre, ou volume justifiant l'investissement.
+
+typical_capabilities:
+  - Ticketing centralisé multi-canaux (courriel, chat, formulaire, téléphone)
+  - Routage automatique des tickets selon catégorie et priorité
+  - Réponses suggérées par IA pour les agents (copilote)
+  - Résolution autonome de bout en bout pour cas standards
+  - Base de connaissances avec recherche sémantique
+  - Self-service portal pour clients (FAQ, articles, statut commandes)
+  - Analyses de sentiment et détection d'urgence
+  - Escalade vers humain avec contexte préservé
+  - SLA tracking et alertes proactives
+  - Intégration CRM, e-commerce, ERP
+  - Rapports et tableaux de bord (volume, CSAT, résolution rate, sujets)
+  - Détection automatique des trous dans la base de connaissances
+  - Génération automatique d'articles à partir de tickets résolus
+  - Multilingue (français/anglais notamment)
+  - Conformité Loi 25 (anonymisation, droits d'accès, archivage)
+
+# ───── VOIES D'IMPLÉMENTATION (core du pattern) ─────
+
+implementation_paths:
+
+  - id: self-serve
+    name_fr: Voie A — Self-serve (helpdesk léger avec IA)
+    ideal_profile_fr: |
+      Micro ou petite PME avec moins de 100 tickets/mois, pas
+      d'équipe support dédiée, souvent le propriétaire ou 1-2 adjoints
+      qui gèrent. Souvent : boutique en ligne en croissance, SaaS
+      tôt, OBNL avec membres, association, distributeur B2B avec
+      petite clientèle. Veut sortir de la boîte courriel partagée
+      sans projet lourd.
+    description_fr: |
+      Le client active un helpdesk léger : Crisp (à partir de 0 €/
+      mois plan gratuit, jusqu'à 95 €/mois en Plus) si l'interface
+      française et bilingue est priorité, Tidio Lyro (29 $/mois USD
+      pour 100 conversations IA) si focus e-commerce, ou Zoho Desk
+      gratuit pour 3 agents si déjà dans l'écosystème Zoho. 5PennyAi
+      fournit l'audit qui (1) recommande l'outil selon le profil,
+      (2) configure les canaux d'entrée (courriel, formulaire, chat),
+      (3) crée 10-20 articles de base de connaissances à partir des
+      questions les plus fréquentes du client, (4) configure les
+      règles d'autoassignation et de catégorisation, (5) propose un
+      protocole de gouvernance simple Loi 25.
+    setup_duration: 4-12-heures
+    client_time_required_hours:
+      min: 6
+      max: 15
+    total_cost_cad:
+      setup_range:
+        min: 0
+        max: 600
+      monthly_min: 0
+      monthly_max: 200
+      first_year: "0 à 3 000 $"
+    recommended_tools_priority:
+      - tool_id: crisp
+        reason_fr: Première recommandation pour clientèle francophone — interface FR de qualité
+      - tool_id: tidio-lyro
+        reason_fr: Si focus e-commerce avec boutique Shopify ou WooCommerce
+      - tool_id: zoho-desk
+        reason_fr: Si client déjà dans Zoho ou veut un plan gratuit 3 agents
+      - tool_id: help-scout
+        reason_fr: Si focus boîte courriel partagée propre et simple
+    fivepennyai_service_fr: |
+      Audit payant (199-499 $) : choix d'outil, configuration de base,
+      création des 10-20 premiers articles de base de connaissances,
+      automatisations simples, formation 1-2 h, protocole de gouvernance
+      simple Loi 25.
+    fivepennyai_revenue_potential: faible-a-moyen-par-client
+
+  - id: accompanied
+    name_fr: Voie B — Accompagnement (helpdesk complet avec IA agent)
+    ideal_profile_fr: |
+      PME 25-100 employés, 100-1 000 tickets/mois, équipe support
+      de 2-8 agents. Souvent : e-commerce établi avec multi-canaux,
+      SaaS B2B/B2C, manufacturier avec service après-vente,
+      distributeur B2B avec clients professionnels, OBNL avec
+      multiples programmes membres. Volume qui justifie un AI agent
+      qui résout en autonomie.
+    description_fr: |
+      5PennyAi configure une stack complète. Trois directions selon
+      le profil. (a) Groove (29-99 $/siège/mois USD, AI inclus, AI-native)
+      pour PME en croissance qui veulent simplicité et puissance.
+      (b) Freshdesk (15-79 $/agent/mois USD) avec Freddy AI pour
+      compromis fonctionnalités-prix éprouvé, écosystème Freshworks
+      cohérent. (c) Intercom + Fin AI pour SaaS et produits numériques
+      avec stratégie conversationnelle (29-139 $/siège/mois USD +
+      0,99 $/résolution USD). Inclut : (1) audit complet du processus
+      de support actuel, (2) configuration multi-canaux (courriel,
+      chat, formulaire, parfois téléphone), (3) création d'une base
+      de connaissances structurée en français de 30-100 articles à
+      partir des tickets historiques, (4) configuration de l'AI agent
+      avec règles métier et garde-fous, (5) automatisations avancées
+      (routage, escalade, SLA), (6) intégration CRM et e-commerce
+      (Shopify, HubSpot, Salesforce, etc.), (7) tableaux de bord et
+      KPIs, (8) protocole de gouvernance Loi 25 complet, (9) formation
+      équipe 4-6 h, (10) support 30-60 jours pour ajustement.
+    setup_duration: 2-6-semaines
+    client_time_required_hours:
+      min: 20
+      max: 50
+    total_cost_cad:
+      setup_range:
+        min: 3500
+        max: 9000
+      monthly_tool_range:
+        min: 200
+        max: 2500
+      first_year: "5 900 à 39 000 $"
+    recommended_tools_priority:
+      - tool_id: groove
+        reason_fr: Premier choix pour PME 25-100 emp en croissance, AI native, simplicité
+      - tool_id: freshdesk
+        reason_fr: Compromis éprouvé, écosystème Freshworks, plan gratuit pour démarrer
+      - tool_id: intercom-fin
+        reason_fr: Si SaaS conversationnel avec base utilisateurs active
+      - tool_id: gorgias
+        reason_fr: Si e-commerce Shopify/WooCommerce avec >300 tickets/mois
+      - tool_id: zoho-desk
+        reason_fr: Si déjà dans écosystème Zoho avec CRM
+    fivepennyai_service_fr: |
+      Forfait « Service client IA » : audit + setup helpdesk + base
+      de connaissances + AI agent configuré + automatisations +
+      intégrations + formation + protocole Loi 25 + support 30-60
+      jours. Différenciation 5PennyAi : on PRIORISE la base de
+      connaissances en français comme livrable central, vs cabinets
+      qui se concentrent sur la techno et négligent le contenu —
+      c'est pourtant le facteur de succès #1 selon Hiver et Groove.
+    fivepennyai_revenue_potential: moyen-a-eleve-par-client
+
+  - id: custom
+    name_fr: Voie C — Solution sur mesure / souveraine
+    ideal_profile_fr: |
+      Moyennes entreprises 100+ employés ou >1 000 tickets/mois,
+      cas avec exigences spécifiques : intégration ERP propriétaire,
+      logique métier complexe (ex: assurance avec réglementation,
+      finance avec compliance), exigence Loi 25 stricte avec
+      hébergement Canada, ou besoin d'agent IA très spécialisé
+      (ex: support technique pointu) avec audit de qualité.
+    description_fr: |
+      5PennyAi déploie une solution custom : pipeline Claude API +
+      base de connaissances vectorielle (Supabase pgvector ou
+      Pinecone) + intégration helpdesk existant via webhooks +
+      éventuellement orchestration Make/n8n. Inclut documentation
+      Loi 25 complète, audit explicabilité (pour expliquer chaque
+      décision IA), tests de bias, hébergement AWS Canada Central.
+      Alternative : agent IA standalone (Twig, Forethought) qui se
+      connecte au helpdesk existant.
+    setup_duration: 8-16-semaines
+    client_time_required_hours:
+      min: 40
+      max: 100
+    total_cost_cad:
+      setup_range:
+        min: 18000
+        max: 60000
+      monthly_hosting_range:
+        min: 200
+        max: 2000
+      first_year: "20 400 à 84 000 $"
+    recommended_tools_priority:
+      - tool_id: anthropic-api
+        reason_fr: Claude pour qualité française et raisonnement explicable
+      - tool_id: twig
+        reason_fr: Agent IA standalone à 3-5 $/résolution, alternative à Decagon
+      - tool_id: forethought
+        reason_fr: Agent IA standalone enterprise pour cas complexes
+    fivepennyai_service_fr: |
+      AI Sprint 8-16 semaines : audit, conception, développement,
+      intégrations, déploiement, formation, documentation Loi 25.
+    fivepennyai_revenue_potential: tres-eleve-par-client-mais-volume-faible
+    honest_note_fr: |
+      Voie réservée aux 5-10 % des clients : volume très élevé,
+      logique métier vraiment unique, ou exigences réglementaires
+      strictes. Pour 90 % des PME, la voie B avec Groove ou Freshdesk
+      couvre amplement. Soyons honnêtes : Zendesk Enterprise à
+      115 $/agent + 50 $ AI add-on + 8 000 $ implementation est
+      souvent surdimensionné — Groove à 29 $/siège avec AI inclus
+      fait souvent mieux pour les PME.
+
+# ───── OUTILS DU MARCHÉ (HIÉRARCHISÉS) ─────
+
+tools:
+
+  # ── TIER 1 : PME francophones et bilingues ──
+
+  - id: crisp
+    tier: 1
+    name: Crisp
+    origin: France
+    url: https://crisp.chat
+    interface_fr: oui
+    starting_price_eur_monthly: 0
+    currency: EUR
+    target_segment_fr: PME francophones avec petit-moyen volume de tickets, multi-canal
+    strength_fr: |
+      Solution française reconnue, interface FR de qualité, support
+      en français. Combine chatbot, helpdesk léger, knowledge base,
+      shared inbox, CRM léger. Mature, déployée chez nombreuses PME
+      françaises et québécoises. Bot Builder pour automatisations
+      simples. Plan gratuit pour démarrage, plans payants raisonnables.
+    plans:
+      - name: Free
+        price_eur: 0
+        per_unit: forever
+        note_fr: 2 utilisateurs, fonctions de base
+      - name: Mini
+        price_eur: 25
+        per_unit: workspace/mois
+      - name: Essentials
+        price_eur: 95
+        per_unit: workspace/mois
+        note_fr: Inclut chatbot avancé, knowledge base
+      - name: Plus
+        price_eur: 295
+        per_unit: workspace/mois
+    weakness_fr: |
+      AI Agent moins sophistiqué que Fin ou Twig (pas de résolution
+      autonome end-to-end). Limites de stockage des messages sur les
+      plans bas.
+    affiliate_potential: a-verifier
+    source_id: impli-ticketing-2026
+    used_in_paths: [self-serve, accompanied]
+    recommended_priority: 1
+    note_fr: |
+      Premier choix pour PME québécoise francophone qui veut sortir
+      du chaos courriel sans projet lourd. À pousser systématiquement
+      comme alternative aux outils anglo-saxons sur ce profil.
+
+  - id: tidio-lyro
+    tier: 1
+    name: Tidio (avec Lyro AI)
+    origin: Pologne (mais marché global)
+    url: https://www.tidio.com
+    interface_fr: oui
+    starting_price_usd_monthly: 0
+    currency: USD
+    target_segment_fr: E-commerce et petites entreprises voulant chatbot AI + helpdesk simple
+    strength_fr: |
+      Lyro AI à 29 $/mois USD pour 100 conversations IA résout
+      typiquement 60-70 % des questions standard. Setup en 30 minutes,
+      intégrations Shopify, WooCommerce, Wix. Combine chatbot, live
+      chat, ticketing. Selon Twig, Tidio est l'option recommandée
+      pour PME sous 500 tickets/mois.
+    plans:
+      - name: Free
+        price_usd: 0
+        note_fr: Limites strictes
+      - name: Tidio+
+        price_usd: 29
+        per_unit: mois
+      - name: Lyro AI
+        price_usd: 29
+        per_unit: "mois (100 conversations IA)"
+        note_fr: Modèle pay-per-conversation au-delà
+    weakness_fr: |
+      Plan gratuit limite Lyro à 50 conversations à vie. Pour usage
+      régulier, vrai coût autour de 29-99 $/mois USD. Interface
+      anglaise principalement, traduction FR partielle.
+    affiliate_potential: a-verifier
+    source_id: twig-ai-customer-support
+    used_in_paths: [self-serve, accompanied]
+    recommended_priority: 2
+    note_fr: |
+      Bon choix pour e-commerce Shopify/WooCommerce. Pour PME pure
+      francophone, Crisp est meilleur. Pour gros e-commerce >300
+      tickets/mois, Gorgias est plus puissant.
+
+  - id: zoho-desk
+    tier: 1
+    name: Zoho Desk
+    origin: Inde
+    url: https://www.zoho.com/desk/
+    interface_fr: oui
+    starting_price_usd_monthly: 0
+    currency: USD
+    target_segment_fr: PME déjà dans écosystème Zoho ou voulant rapport qualité-prix
+    strength_fr: |
+      Plan gratuit pour 3 agents (rare dans l'industrie). Zia AI
+      incluse dès les plans payants : suggestions de réponses,
+      détection de sentiment, automatisations de tâches répétitives.
+      Blueprint Automation (workflow visuel), context-aware tickets,
+      ASAP Widget embeddable. Intégration native avec Zoho CRM, Zoho
+      Books, etc.
+    plans:
+      - name: Free
+        price_usd: 0
+        note_fr: 3 agents max, fonctions de base
+      - name: Express
+        price_usd: 7
+        per_unit: agent/mois
+      - name: Standard
+        price_usd: 14
+        per_unit: agent/mois
+      - name: Professional
+        price_usd: 23
+        per_unit: agent/mois
+      - name: Enterprise
+        price_usd: 40
+        per_unit: agent/mois
+        note_fr: Inclut Zia AI complet
+    affiliate_potential: a-verifier
+    source_id: kayako-ai-helpdesk
+    used_in_paths: [self-serve, accompanied]
+    recommended_priority: 3
+    note_fr: |
+      À recommander si client est déjà dans Zoho (CRM, Books, People).
+      Sinon, Crisp ou Groove sont souvent plus pertinents pour le
+      marché québécois.
+
+  # ── TIER 1 bis : PME anglophones avec excellent rapport qualité-prix ──
+
+  - id: groove
+    tier: 1
+    name: Groove (avec Helply AI)
+    origin: USA
+    url: https://www.groovehq.com
+    interface_fr: limitee
+    starting_price_usd_monthly: 29
+    currency: USD
+    target_segment_fr: PME en croissance voulant helpdesk AI-native sans complexité enterprise
+    strength_fr: |
+      Selon Groove (qui se positionne explicitement contre Zendesk),
+      AI-native trois-en-un : Help Desk + Helply AI Agent + AI
+      Knowledge Base. Pricing transparent à 29 $/siège/mois (Lite),
+      AI inclus sans facturation par session. Knowledge Gap Finder
+      qui flagge les questions sans articles. AI Recorder qui crée
+      des articles à partir de captures écran. Integrations Shopify,
+      Stripe, Recharge, HubSpot, Jira, Salesforce. Selon Groove, la
+      majorité des équipes sont opérationnelles dans la journée.
+    plans:
+      - name: Lite
+        price_usd: 29
+        per_unit: siège/mois
+      - name: Advanced
+        price_usd: 49
+        per_unit: siège/mois
+        note_fr: Inclut 10 sièges Lite gratuits
+      - name: Expert
+        price_usd: 99
+        per_unit: siège/mois
+        note_fr: Inclut 50 sièges Lite gratuits
+    weakness_fr: |
+      Interface anglaise principalement. Marketplace d'intégrations
+      moins riche que Zendesk pour outils niches. Présence canadienne
+      à valider.
+    affiliate_potential: a-verifier
+    source_id: groove-helpdesk-smb
+    used_in_paths: [accompanied]
+    recommended_priority: 1
+    note_fr: |
+      Excellent choix pour PME anglophones ou bilingues 25-100 emp.
+      Positionnement « anti-Zendesk » résonne pour clients budget-
+      conscients. À tester sur cas concret pour valider qualité de
+      l'AI en français.
+
+  - id: freshdesk
+    tier: 1
+    name: Freshdesk (avec Freddy AI)
+    origin: USA / Inde (Freshworks)
+    url: https://www.freshworks.com/freshdesk/
+    interface_fr: oui
+    starting_price_usd_monthly: 0
+    currency: USD
+    target_segment_fr: TPE et PME voulant helpdesk éprouvé avec compromis qualité-prix
+    strength_fr: |
+      Plan gratuit pour 2 agents avec ticketing email, base de
+      connaissances, rapports de base. Plans payants accessibles
+      (Growth 15-18 $/agent/mois USD). Freddy AI pour résolution
+      automatique, traductions live, suggestions de réponses, résumés.
+      Selon Hobbycraft (cas Freshdesk), AI chatbots répondent
+      jusqu'à 30 % des questions. Écosystème Freshworks intégré
+      (CRM, Suite).
+    plans:
+      - name: Free
+        price_usd: 0
+        per_unit: 2 agents
+      - name: Growth
+        price_usd: 15
+        per_unit: agent/mois
+      - name: Pro
+        price_usd: 66
+        per_unit: agent/mois
+      - name: Enterprise
+        price_usd: 79
+        per_unit: agent/mois
+    weakness_fr: |
+      Selon Apogea, Freshdesk peut montrer des limites pour grandes
+      organisations nécessitant accompagnement de haut niveau.
+      Freddy AI facturée par session sur certains plans (coût peut
+      escalader).
+    affiliate_potential: a-verifier
+    source_id: kayako-ai-helpdesk
+    used_in_paths: [self-serve, accompanied]
+    recommended_priority: 2
+    note_fr: |
+      Compromis très solide pour PME 25-100 emp. Interface française
+      disponible. À recommander en alternative à Zendesk pour clients
+      budget-conscients.
+
+  - id: help-scout
+    tier: 1
+    name: Help Scout
+    origin: USA
+    url: https://www.helpscout.com
+    interface_fr: limitee
+    starting_price_usd_monthly: 25
+    currency: USD
+    target_segment_fr: PME voulant boîte courriel partagée propre et simple
+    strength_fr: |
+      Approche centrée sur la simplicité, parfaite pour équipes qui
+      travaillent essentiellement par courriel mais veulent sortir
+      des boîtes partagées classiques. Boîtes de réception partagées,
+      docs de base de connaissances, workflows, satisfaction CSAT.
+      Selon Pylon, Help Scout est recommandé pour interfaces simples
+      avec AI features qui ne demandent pas de configuration extensive.
+    plans:
+      - name: Standard
+        price_usd: 25
+        per_unit: utilisateur/mois
+      - name: Plus
+        price_usd: 50
+        per_unit: utilisateur/mois
+    affiliate_potential: a-verifier
+    source_id: pylon-ai-ticketing
+    used_in_paths: [self-serve, accompanied]
+    recommended_priority: 3
+
+  # ── TIER 2 : E-commerce et secteurs spécialisés ──
+
+  - id: gorgias
+    tier: 2
+    name: Gorgias
+    origin: USA / France
+    url: https://www.gorgias.com
+    interface_fr: limitee
+    starting_price_usd_monthly: 10
+    currency: USD
+    target_segment_fr: E-commerce Shopify/WooCommerce avec >300 tickets/mois
+    strength_fr: |
+      Purpose-built pour e-commerce Shopify. Selon Twig, Gorgias
+      Automate handle WISMO (Where Is My Order) avec accès direct
+      API commande. Actions directes depuis le ticket (remboursement,
+      modification adresse). Vues client enrichies, intégration
+      réseaux sociaux. 15 000+ marques clientes.
+    plans:
+      - name: Starter
+        price_usd: 10
+        per_unit: "mois (50 tickets)"
+      - name: Basic
+        price_usd: 60
+        per_unit: "mois (300 tickets)"
+      - name: Pro
+        price_usd: 360
+        per_unit: "mois (2 000 tickets)"
+      - name: Advanced
+        price_usd: 900
+        per_unit: "mois (5 000 tickets)"
+    weakness_fr: |
+      Modèle de pricing par tickets peut surprendre (overages au-delà
+      du plan). Automate AI add-on facturé séparément. Moins pertinent
+      pour secteurs non-e-commerce.
+    affiliate_potential: a-verifier
+    source_id: twig-ai-customer-support
+    used_in_paths: [accompanied]
+    recommended_priority: 1
+    note_fr: |
+      Premier choix pour e-commerce Shopify avec gros volume.
+      Différenciation forte vs helpdesks généralistes.
+
+  - id: intercom-fin
+    tier: 2
+    name: Intercom (avec Fin AI Agent)
+    origin: USA / Irlande
+    url: https://www.intercom.com
+    interface_fr: oui
+    starting_price_usd_monthly: 29
+    currency: USD
+    target_segment_fr: SaaS, produits numériques, services avec relation client conversationnelle
+    strength_fr: |
+      Conversation-first, messenger-based, built around real-time
+      engagement. Fin AI Agent lancé en 2023, résoudrait en moyenne
+      67 % des conversations selon Intercom (sur 7 000+ clients,
+      amélioration ~1 %/mois). Pricing AI à 0,99 $ USD/résolution
+      (pay only on outcome). Setup Fin en moins d'une heure. 25 000+
+      clients dont Atlassian, Amazon, Microsoft.
+    plans:
+      - name: Essential
+        price_usd: 29
+        per_unit: siège/mois
+      - name: Advanced
+        price_usd: 85
+        per_unit: siège/mois (annuel)
+      - name: Expert
+        price_usd: 132
+        per_unit: siège/mois (annuel)
+      - name: Fin AI
+        price_usd: 0.99
+        per_unit: résolution
+        note_fr: Minimum 50 résolutions/mois si standalone
+    weakness_fr: |
+      Pricing combiné siège + résolution peut surprendre — selon
+      MyAskAI, factures grimpent vite à grand volume. Pas de plafond
+      ni de discounts volume. Knowledge governance limitée — certaines
+      sources seulement utilisables en copilot mode.
+    affiliate_potential: a-verifier
+    source_id: fin-ai-pricing-comparison
+    used_in_paths: [accompanied]
+    recommended_priority: 2
+    note_fr: |
+      Référence pour SaaS conversationnel. Avant de pousser, calculer
+      le coût total sur 12 mois avec scénarios de volume — Fin peut
+      coûter beaucoup plus que Groove ou Freshdesk au-delà de
+      certains volumes.
+
+  # ── TIER 2 bis : Enterprise et IT ──
+
+  - id: zendesk-ai
+    tier: 2
+    name: Zendesk (avec Advanced AI)
+    origin: USA
+    url: https://www.zendesk.com
+    interface_fr: oui
+    starting_price_usd_monthly: 19
+    currency: USD
+    target_segment_fr: Moyennes entreprises avec gros volumes et SLA stricts
+    strength_fr: |
+      Long-standing leader pour omnichannel support à grande échelle.
+      1 500+ intégrations, customisation extensive. Macros, automations,
+      base de connaissances, centre d'aide multi-marque. Selon Impli,
+      Zendesk convient particulièrement aux PME et scale-ups en forte
+      croissance qui veulent professionnaliser le support rapidement.
+    plans:
+      - name: Suite Team
+        price_usd: 19
+        per_unit: agent/mois
+      - name: Suite Professional
+        price_usd: 55
+        per_unit: agent/mois
+      - name: Suite Enterprise
+        price_usd: 115
+        per_unit: agent/mois
+      - name: Advanced AI add-on
+        price_usd: 50
+        per_unit: agent/mois
+        note_fr: En plus du plan Suite
+    weakness_fr: |
+      Selon Supportbench, design ticket-centric rend account-level
+      visibility difficile sans add-ons. AI capabilities souvent
+      ajoutées sur higher-tier plans. Implémentation 1-3+ mois.
+      Coûts escaladent vite : Suite 55-115 $ + AI 50 $ = 105-165 $/
+      agent + add-ons à partir de 8 000 $/canal selon Supportbench.
+    affiliate_potential: a-verifier
+    source_id: gurusup-zendesk-intercom
+    used_in_paths: [accompanied, custom]
+    recommended_priority: 3
+    note_fr: |
+      Coût total souvent prohibitif pour PME 25-100 emp. À recommander
+      seulement si volume justifie ou si client a déjà Zendesk en
+      place. Pour majorité PME, Groove ou Freshdesk font mieux.
+
+  - id: salesforce-service-cloud
+    tier: 2
+    name: Salesforce Service Cloud (avec Einstein/Agentforce)
+    origin: USA
+    url: https://www.salesforce.com/service/
+    interface_fr: oui
+    starting_price_monthly: null
+    currency: USD
+    target_segment_fr: Entreprises déjà sur Salesforce CRM
+    strength_fr: |
+      Einstein Copilot conversationnel embedded across apps. Case
+      classification, predictive routing, AI knowledge answers.
+      Deeply integrated with Salesforce CRM data. Référence enterprise
+      pour B2B avec compte-niveau visibility.
+    pricing_note_fr: "Sur devis, typiquement enterprise contracts plusieurs dizaines de milliers $/an"
+    affiliate_potential: a-verifier
+    source_id: hiverhq-ai-helpdesk
+    used_in_paths: [custom]
+    recommended_priority: 4
+    note_fr: |
+      Hors cible standard PME 5PennyAi. À considérer seulement si
+      client est déjà profondément Salesforce.
+
+  - id: jira-service-management
+    tier: 2
+    name: Jira Service Management (Atlassian)
+    origin: Australie
+    url: https://www.atlassian.com/software/jira/service-management
+    interface_fr: limitee
+    starting_price_usd_monthly: 0
+    currency: USD
+    target_segment_fr: Équipes IT internes et entreprises sur Atlassian
+    strength_fr: |
+      Service desk centré sur l'ingénierie. Idéal pour relier support,
+      développement et opérations. Workflows configurables, traçabilité.
+      Plan gratuit jusqu'à 3 agents.
+    weakness_fr: |
+      IT-first design, peu adapté à B2C customer service. Setup
+      complexe pour non-Atlassian users. Self-service portal moins
+      poli que alternatives.
+    affiliate_potential: a-verifier
+    source_id: featurebase-helpdesk-2026
+    used_in_paths: [accompanied, custom]
+    recommended_priority: 5
+    note_fr: |
+      À recommander seulement pour équipes IT internes ou clients déjà
+      sur Atlassian (Jira, Confluence). Pour service client B2C,
+      mauvais fit.
+
+  # ── TIER 2 ter : AI agents standalone (haut volume) ──
+
+  - id: twig
+    tier: 2
+    name: Twig
+    origin: USA
+    url: https://www.twig.so
+    interface_fr: limitee
+    starting_price_monthly: null
+    currency: USD
+    target_segment_fr: Mid-to-large entreprises voulant AI agent autonome qui prend des actions
+    strength_fr: |
+      AI agent autonome qui résout des tickets de bout en bout (vs
+      simples chatbots). Built-in RAG pipeline, retrieval debugging,
+      synthetic data generation, answer quality scoring. 30+ connecteurs
+      (Zendesk, Salesforce, Intercom, Freshdesk, Confluence, Jira,
+      Slack). Take action capability (issue refund, update order,
+      escalate). Selon Twig, leur produit leads pour autonomous ticket
+      resolution and RAG quality.
+    pricing_note_fr: "3-5 $ USD/résolution, contrats compétitifs vs Decagon (95K+/an) et Sierra (150K+/an)"
+    affiliate_potential: a-verifier
+    source_id: twig-ai-customer-support
+    used_in_paths: [accompanied, custom]
+    recommended_priority: 6
+    note_fr: |
+      Hors cible PME standard mais à connaître pour clients à fort
+      volume voulant alternative à Decagon/Sierra. Pour mid-to-large
+      e-commerce 50M$+ GMV.
+
+  - id: decagon-sierra
+    tier: 2
+    name: Decagon AI ou Sierra AI
+    origin: USA
+    url: https://decagon.ai
+    interface_fr: limitee
+    starting_price_monthly: null
+    currency: USD
+    target_segment_fr: Grandes entreprises avec volumes très élevés et besoins enterprise
+    strength_fr: |
+      Agents IA autonomes haut de gamme. Sub-second latency, white-glove
+      onboarding. Décisions explicables, audit trails complets.
+    pricing_note_fr: "Decagon 95K+ USD/an, Sierra 150K+ USD/an, no public pricing"
+    affiliate_potential: non-probable
+    source_id: twig-ai-customer-support
+    used_in_paths: [custom]
+    recommended_priority: 7
+    note_fr: |
+      Hors cible standard PME 5PennyAi. À mentionner pour transparence
+      mais à ne pas pousser.
+
+  - id: forethought
+    tier: 2
+    name: Forethought
+    origin: USA
+    url: https://forethought.ai
+    interface_fr: limitee
+    starting_price_monthly: null
+    currency: USD
+    target_segment_fr: Entreprises voulant couche AI sur helpdesk existant
+    strength_fr: |
+      Dedicated support AI layer. S'overlay sur helpdesk existant
+      via API. Permet de garder son ticketing actuel.
+    affiliate_potential: a-verifier
+    source_id: automationatlas-intercom
+    used_in_paths: [custom]
+    recommended_priority: 8
+
+  # ── TIER 3 : Custom / API ──
+
+  - id: anthropic-api
+    tier: 3
+    name: Anthropic API (Claude)
+    origin: USA
+    url: https://docs.anthropic.com
+    interface_fr: documentation-en
+    starting_price_monthly: 0
+    currency: USD
+    target_segment_fr: Développement custom d'agents support conversationnels
+    strength_fr: |
+      Claude Sonnet 4 ou Opus pour qualité française. Compatible AWS
+      Bedrock Canada (conformité Loi 25 stricte). Excellence sur
+      explicabilité — important pour audit et Loi 25 section 12.1.
+    pricing_note_fr: "Facturation à l'usage, 50-500 $/mois selon volume"
+    affiliate_potential: non-applicable
+    source_id: null
+    used_in_paths: [custom]
+    recommended_priority: 1
+
+  - id: pinecone-supabase-vector
+    tier: 3
+    name: Pinecone ou Supabase pgvector
+    origin: USA
+    url: https://www.pinecone.io
+    interface_fr: limitee
+    starting_price_monthly: 0
+    currency: USD
+    target_segment_fr: Base de connaissances vectorielle pour agents IA custom
+    strength_fr: |
+      Pinecone : référence vector database managée. Supabase pgvector :
+      open source, hébergeable AWS Canada Central. Pour enrichir
+      l'agent custom avec contexte du client (historique, KB, FAQ).
+    pricing_note_fr: "Pinecone Free, Standard 70 $/mois USD. Supabase Free, Pro 25 $/mois USD"
+    affiliate_potential: non-applicable
+    source_id: null
+    used_in_paths: [custom]
+    recommended_priority: 2
+
+  - id: make-zapier
+    tier: 3
+    name: Make ou Zapier (orchestration)
+    origin: USA / international
+    url: https://www.make.com
+    interface_fr: oui
+    starting_price_monthly: 0
+    currency: USD
+    target_segment_fr: Orchestration workflows support multi-systèmes
+    strength_fr: |
+      Pour automatiser : nouveau ticket → enrichissement données client
+      → routage IA → notification équipe → mise à jour CRM. Make
+      typiquement moins cher que Zapier.
+    pricing_note_fr: "Gratuit à 50 $/mois selon volume"
+    affiliate_potential: confirme
+    source_id: null
+    used_in_paths: [accompanied, custom]
+    recommended_priority: 3
+
+# ───── INTÉGRATEURS IA QUÉBÉCOIS (CONCURRENCE DIRECTE) ─────
+
+quebec_competitors:
+  - name: Gestisoft
+    url: https://www.gestisoft.com
+    positioning_fr: |
+      Intégrateur Microsoft Dynamics et Sage avec offre logiciel suivi
+      client. Cible PME québécoises en croissance. Concurrent direct
+      sur la voie B accompagnée pour clients voulant écosystème
+      Microsoft.
+
+  - name: FloatAI
+    url: https://www.floatai.ca
+    positioning_fr: |
+      Automatisation IA pour PME québécoises. Concurrent indirect —
+      pas spécialisé service client mais peut le couvrir.
+
+  - name: CyberPerformance
+    url: https://cyberperformance.ca
+    positioning_fr: |
+      Création de chatbots sur mesure pour PME. Concurrent sur la
+      voie A self-serve avec chatbots dédiés.
+
+  - name: EvoluAI, Nexxo, IT Cares
+    url: null
+    positioning_fr: |
+      Intégrateurs IA québécois généralistes. Pas spécialisés service
+      client mais peuvent l'inclure dans une offre plus large.
+
+strategic_note_fr: |
+  Le service client par IA est un domaine où la concurrence québécoise
+  pousse principalement Microsoft Dynamics (Gestisoft) ou des chatbots
+  custom (CyberPerformance). Différenciation 5PennyAi : (a) audit
+  indépendant qui recommande l'outil selon le profil (Crisp pour
+  francophone, Groove pour anglo PME, Gorgias pour Shopify, Intercom
+  pour SaaS) — pas vendor-locked, (b) PRIORITÉ à la qualité de la
+  base de connaissances en français comme livrable central (vs
+  cabinets qui se concentrent sur la techno), (c) calcul honnête du
+  coût total sur 12-24 mois avec scénarios de volume (vs vendeurs
+  qui cachent les coûts d'AI add-ons et de résolutions), (d) gouvernance
+  Loi 25 incluse (anonymisation tickets, droits d'accès, archivage).
+
+# ───── COÛTS (RÉSUMÉ TROIS VOIES) ─────
+
+cost_summary_cad:
+  voie_a_self_serve:
+    first_year: "0 à 3 000 $"
+    recurring_monthly: "0 à 200 $"
+  voie_b_accompanied:
+    first_year: "5 900 à 39 000 $"
+    recurring_monthly: "200 à 2 500 $"
+  voie_c_custom:
+    first_year: "20 400 à 84 000 $"
+    recurring_monthly: "200 à 2 000 $"
+
+# ───── VALEUR DOCUMENTÉE ─────
+
+documented_benefits:
+  resolution_time_reduction_percent_min: 30  # Hiver (cité par Groove)
+  resolution_time_reduction_percent_max: 60
+  autonomous_resolution_target_percent_min: 60  # Twig
+  autonomous_resolution_target_percent_max: 80
+  intercom_fin_average_resolution_rate_percent: 67  # Intercom 7000+ clients
+  intercom_fin_monthly_improvement_percent: 1
+  freshdesk_chatbot_deflection_percent: 30  # Hobbycraft
+  cost_per_ai_interaction_usd: 0.50
+  cost_per_human_interaction_usd: 6.00
+  ai_customer_service_market_2026_usd_billions: 15.12
+  pylon_top_resolution_time_savings_percent: 50
+  groove_smb_regret_tech_purchase_percent: 70
+  typical_payback_months:
+    min: 2
+    max: 6
+  note_fr: |
+    Le ROI vient principalement de trois leviers : (1) heures d'agents
+    libérées (résolution autonome de 30-67 % des tickets standard),
+    (2) amélioration du temps de réponse (réduction 30-50 %) qui
+    augmente la satisfaction client et la rétention, (3) réduction
+    des coûts par interaction (0,50 $ vs 6 $ humain). Pour une PME
+    avec 500 tickets/mois et 2 agents à 50 $/heure, libérer 50 % des
+    tickets représente environ 100-150 heures/mois économisées, soit
+    5 000-7 500 $ CAD/mois en valeur d'agents.
+
+customer_cases:
+  - company: Hobbycraft (cas Freshdesk)
+    industry: commerce-detail
+    segment_fr: Détaillant articles loisirs créatifs avec service client volumineux
+    result_fr: |
+      Selon Freshworks, AI chatbots Freddy répondent jusqu'à 30 % des
+      questions, libérant les agents pour partager leur expertise
+      crafting avec les clients qui en ont vraiment besoin.
+    source_id: freshworks-officiel
+    relevance_for_micro: moyenne-elevee
+    confidence: medium
+
+  - company: Clients Intercom Fin (synthèse 7 000+ clients)
+    industry: saas-multiples
+    segment_fr: Entreprises SaaS et produits numériques sur Intercom
+    result_fr: |
+      Selon Intercom, Fin AI résout en moyenne 67 % des conversations
+      à travers ses 7 000+ clients, avec amélioration d'environ 1 %
+      par mois.
+    source_id: fin-ai-pricing-comparison
+    relevance_for_micro: moyenne-elevee
+    confidence: medium-high
+
+  - company: RecruitCRM (cas My AskAI)
+    industry: recrutement
+    segment_fr: Plateforme CRM recrutement
+    result_fr: |
+      Selon MyAskAI, RecruitCRM a rejeté Fin AI à 0,99 $/résolution
+      pour passer à My AskAI à 199 $/mois flat. Démarrage à 35 % de
+      résolution, montée à 68 % via revues QA hebdomadaires
+      disciplinées.
+    source_id: myaskai-fin-comparison
+    relevance_for_micro: moyenne-applicable
+    confidence: medium
+
+# ───── RISQUES ─────
+
+risks:
+  - type: contenu
+    title_fr: Qualité de la base de connaissances en français — facteur #1
+    severity: critique
+    description_fr: |
+      Selon Hiver et Groove, l'IA ne peut résoudre que ce qui est
+      bien documenté. Une base de connaissances mal structurée, ou
+      uniquement en anglais alors que les clients sont francophones,
+      condamne l'IA à halluciner ou à escalader systématiquement.
+      C'est le facteur de succès #1, et le plus souvent négligé.
+    mitigation_fr: |
+      (1) Audit initial des FAQ existantes, courriels passés, scripts
+      d'agents pour extraire les questions récurrentes. (2) Création
+      structurée de 30-100 articles en français de qualité dans la
+      première phase. (3) Knowledge Gap Finder (Groove) ou équivalent
+      pour identifier les trous. (4) Mise à jour mensuelle des
+      articles selon les tickets non résolus. (5) Désigner un
+      responsable de la KB.
+
+  - type: reglementaire-qc
+    title_fr: Loi 25 — données client dans les tickets
+    severity: important
+    description_fr: |
+      Les tickets de support contiennent souvent des renseignements
+      personnels (nom, courriel, adresse, parfois numéro de carte
+      tronqué, historique d'achats). Si traité par un LLM hébergé
+      hors Canada (cas de la majorité des outils), questions de
+      conformité émergent. Aussi : profilage automatisé (priorisation
+      des tickets selon valeur client) tombe sous section 12.1.
+    mitigation_fr: |
+      (1) Pour outils SaaS hors Canada, vérifier les contrats
+      data processing addendums (DPA) et la conformité Loi 25.
+      (2) Anonymiser les données quand possible (masquer numéros
+      de cartes, par exemple). (3) Pour conformité stricte,
+      hébergement Canada via API custom ou outils canadiens.
+      (4) Documenter les profilages automatisés et offrir
+      mécanisme de révision section 12.1.
+
+  - type: technique
+    title_fr: Hallucinations IA dans réponses client
+    severity: important
+    description_fr: |
+      Une IA qui invente une politique de retour, un délai de
+      livraison, ou une garantie peut créer des engagements légalement
+      contraignants pour l'entreprise. Risque réputationnel et légal
+      réel. Selon Fini, les plateformes « retrieval-only » sont
+      particulièrement à risque.
+    mitigation_fr: |
+      (1) Restreindre l'IA à répondre UNIQUEMENT sur la base de
+      la KB validée (pas de réponses « créatives »). (2) Configurer
+      des seuils de confiance — si l'IA n'est pas certaine, escalader
+      à un humain. (3) Pour cas sensibles (engagement financier,
+      légal), forcer l'escalade systématique. (4) Audit régulier
+      des conversations IA pour détecter les hallucinations.
+
+  - type: pricing
+    title_fr: Coûts pricing imprévisibles (per-resolution, per-session)
+    severity: moyen
+    description_fr: |
+      Intercom Fin à 0,99 $/résolution semble raisonnable mais peut
+      coûter 30 000 $/mois à grand volume (cas documenté Minami).
+      Freshdesk Freddy facturée par session sur certains plans.
+      Zendesk Advanced AI à 50 $/agent en plus. Selon MyAskAI,
+      « billing shot up » est plainte fréquente.
+    mitigation_fr: |
+      (1) Calculer le coût total sur 12-24 mois avec scénarios
+      pessimistes (volume +50 %). (2) Privilégier modèles à forfait
+      fixe (Groove, Crisp, Help Scout) si volume élevé. (3) Mettre
+      en place des plafonds et des alertes de dépassement.
+
+  - type: organisationnel
+    title_fr: Acceptation de l'équipe et qualité de l'implémentation
+    severity: important
+    description_fr: |
+      Selon Groove, 70 % des professionnels ont regretté un achat
+      tech dans les 18 derniers mois — principalement parce que l'outil
+      était trop complexe pour leur workflow. Une équipe support qui
+      perçoit l'IA comme une menace ou une complication ne s'en sert
+      pas.
+    mitigation_fr: |
+      (1) Impliquer l'équipe dans le choix d'outil et la conception
+      de la KB. (2) Positionner l'IA comme un assistant qui libère
+      du temps pour les cas complexes. (3) Phasage progressif :
+      commencer avec suggestions de réponses (copilot) avant de
+      passer à résolution autonome (agent). (4) Mesurer KPIs et
+      partager avec l'équipe.
+
+  - type: stratégique
+    title_fr: Dépendance vendor et migration coûteuse
+    severity: moyen
+    description_fr: |
+      Choisir Zendesk, Intercom ou Salesforce engage à long terme.
+      Migrer vers un autre outil 3-5 ans plus tard est complexe :
+      réimporter tickets, recréer KB, retravailler workflows.
+      Selon Twig, « tool-stack migrations tank most AI deployments ».
+    mitigation_fr: |
+      (1) Privilégier outils avec exports faciles (Crisp, Groove,
+      Help Scout sont relativement ouverts). (2) Pour entreprises
+      en croissance rapide, anticiper le besoin de scaling avant
+      le choix d'outil. (3) Pour clients voulant indépendance,
+      considérer agent custom avec helpdesk open-source (Chatwoot,
+      Zammad).
+
+  - type: qualite
+    title_fr: Détérioration silencieuse de la qualité IA
+    severity: moyen
+    description_fr: |
+      Sans monitoring actif, la qualité des réponses IA peut se
+      détériorer (KB obsolète, nouveaux types de questions, drift
+      du modèle). Le client peut s'apercevoir 6 mois plus tard que
+      la résolution rate a chuté de 65 % à 45 %.
+    mitigation_fr: |
+      (1) Tableaux de bord de qualité (resolution rate, CSAT,
+      sujets non résolus). (2) Revues hebdomadaires de l'équipe
+      (modèle RecruitCRM : passé de 35 % à 68 % grâce aux QA
+      reviews). (3) Maintenance mensuelle de la KB. (4) Alertes
+      automatiques sur baisses de KPIs.
+
+# ───── PRÉREQUIS ─────
+
+prerequisites:
+  - Volume minimum justifiant l'investissement (50+ tickets/mois pour voie A, 300+ pour voie B)
+  - Base de clients existante avec historique de questions récurrentes
+  - Identification d'un responsable interne pour la base de connaissances
+  - FAQ ou documentation existante (au moins partielle) en français
+  - Politique de protection des renseignements personnels à jour pour Loi 25
+  - Pour Voie B : engagement de l'équipe support à utiliser l'outil (sans adoption, ROI nul)
+  - Pour Voie C : volume très élevé (>1 000 tickets/mois) ou exigences réglementaires strictes
+  - Compréhension que l'IA est un copilote qui complète l'humain, pas un remplacement
+  - Pour outils SaaS hors Canada : vérification des DPA et conformité Loi 25
+
+# ───── SOURCES (référentiel central) ─────
+
+sources:
+  - id: twig-ai-customer-support
+    type: comparison-article
+    title: "Twig — Best AI Customer Support Tools in 2026: Ranked & Compared"
+    url: https://www.twig.so/blog/ai-customer-support-best-tools
+    accessed: 2026-04-26
+    reliability: medium-high
+    note_fr: |
+      Source vendeur (Twig) mais comparaison structurée et
+      transparente. Présente Twig avec recul et donne recommandations
+      concrètes (Tidio/Chatbase pour SMB, Fin pour Intercom users,
+      Zendesk AI pour Zendesk users). Inclut pricing benchmarks
+      détaillés.
+    key_facts_fr: |
+      AI customer support pricing 2026 : 29-99 $/mois SMB, 50 $/agent
+      mid-market add-ons, 95K-150K+ enterprise. Per-resolution
+      0,99-5 $ commun. SMB <500 tickets/mois : Tidio (29 $) ou Chatbase
+      (40 $). 60-80 % résolution autonome objectif réaliste tier 1.
+
+  - id: groove-helpdesk-smb
+    type: vendor-article
+    title: "Groove — Best Helpdesk Ticketing Systems for Small Business 2026"
+    url: https://www.groovehq.com/blog/helpdesk-ticketing-systems-small-business
+    accessed: 2026-04-26
+    reliability: medium
+    key_facts_fr: |
+      Groove 29-99 $/siège/mois (Lite/Advanced/Expert) avec AI inclus.
+      Knowledge Gap Finder, AI Recorder, intégrations Shopify/Stripe/
+      HubSpot/Jira/Salesforce. AI-powered help desks réduisent temps
+      résolution 30-60 % SI AI s'entraîne sur KB réelle. 70 % pros
+      regrettent achat tech derniers 18 mois.
+
+  - id: pylon-ai-ticketing
+    type: vendor-article
+    title: "Pylon — Best AI Ticketing Systems for 2026 Complete Guide"
+    url: https://www.usepylon.com/blog/best-ai-ticketing-systems-for-customer-support-2026
+    accessed: 2026-04-26
+    reliability: medium
+    key_facts_fr: |
+      Top plateformes réduisent resolution times jusqu'à 50 %. Help
+      Scout/Freshdesk pour interfaces simples sans configuration.
+      Pylon/Zendesk/Intercom pour scalabilité. Pylon/Salesforce pour
+      enterprise compliance.
+
+  - id: kayako-ai-helpdesk
+    type: comparison-article
+    title: "Kayako — Best AI Helpdesk Software in 2026: 8 Tools Reviewed"
+    url: https://kayako.com/blog/best-ai-helpdesk-software/
+    accessed: 2026-04-26
+    reliability: medium
+    key_facts_fr: |
+      Zoho Desk gratuit 3 agents, Enterprise 40 $/agent avec Zia AI.
+      Freshservice freemium 10 agents, paid 15 $/mois. Required AI
+      features : intent/routing, auto-summarisation, suggested replies,
+      knowledge-grounded bots, secure PII redaction. Safety : human-
+      in-the-loop, confidence thresholds, audit logs.
+
+  - id: featurebase-helpdesk-2026
+    type: comparison-article
+    title: "Featurebase — Best Help Desk Ticketing Software in 2026: 12 Tools"
+    url: https://www.featurebase.app/blog/help-desk-ticketing-software
+    accessed: 2026-04-26
+    reliability: medium
+
+  - id: hiverhq-ai-helpdesk
+    type: comparison-article
+    title: "Hiver — AI Helpdesk: What It Is + 10 Best Tools for 2026"
+    url: https://hiverhq.com/blog/ai-helpdesk
+    accessed: 2026-04-26
+    reliability: medium
+    key_facts_fr: |
+      Intercom Essential 29 $/siège, Advanced 85-99 $, Expert 132 $.
+      Hiver Lite gratuit, Growth 25 $, Pro 65 $, Elite 105 $.
+
+  - id: fin-ai-pricing-comparison
+    type: vendor-article
+    title: "Fin.ai — AI Customer Service Agent Pricing Comparison 2026"
+    url: https://fin.ai/learn/ai-customer-service-agent-pricing-comparison
+    accessed: 2026-04-26
+    reliability: medium
+    key_facts_fr: |
+      Marché AI customer service projeté 15,12 milliards USD 2026.
+      Fin 0,99 $/résolution sans frais setup/intégration/plateforme.
+      Average chatbot interaction 0,50 $ vs 6,00 $ human. Per-resolution
+      vs per-conversation : à 60 % résolution rate, per-conversation
+      coûte 40 % plus.
+
+  - id: minami-fin-pricing
+    type: comparison-article
+    title: "Minami — Intercom Fin AI Agent Pricing in 2026"
+    url: https://minami.ai/blog/intercom-fin-ai-agent-pricing
+    accessed: 2026-04-26
+    reliability: medium
+    key_facts_fr: |
+      Fin 0,99 $/résolution, minimum 50/mois (49,50 $). Inside Intercom :
+      seat 29-139 $/mois requis. Cas 15 agents Expert : 32 734 $/mois
+      total (sièges 2 085 + résolutions 29 700 + add-ons). Pas de
+      volume discounts.
+
+  - id: gurusup-zendesk-intercom
+    type: comparison-article
+    title: "GuruSup — Zendesk vs Intercom 2026 Pricing Features AI Compared"
+    url: https://gurusup.com/blog/zendesk-vs-intercom
+    accessed: 2026-04-26
+    reliability: medium
+    key_facts_fr: |
+      Zendesk Suite Team 19 $/agent, Pro 55 $, Enterprise 115 $ +
+      Advanced AI 50 $/agent. Intercom Essential 39 $/siège, Advanced
+      99 $, Expert 139 $ + Fin 0,99 $/résolution. 20-agent Zendesk
+      Pro : 1 100 $/mois. Same Intercom Advanced : 1 980 $/mois avant
+      AI.
+
+  - id: usefini-ai-chatbots
+    type: comparison-article
+    title: "Fini Labs — Top 12 AI Customer Service Chatbots for 2026"
+    url: https://www.usefini.com/guides/top-ai-customer-service-chatbots
+    accessed: 2026-04-26
+    reliability: medium
+    key_facts_fr: |
+      Intercom Fin 0,99 $/résolution + base 29 $/siège. Zendesk Suite
+      19 $/agent + Advanced AI ~50 $. Reasoning-first vs retrieval-
+      only : retrieval-based hallucinent ou misinterprètent. 60-80 %
+      automation high-volume.
+
+  - id: artificialanalysis-customer-support
+    type: comparison-article
+    title: "Artificial Analysis — AI Customer Support Agents Comparison"
+    url: https://artificialanalysis.ai/agents/customer-support
+    accessed: 2026-04-26
+    reliability: medium
+    key_facts_fr: |
+      Pricing models : per-seat 10-210 $/agent, per-resolution
+      0,90-3 $, enterprise contracts. Built-in vs standalone agents.
+      Channels : chat/email/voice/SMS/social.
+
+  - id: automationatlas-intercom
+    type: comparison-article
+    title: "Automation Atlas — Intercom AI Customer Service from $39/mo 2026"
+    url: https://automationatlas.io/tools/intercom/
+    accessed: 2026-04-26
+    reliability: medium
+
+  - id: myaskai-fin-comparison
+    type: vendor-article
+    title: "My AskAI — Zendesk AI vs Intercom Fin AI Full Comparison 2026"
+    url: https://myaskai.com/blog/zendesk-ai-intercom-ai-comparison-2026
+    accessed: 2026-04-26
+    reliability: medium
+    key_facts_fr: |
+      Zendesk AI Enterprise 115 $/agent. Fin 0,99 $/résolution. RecruitCRM
+      passé Fin → My AskAI 199 $/mois flat, KB QA hebdomadaire montée
+      35 % → 68 %.
+
+  - id: impli-ticketing-2026
+    type: comparison-article
+    title: "Impli — Les 7 meilleurs logiciels de ticketing en 2026"
+    url: https://www.impli.fr/comparatif/logiciel-ticketing
+    accessed: 2026-04-26
+    reliability: medium
+    key_facts_fr: |
+      Top FR : Zendesk, Freshdesk, HubSpot Service Hub, Zoho Desk,
+      Crisp. Crisp solution française messagerie client séduit petites
+      entreprises et e-commerçants.
+
+  - id: lafabrique-ticketing
+    type: comparison-article
+    title: "La Fabrique du Net — Top 10 logiciels ticketing 2026"
+    url: https://www.lafabriquedunet.fr/logiciels/productivite/gestion-de-projet/ticketing
+    accessed: 2026-04-26
+    reliability: medium
+
+  - id: apogea-ticketing
+    type: comparison-article
+    title: "Apogea — Outil de ticketing : les 10 meilleurs logiciels 2026"
+    url: https://www.apogea.fr/meilleur-outil-de-ticketing/
+    accessed: 2026-04-26
+    reliability: medium
+    key_facts_fr: |
+      Sage CRM ticketing intégré, Zendesk standard du marché,
+      Freshdesk gratuit puis 18 €/agent. Salesforce Service Cloud
+      55 €/agent.
+
+  - id: gestisoft-suivi-client
+    type: integrator-article
+    title: "Gestisoft — Logiciel de suivi client guide complet PME Québec"
+    url: https://www.gestisoft.com/fr/blogue/logiciel-de-suivi-de-client
+    accessed: 2026-04-26
+    reliability: medium-high
+    note_fr: |
+      Source québécoise. Mentionne explicitement les exigences Loi 25
+      pour outils de suivi client au Québec, le besoin de support
+      bilingue, et de soutien local.
+    key_facts_fr: |
+      PME québécoises : besoins bilinguisme, conformité Loi 25, soutien
+      local. Bitrix24 et Freshworks gratuits OK micro-entreprises mais
+      pertinence moindre PME québécoises (faible alignement Loi 25).
+
+  - id: freshworks-officiel
+    type: vendor-official
+    title: "Freshworks — Freshdesk AI-powered platform"
+    url: https://www.freshworks.com/freshdesk/
+    accessed: 2026-04-26
+    reliability: high
+    key_facts_fr: |
+      Cas Hobbycraft : AI chatbots Freddy répondent jusqu'à 30 %
+      questions, libèrent agents pour partage expertise.
+
+# ───── MÉTADONNÉES INTERNES ─────
+
+confidence_level: high
+source_diversity: vendor-officials + comparison-articles + integrator-articles + industry-publications
+
+adaptation_needed_for_qc:
+  - Privilégier Crisp (FR) ou Groove (anglo) avant Zendesk pour PME québécoises
+  - Toujours auditer la qualité de la base de connaissances en français comme livrable central
+  - Pour outils SaaS hors Canada : vérifier DPA et conformité Loi 25 explicite
+  - Mentionner Gestisoft comme concurrent direct sur clients Microsoft Dynamics
+  - Pour OBNL et coopératives : adapter la base de connaissances aux besoins de leurs membres
+  - Pour cabinets professionnels (avocats, notaires, comptables) : attention secret professionnel — ne pas pousser AI agent autonome sur cas confidentiels
+  - Mentionner que le marché québécois est sous-pénétré sur les helpdesks AI (vs USA)
+  - Pour clients construction/manufacturier : prévoir les pics saisonniers dans le dimensionnement
+  - Attention courtiers immobiliers : leurs « clients » sont des transactionnels, pas un cas-fit standard helpdesk — voir profil sectoriel courtage immobilier
+
+# ───── NOTES HONNÊTES (usage interne uniquement) ─────
+
+internal_notes_fr: |
+  ANGLE DIFFÉRENCIATEUR PRINCIPAL : QUALITÉ DE LA BASE DE CONNAISSANCES
+  Les cabinets traditionnels et intégrateurs québécois (Gestisoft,
+  CyberPerformance) se concentrent sur la techno (déploiement Zendesk,
+  Microsoft Dynamics). 5PennyAi peut se positionner comme « l'auditeur
+  qui priorise la KB en français » — facteur de succès #1 selon Hiver
+  et Groove. Une KB de 50 articles structurés en français est plus
+  précieuse qu'un Zendesk Enterprise mal alimenté.
+
+  ANGLE COMPLÉMENTAIRE : APPROCHE PROGRESSIVE ANTI-ZENDESK
+  Beaucoup de PME se font vendre Zendesk Enterprise à 115 $/agent +
+  AI 50 $ + 8 000 $ implementation. C'est massivement surdimensionné
+  pour 90 % des cas. 5PennyAi peut honnêtement recommander Crisp
+  (25 €/mois) ou Groove (29 $/siège avec AI inclus). Différenciation
+  forte vs cabinets vendant des projets à 30K-100K$.
+
+  PIÈGES À ÉVITER :
+  - Ne PAS pousser Intercom Fin sans calculer le coût total à 12-24
+    mois avec scénarios pessimistes — facturation par résolution
+    peut exploser à grand volume.
+  - Ne PAS sous-estimer la KB. Promettre « AI agent en 2 semaines »
+    sans avoir nettoyé/structuré 50+ articles en FR est un piège
+    classique qui mène à des projets qui échouent.
+  - Ne PAS recommander Zendesk Enterprise à PME 25-100 emp. Trop
+    cher, trop complexe. Groove ou Freshdesk font mieux.
+  - Ne PAS oublier le DPA pour outils SaaS hors Canada — Loi 25.
+
+  CHIFFRES À NUANCER :
+  - « 67 % résolution rate Intercom Fin » est un AVERAGE — meilleurs
+    clients à 80 %+, pires à 30 %. Dépend qualité KB.
+  - « 30-60 % réduction temps résolution » conditionnel à KB de
+    qualité (Groove cite explicitement cette condition).
+  - « 4,7K $ cost per hire » du pattern 008 ne s'applique pas ici —
+    différent contexte.
+
+  CIBLE PRIORITAIRE COMMERCIALE :
+  - E-commerce 30K $+ revenu mensuel avec 100+ tickets/mois (Gorgias,
+    Tidio, Crisp)
+  - SaaS B2B/B2C avec base utilisateurs active (Intercom Fin si
+    conversationnel, Groove si plus traditionnel)
+  - Manufacturiers et distributeurs B2B avec service après-vente
+    (Freshdesk, Zoho Desk)
+  - OBNL et coopératives avec membres (Crisp, Help Scout, Zoho Desk
+    free tier)
+
+  CROSS-SELL :
+  Client qui adopte la voie B sur service client = excellent prospect
+  pour :
+  - Pattern 002 (chatbot) pour première ligne sur le site web
+  - Pattern 005 (gestion courriels) pour les autres communications
+  - Pattern 009 (BI) pour analyser les KPIs support (volume, CSAT,
+    sujets récurrents)
+  - Futur pattern 015 (vente B2B) pour upsell avec données support
+  - Futur pattern 017 (e-commerce) pour intégration Shopify/WooCommerce
+    si applicable
+
+  TENDANCES À SURVEILLER :
+  - Modèle per-resolution (Intercom Fin, Twig) gagne du terrain
+    mais coûts imprévisibles. Surveiller plafonnement.
+  - Outils canadiens/québécois en service client AI rares — opportunité
+    de marché potentielle pour 5PennyAi à long terme.
+  - Audit IA et explicabilité deviendront obligatoires (AIDA fédéral
+    en cours). Préparer dès maintenant.
+
+# ───── EMBEDDING (généré automatiquement au seed Supabase) ─────
+
+embedding: null

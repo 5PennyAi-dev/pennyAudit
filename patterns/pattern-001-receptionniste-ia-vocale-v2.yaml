@@ -41,6 +41,8 @@ target_industries:
   - salon-coiffure
   - spa-beaute
   - immobilier
+  - agent-immobilier
+  - courtier-immobilier
   - droit-avocats
   - comptabilite
   - inspection-batiment
@@ -298,6 +300,38 @@ tools:
     source_id: avoca-customers
     used_in_paths: [accompanied]
     recommended_priority: 3
+
+  # ── TIER 2 : Spécialisé sectoriel immobilier ──
+
+  - id: ylopo
+    tier: 2
+    name: Ylopo
+    origin: USA
+    url: https://www.ylopo.com
+    interface_fr: limitee
+    starting_price_monthly: null
+    currency: USD
+    target_segment_fr: Courtiers immobiliers avec budget marketing pour automation IA voix + ads
+    strength_fr: |
+      AI voice assistant spécifique immobilier qui appelle automatiquement
+      les nouveaux leads avec une voix quasi-indistinguable d'un humain.
+      Crée aussi des publicités vidéo Meta automatiquement à partir des
+      listings MLS. Selon Housing Wire, Ylopo génère, qualifie et
+      nourrit les leads de manière intégrée.
+    weakness_fr: |
+      Coût enterprise non publié (probablement plusieurs centaines $/mois),
+      plus pertinent pour équipes que pour solos avec budget limité.
+      Interface anglaise principalement.
+    pricing_note_fr: "Tarification sur devis, contact ventes requis"
+    affiliate_potential: a-verifier
+    source_id: housingwire-ai-real-estate
+    used_in_paths: [accompanied]
+    recommended_priority: null
+    note_fr: |
+      Outil sectoriel immobilier. Voir profil sectoriel
+      « secteur-courtage-immobilier-qc-residentiel » pour le contexte
+      complet, les combinaisons recommandées (solo essentiel, solo
+      volume, petite équipe), et le cadre OACIQ.
 
   # ── TIER 3 : Plateformes de développement pour voie custom ──
 
@@ -638,6 +672,16 @@ sources:
     url: https://advocacy.sba.gov/wp-content/uploads/2025/09/Research-Spotlight-AI-in-Business-Small-Firms-Closing-In_-092425.pdf
     published: 2025-09
     reliability: high
+
+  - id: housingwire-ai-real-estate
+    type: industry-publication
+    title: "Housing Wire — 16 Indispensable AI Tools for Real Estate Agents"
+    url: https://www.housingwire.com/articles/ai-tools-real-estate/
+    accessed: 2026-04-26
+    reliability: high
+    note_fr: |
+      Source industrie immobilière reconnue. Référencée pour Ylopo.
+      Voir profil sectoriel courtage immobilier QC pour panorama complet.
 
 # ───── MÉTADONNÉES INTERNES ─────
 
