@@ -1341,6 +1341,41 @@ skills:
                 - mixte
             rationale: string
             alternative_consideration: string
+
+        # ---- NOUVEAU session 2G ----
+        # Optionnel : présent uniquement pour les opportunités dont le
+        # pattern source contient des `implementation_templates`.
+        # Sert à enrichir la section « Architecture de la solution » du
+        # rapport avec un sous-template adapté au contexte client.
+        architectures_de_la_solution:
+          type: array
+          description: |
+            Une entrée par opportunité dont le pattern source possède des
+            implementation_templates. Sélection et adaptation effectuées
+            par le Skill 5 selon les règles INJECTION DES IMPLEMENTATION
+            TEMPLATES du system_prompt.
+          items:
+            type: object
+            required: [opportunity_id, sub_template_id, sub_template_match_score, adapted_content]
+            properties:
+              opportunity_id:
+                type: string
+                description: "ID de l'opportunité concernée (lien vers selected_opportunities)"
+              sub_template_id:
+                type: string
+                description: "ID du sous-template choisi (ex: fiches-centris-immobilier)"
+              sub_template_match_score:
+                type: integer
+                description: "Score de match calculé (traçabilité). 0 = fallback"
+              adapted_content:
+                type: string
+                description: |
+                  Contenu Markdown du sous-template adapté au contexte
+                  client : marqueurs [VOTRE NOM], [VOTRE BANNIÈRE],
+                  [ADAPTER : ...] substitués selon les règles d'adaptation
+                  du system_prompt. Selon recommended_path, contient soit
+                  voie_a_self_serve, soit voie_b_accompagnee.
+
         closing_notes:
           type: string
           description: "Mot de fin chaleureux, 1-2 paragraphes"
@@ -1670,6 +1705,75 @@ skills:
       - Ne pas produire 4 livrables si 2 suffisent. La qualité prime.
       - Ne pas ajouter dans un livrable des chiffres qui contrediraient
         ceux du consolidated_impact_summary.
+
+      INJECTION DES IMPLEMENTATION TEMPLATES (nouveau session 2G)
+
+      Pour chaque opportunité de la feuille de route, vérifier si le
+      pattern source contient une section `implementation_templates`.
+      Si oui, produire une entrée dans architectures_de_la_solution
+      pour cette opportunité selon la procédure suivante.
+
+      1. SÉLECTION DU SOUS-TEMPLATE
+
+      Pour chaque sous-template du pattern, calculer un score de match :
+      - +3 si l'industrie du client (context.industry ou champ
+        équivalent) apparaît dans triggers_when.industry_in
+      - +2 par mot-clé du contexte client (time_consuming_tasks,
+        automation_wish, ou tout autre signal pertinent du Skill 1)
+        qui apparaît dans triggers_when.automation_wish_keywords
+      - +1 si un outil recommandé pour cette opportunité (au stack_audit
+        ou aux deliverables) apparaît dans triggers_when.tools_to_recommend
+
+      Sélectionner le sous-template avec le score le plus élevé.
+      En cas d'égalité, prendre le premier dans l'ordre du YAML.
+      Si tous les scores sont 0 (aucun match), prendre le premier
+      sous-template ET noter l'avertissement dans reviewer_notes
+      ("Aucun sous-template du pattern X ne match le contexte
+      client ; fallback sur le premier — vérifier la pertinence.").
+
+      Reporter le score retenu dans sub_template_match_score pour
+      traçabilité.
+
+      2. INJECTION DU CONTENU SELON LA VOIE
+
+      Selon la voie recommandée pour l'opportunité (recommended_path
+      au niveau du rapport, ou la voie associée à l'opportunité dans
+      le pattern parent) :
+      - voie_a_self_serve → injecter sub_template.voie_a_self_serve
+      - voie_b_accompagne → injecter sub_template.voie_b_accompagnee
+        (qui contient implicitement le contenu voie_a sauf les sections
+        pitfalls/success_criteria)
+      - voie_c_custom ou mixte → injecter voie_b_accompagnee par défaut
+
+      3. ADAPTATION CONTEXTUELLE DES MARQUEURS
+
+      Le contenu des sous-templates contient des marqueurs à substituer :
+      - [VOTRE NOM] → first_name + last_name du contexte client si
+        disponibles, sinon business_name
+      - [VOTRE BANNIÈRE] → bannière, franchise ou affiliation visible
+        dans le contexte (ex: "RE/MAX du Cartier"). Si rien n'est
+        identifiable, garder le marqueur tel quel.
+      - [ADAPTER : ...] → produire une suggestion contextuelle si la
+        matière est dans le contexte client ; sinon, garder le marqueur
+        tel quel pour signaler au client qu'il doit personnaliser.
+
+      4. PRODUCTION DE adapted_content
+
+      Sérialiser le contenu adapté en Markdown structuré (titres,
+      sous-titres, listes) reproduisant la structure du sous-template.
+      Le DOCX builder consommera ce Markdown pour produire la section
+      « Architecture de la solution » du rapport.
+
+      5. SI AUCUN implementation_template DANS LE PATTERN
+
+      Conserver le comportement actuel : ne pas ajouter d'entrée pour
+      cette opportunité dans architectures_de_la_solution. La section
+      « Architecture de la solution » du rapport sera alors produite
+      par les autres canaux du Skill 5 (ou laissée vide), comme avant.
+
+      Cela garantit une transition douce — seul le pattern 004 a des
+      sous-templates pour l'instant ; les 9 autres patterns produiront
+      des opportunités sans architectures_de_la_solution.
 
       FORMAT DE SORTIE
 
