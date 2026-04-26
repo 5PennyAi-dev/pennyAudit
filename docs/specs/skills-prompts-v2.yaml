@@ -1620,9 +1620,16 @@ skills:
            et dans quelles conditions elle deviendrait plus pertinente
 
       8. closing_notes: mot de fin chaleureux et concret. Remercier le
-         client d'avoir rempli le formulaire. Indiquer qu'une révision
-         humaine par Christian Couillard a été appliquée. Inviter à prendre
-         contact pour aller plus loin si désiré.
+         client d'avoir rempli le formulaire. Inviter à prendre contact
+         pour aller plus loin si désiré.
+
+         IMPORTANT : ne JAMAIS mentionner de révision humaine, de
+         relecture par Christian Couillard, ou tout équivalent dans
+         closing_notes. Cette mention est gérée séparément par le
+         module de rendu, qui décide si la phrase doit apparaître ou
+         non selon que le rapport a été effectivement révisé. Si tu
+         écris une telle mention, elle apparaîtra ou n'apparaîtra pas
+         de manière incohérente avec la réalité — d'où l'interdit.
 
       RÈGLES DE QUALITÉ ABSOLUES
 

@@ -359,6 +359,27 @@ function shouldIncludeReviewStatement(audit: AuditForDocx): boolean {
   return !!audit.admin_notes_global?.trim();
 }
 
+/**
+ * Filet de sécurité : retire les phrases du `closing_notes` qui
+ * mentionnent une révision humaine. L'IA n'est plus censée en générer
+ * (cf. system_prompt Skill 5 v2 mis à jour), mais les audits déjà en DB
+ * en contiennent, et l'IA pourrait glisser une variante par erreur.
+ *
+ * Appliqué uniquement quand `includeReviewStatement === false`. Quand
+ * la phrase est légitime, on laisse la prose IA telle quelle (et on
+ * ajoute en plus la phrase explicite gérée par le builder).
+ */
+const REVIEW_MENTION_REGEX =
+  /[^.!?]*(révis(?:é|ée|ion)\s+(?:humain|personnel|manuel)|relu(?:e)?\s+par|christian\s+couillard\s+a\s+(?:révis|relu|appliqu|valid)|révision\s+(?:humaine|manuelle)|relecture\s+par\s+christian)[^.!?]*[.!?]?/gi;
+
+function stripReviewMentions(text: string): string {
+  return text
+    .replace(REVIEW_MENTION_REGEX, '')
+    .replace(/[ \t]{2,}/g, ' ')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+}
+
 // ============================================================
 // SECTIONS — ordre du PDF de référence Sophie
 // ============================================================
@@ -1038,7 +1059,10 @@ function buildClosingNotes(
 
   const blocks: Array<Paragraph | Table> = [H1('Mot de clôture')];
 
-  const closing = skill5.closing_notes?.trim();
+  const rawClosing = skill5.closing_notes?.trim() ?? '';
+  const closing = includeReviewStatement
+    ? rawClosing
+    : stripReviewMentions(rawClosing);
   if (closing) {
     for (const para of closing.split(/\n{2,}/)) {
       if (para.trim()) blocks.push(P(para.trim()));

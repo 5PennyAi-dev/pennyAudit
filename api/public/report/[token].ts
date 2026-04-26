@@ -78,10 +78,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   // Affirmation de révision conditionnelle (Étape 6c) : true uniquement si
-  // l'audit a été réellement révisé ET qu'au moins une note (globale OU de
-  // section) existe. On ne renvoie pas les notes elles-mêmes au client —
-  // juste le booléen.
+  // l'audit a été réellement révisé ET qu'admin_notes_global est non vide.
+  // On ne renvoie pas les notes elles-mêmes au client — juste le booléen.
   const reviewed = isHumanReviewed(audit);
+
+  // Filet de sécurité : nettoie closing_notes des mentions de révision
+  // humaine quand l'audit n'est pas révisé. Le system_prompt Skill 5 v2
+  // n'en génère plus, mais les audits déjà en DB en contiennent.
+  const report = (audit.skill_5_output ?? null) as Record<string, unknown> | null;
+  const sanitizedReport =
+    report && !reviewed && typeof report.closing_notes === 'string'
+      ? { ...report, closing_notes: stripReviewMentions(report.closing_notes) }
+      : report;
 
   // Cache léger côté client (révision périodique)
   res.setHeader('Cache-Control', 'private, max-age=60');
@@ -92,11 +100,22 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       first_name: firstName,
       business_name: businessName,
       delivered_at: audit.delivered_at,
-      report: audit.skill_5_output,
+      report: sanitizedReport,
       opportunity_titles: opportunityTitles,
       reviewed,
     },
   });
+}
+
+const REVIEW_MENTION_REGEX =
+  /[^.!?]*(révis(?:é|ée|ion)\s+(?:humain|personnel|manuel)|relu(?:e)?\s+par|christian\s+couillard\s+a\s+(?:révis|relu|appliqu|valid)|révision\s+(?:humaine|manuelle)|relecture\s+par\s+christian)[^.!?]*[.!?]?/gi;
+
+function stripReviewMentions(text: string): string {
+  return text
+    .replace(REVIEW_MENTION_REGEX, '')
+    .replace(/[ \t]{2,}/g, ' ')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
 }
 
 // Affirmation de révision conditionnelle : on n'utilise que
