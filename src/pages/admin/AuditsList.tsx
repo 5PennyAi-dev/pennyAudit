@@ -4,6 +4,7 @@ import { Button } from '../../components/ui/Button';
 import { AuditStatusBadge, type AuditStatus } from '../../components/admin/AuditStatusBadge';
 import { AuditDeadline } from '../../components/admin/AuditDeadline';
 import { cn } from '../../lib/utils';
+import { industryLabel } from '../../lib/labels/industry';
 
 interface AuditRow {
   id: string;
@@ -305,11 +306,12 @@ export function AuditsList() {
               )}
               {data?.audits.map((row) => {
                 const clientName = row.first_name ?? '—';
+                const businessName = row.business_name?.trim() ?? '';
                 const email = row.email ?? '';
                 const industry =
                   row.industry === 'autre'
-                    ? row.industry_other ?? 'Autre'
-                    : row.industry ?? '—';
+                    ? row.industry_other?.trim() || 'Autre'
+                    : industryLabel(row.industry);
                 const slaInactive = SLA_INACTIVE_STATUSES.has(row.status);
                 return (
                   <tr
@@ -321,6 +323,11 @@ export function AuditsList() {
                     </td>
                     <td className="px-4 py-3 align-top">
                       <div className="text-navy-600 font-medium">{clientName}</div>
+                      {businessName && (
+                        <div className="text-xs text-navy-600/80 truncate max-w-[260px]">
+                          {businessName}
+                        </div>
+                      )}
                       <div className="text-xs text-muted truncate max-w-[260px]">
                         {email}
                       </div>

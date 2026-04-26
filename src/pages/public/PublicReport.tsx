@@ -9,6 +9,7 @@ interface PublicAudit {
   delivered_at: string | null;
   report: unknown;
   opportunity_titles: Record<string, string>;
+  reviewed: boolean;
 }
 
 interface ApiResponse {
@@ -161,9 +162,11 @@ export function PublicReport() {
       <footer className="border-t border-line bg-cream/40 print:hidden">
         <div className="mx-auto max-w-3xl px-6 sm:px-10 py-10">
           <p className="text-sm text-muted leading-relaxed">
-            Ce rapport a été produit par 5PennyAi puis révisé personnellement par
-            Christian Couillard. Pour toute question ou pour aller plus loin sur l'une
-            des opportunités identifiées,{' '}
+            {audit.reviewed
+              ? 'Ce rapport a été produit par 5PennyAi puis révisé personnellement par Christian Couillard.'
+              : 'Ce rapport a été produit par 5PennyAi.'}{' '}
+            Pour toute question ou pour aller plus loin sur l'une des opportunités
+            identifiées,{' '}
             <a
               href="mailto:hello@5pennyai.com"
               className="text-orange-500 hover:text-orange-600 underline-offset-4 hover:underline"
@@ -187,7 +190,9 @@ export function PublicReport() {
       {/* Pied de page imprimé */}
       <div className="hidden print:block print:mt-8 print:border-t print:border-line print:pt-4">
         <p className="text-xs text-muted">
-          Rapport produit et révisé par Christian Couillard · 5PennyAi · hello@5pennyai.com
+          {audit.reviewed
+            ? 'Rapport produit et révisé par Christian Couillard · 5PennyAi · hello@5pennyai.com'
+            : 'Rapport produit par 5PennyAi · hello@5pennyai.com'}
         </p>
       </div>
 

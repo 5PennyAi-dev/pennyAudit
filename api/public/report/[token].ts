@@ -42,7 +42,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const { data: audit, error } = await supabase
     .from('audits')
     .select(
-      'id, status, intake_data, skill_2_output, skill_5_output, public_report_token, public_report_token_expires_at, delivered_at',
+      'id, status, intake_data, skill_1_output, skill_2_output, skill_5_output, public_report_token, public_report_token_expires_at, delivered_at, reviewed_at, admin_notes_global',
     )
     .eq('id', payload.auditId)
     .maybeSingle();
@@ -77,6 +77,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (pid && title) opportunityTitles[pid] = title;
   }
 
+  // Affirmation de révision conditionnelle (Étape 6c) : true uniquement si
+  // l'audit a été réellement révisé ET qu'au moins une note (globale OU de
+  // section) existe. On ne renvoie pas les notes elles-mêmes au client —
+  // juste le booléen.
+  const reviewed = isHumanReviewed(audit);
+
   // Cache léger côté client (révision périodique)
   res.setHeader('Cache-Control', 'private, max-age=60');
 
@@ -88,6 +94,24 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       delivered_at: audit.delivered_at,
       report: audit.skill_5_output,
       opportunity_titles: opportunityTitles,
+      reviewed,
     },
   });
+}
+
+function isHumanReviewed(audit: {
+  reviewed_at?: string | null;
+  admin_notes_global?: string | null;
+  skill_1_output?: unknown;
+  skill_2_output?: unknown;
+  skill_5_output?: unknown;
+}): boolean {
+  if (!audit.reviewed_at) return false;
+  if (audit.admin_notes_global?.trim()) return true;
+  const sections = [audit.skill_1_output, audit.skill_2_output, audit.skill_5_output];
+  for (const s of sections) {
+    const note = (s as { reviewer_notes?: unknown } | null)?.reviewer_notes;
+    if (typeof note === 'string' && note.trim().length > 0) return true;
+  }
+  return false;
 }

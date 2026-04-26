@@ -47,6 +47,7 @@ import type {
   Skill5Output,
 } from '../../types/skills';
 import type { IntakeFormData } from '../../types/intake';
+import { industryLabel } from '../labels/industry';
 
 // ============================================================
 // COULEURS — alignées sur DESIGN_SYSTEM.md (--color-* tokens)
@@ -367,6 +368,14 @@ function buildTitlePage(audit: AuditForDocx, includeReviewStatement: boolean): P
   const businessName = clientDisplayName(audit.intake_data);
   const firstName = audit.intake_data?.first_name?.trim() ?? '';
   const dateLabel = monthYear(audit.delivered_at ?? audit.created_at);
+  const industrySlug =
+    audit.intake_data?.industry ??
+    audit.skill_1_output?.business_profile?.industry_vertical ??
+    null;
+  const industryText =
+    industrySlug === 'autre'
+      ? audit.intake_data?.industry_other?.trim() || ''
+      : industryLabel(industrySlug);
 
   const blocks: Paragraph[] = [
     Spacer(), Spacer(), Spacer(),
@@ -396,6 +405,18 @@ function buildTitlePage(audit: AuditForDocx, includeReviewStatement: boolean): P
         spacing: { after: 160 },
         children: [
           new TextRun({ text: `Préparé pour ${firstName}`, color: TEXT, size: 26 }),
+        ],
+      }),
+    );
+  }
+
+  if (industryText) {
+    blocks.push(
+      new Paragraph({
+        alignment: AlignmentType.CENTER,
+        spacing: { after: 160 },
+        children: [
+          new TextRun({ text: industryText, color: MUTED, size: 22, italics: true }),
         ],
       }),
     );
