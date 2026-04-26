@@ -23,6 +23,7 @@ import {
   Footer,
   Header,
   HeadingLevel,
+  ImageRun,
   LevelFormat,
   PageNumber,
   Packer,
@@ -75,9 +76,26 @@ export interface AuditForDocx {
   created_at?: string | null;
 }
 
-// Quelques constantes de garde-fou.
+/**
+ * Asset d'un diagramme déjà téléchargé depuis Storage par l'appelant.
+ * La clé externe (Map) est le solution_id (= pattern_id).
+ */
+export interface DiagramAsset {
+  buffer: Buffer;
+  mimeType: 'image/png' | 'image/jpeg';
+  title: string;
+}
+
+// Largeur cible des diagrammes dans le DOCX.
+// 600 px ≈ 16 cm à 96 DPI (largeur utile A4/Letter avec marges 1440 twips).
+// Hauteur 338 px = 600 × 9 / 16 (aspect ratio des diagrammes).
+const DIAGRAM_WIDTH_PX = 600;
+const DIAGRAM_HEIGHT_PX = 338;
+
+// Quelques constantes de garde-fou. La borne haute a été remontée pour
+// absorber jusqu'à 4-5 diagrammes JPEG 2K (~4-5 Mo chacun = 25 Mo total).
 const MIN_BUFFER_BYTES = 20 * 1024;
-const MAX_BUFFER_BYTES = 2 * 1024 * 1024;
+const MAX_BUFFER_BYTES = 30 * 1024 * 1024;
 
 // ============================================================
 // HELPERS — paragraphes, listes, tableau, callout
@@ -583,21 +601,87 @@ function buildImpactEffortMatrix(
   return blocks;
 }
 
+/**
+ * Bloc image + légende italique pour une opportunité donnée.
+ * - Si l'asset est présent : ImageRun centré + caption "Architecture
+ *   de la solution — <titre>".
+ * - Si la map n'a pas l'entrée (status failed ou download manquant) :
+ *   un paragraphe italique discret en muted grey, sans détail technique.
+ */
+function buildDiagramBlocks(
+  solutionId: string,
+  diagramAssets?: Map<string, DiagramAsset>,
+): Paragraph[] {
+  if (!diagramAssets) return [];
+  const asset = diagramAssets.get(solutionId);
+
+  if (!asset) {
+    // Cas où la metadata indique un échec ou que le download Storage
+    // n'a pas abouti. Note discrète, pas de stack trace.
+    return [
+      new Paragraph({
+        spacing: { before: 80, after: 200 },
+        alignment: AlignmentType.CENTER,
+        children: [
+          new TextRun({
+            text: 'Diagramme non disponible pour cette solution.',
+            italics: true,
+            color: MUTED,
+            size: 18,
+          }),
+        ],
+      }),
+    ];
+  }
+
+  const imageType: 'png' | 'jpg' = asset.mimeType === 'image/jpeg' ? 'jpg' : 'png';
+
+  return [
+    new Paragraph({
+      alignment: AlignmentType.CENTER,
+      spacing: { before: 100, after: 60 },
+      children: [
+        new ImageRun({
+          type: imageType,
+          data: asset.buffer,
+          transformation: {
+            width: DIAGRAM_WIDTH_PX,
+            height: DIAGRAM_HEIGHT_PX,
+          },
+        }),
+      ],
+    }),
+    new Paragraph({
+      alignment: AlignmentType.CENTER,
+      spacing: { after: 200 },
+      children: [
+        new TextRun({
+          text: asset.title,
+          italics: true,
+          color: MUTED,
+          size: 18,
+        }),
+      ],
+    }),
+  ];
+}
+
 function buildRoadmap(
   roadmap: Skill5Output['roadmap'] | undefined,
   titleMap: Map<string, string>,
+  diagramAssets?: Map<string, DiagramAsset>,
 ): Array<Paragraph | Table> {
   if (!roadmap) return [];
 
   const blocks: Array<Paragraph | Table> = [H1('Feuille de route')];
 
   const phases = [
-    { num: 1, label: 'Quick wins', data: roadmap.phase_1_quick_wins },
-    { num: 2, label: 'Moyen terme', data: roadmap.phase_2_medium_term },
-    { num: 3, label: 'Long terme', data: roadmap.phase_3_long_term },
+    { num: 1, label: 'Quick wins', data: roadmap.phase_1_quick_wins, withDiagrams: true },
+    { num: 2, label: 'Moyen terme', data: roadmap.phase_2_medium_term, withDiagrams: true },
+    { num: 3, label: 'Long terme', data: roadmap.phase_3_long_term, withDiagrams: false },
   ] as const;
 
-  for (const { num, label, data } of phases) {
+  for (const { num, label, data, withDiagrams } of phases) {
     if (!data) continue;
     const timeframe = data.timeframe ? ` — ${data.timeframe}` : '';
     blocks.push(H2(`${num}. Phase ${label}${timeframe}`));
@@ -617,6 +701,11 @@ function buildRoadmap(
       );
       for (const id of opps) {
         blocks.push(Bullet(titleFor(id, titleMap)));
+        // Insertion du diagramme uniquement pour les phases 1 et 2,
+        // après le bullet correspondant.
+        if (withDiagrams) {
+          blocks.push(...buildDiagramBlocks(id, diagramAssets));
+        }
       }
     }
 
@@ -1103,7 +1192,10 @@ function buildClosingNotes(
 // CONSTRUCTION DU DOCUMENT
 // ============================================================
 
-export async function buildAuditDocx(audit: AuditForDocx): Promise<Buffer> {
+export async function buildAuditDocx(
+  audit: AuditForDocx,
+  diagramAssets?: Map<string, DiagramAsset>,
+): Promise<Buffer> {
   const skill5 = audit.skill_5_output;
   if (!skill5) {
     throw new Error(
@@ -1119,7 +1211,7 @@ export async function buildAuditDocx(audit: AuditForDocx): Promise<Buffer> {
     ...buildExecutiveSummary(skill5),
     ...buildExpectedOutcome(skill5),
     ...buildImpactEffortMatrix(skill5.impact_effort_matrix, titleMap),
-    ...buildRoadmap(skill5.roadmap, titleMap),
+    ...buildRoadmap(skill5.roadmap, titleMap, diagramAssets),
     ...buildRoiEstimates(skill5.roi_estimates, titleMap),
     ...buildConsolidatedSummary(skill5.consolidated_impact_summary),
     ...buildActionableDeliverables(skill5.actionable_deliverables),

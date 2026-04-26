@@ -10,6 +10,7 @@ interface PublicAudit {
   report: unknown;
   opportunity_titles: Record<string, string>;
   reviewed: boolean;
+  diagrams?: Record<string, { title: string; signed_url: string }>;
 }
 
 interface ApiResponse {
@@ -155,6 +156,7 @@ export function PublicReport() {
         <PublicReportView
           data={audit.report}
           opportunityTitles={audit.opportunity_titles ?? {}}
+          diagrams={audit.diagrams}
         />
       </section>
 

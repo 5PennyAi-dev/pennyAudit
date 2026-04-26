@@ -78,6 +78,18 @@ interface RecommendedPath {
   alternative_consideration?: string;
 }
 
+/**
+ * Map solution_id → diagramme. Fournie par l'endpoint admin
+ * (`diagrams_signed_urls`) ou public (`audit.diagrams`). Affichée
+ * dans les cartes phase 1 et phase 2 de la feuille de route.
+ */
+export interface DiagramDisplay {
+  title: string;
+  signed_url?: string;
+  status?: 'ok' | 'failed';
+}
+export type DiagramsByPhase = Record<string, DiagramDisplay>;
+
 const QUADRANT_LABELS: Record<string, { label: string; cls: string }> = {
   quick_win: { label: 'Quick win', cls: 'bg-success-bg text-success border-success/40' },
   projet_strategique: { label: 'Projet stratégique', cls: 'bg-orange-50 text-orange-700 border-orange-200' },
@@ -99,7 +111,13 @@ const DELIVERABLE_LABELS: Record<string, string> = {
   kpi_tracking_sheet: 'Tableau de suivi KPI',
 };
 
-export function ReportView({ data }: { data: unknown }) {
+export function ReportView({
+  data,
+  diagrams,
+}: {
+  data: unknown;
+  diagrams?: DiagramsByPhase;
+}) {
   const obj = asObject(data);
   if (!obj) {
     return (
@@ -214,11 +232,13 @@ export function ReportView({ data }: { data: unknown }) {
               num={1}
               title="Quick wins"
               phase={roadmap.phase_1_quick_wins}
+              diagrams={diagrams}
             />
             <RoadmapPhaseCard
               num={2}
               title="Moyen terme"
               phase={roadmap.phase_2_medium_term}
+              diagrams={diagrams}
             />
             <RoadmapPhaseCard
               num={3}
@@ -357,12 +377,15 @@ function RoadmapPhaseCard({
   num,
   title,
   phase,
+  diagrams,
 }: {
   num: number;
   title: string;
   phase?: RoadmapPhase;
+  diagrams?: DiagramsByPhase;
 }) {
   if (!phase) return null;
+  const opportunities = asArray<string>(phase.opportunities);
   return (
     <div className="rounded-2xl border border-line bg-paper p-4 flex flex-col gap-2">
       <header className="flex items-center gap-2">
@@ -374,16 +397,47 @@ function RoadmapPhaseCard({
       {phase.timeframe && (
         <p className="font-mono text-xs text-orange-500">{phase.timeframe}</p>
       )}
-      {asArray<string>(phase.opportunities).length > 0 && (
+      {opportunities.length > 0 && (
         <div>
           <p className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted mb-1">Opportunités</p>
           <ul className="flex flex-wrap gap-1">
-            {asArray<string>(phase.opportunities).map((o, i) => (
+            {opportunities.map((o, i) => (
               <li key={i} className="font-mono text-[10px] rounded-full border border-line bg-cream px-2 py-0.5 text-navy-600">
                 {o}
               </li>
             ))}
           </ul>
+        </div>
+      )}
+      {diagrams && opportunities.length > 0 && (
+        <div className="flex flex-col gap-3 mt-1">
+          {opportunities.map((solutionId) => {
+            const d = diagrams[solutionId];
+            if (!d) return null;
+            if (d.status === 'failed' || !d.signed_url) {
+              return (
+                <p
+                  key={solutionId}
+                  className="text-[11px] italic text-muted text-center"
+                >
+                  Diagramme non disponible — {solutionId}
+                </p>
+              );
+            }
+            return (
+              <figure key={solutionId} className="flex flex-col items-center gap-1">
+                <img
+                  src={d.signed_url}
+                  alt={d.title}
+                  className="w-full rounded-lg border border-line bg-white"
+                  loading="lazy"
+                />
+                <figcaption className="text-[11px] italic text-muted text-center">
+                  {d.title}
+                </figcaption>
+              </figure>
+            );
+          })}
         </div>
       )}
       {asArray<string>(phase.key_milestones).length > 0 && (

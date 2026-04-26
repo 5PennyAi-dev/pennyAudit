@@ -14,6 +14,7 @@ import { createClient } from '@supabase/supabase-js';
 import { writeFile, mkdir } from 'node:fs/promises';
 import { join } from 'node:path';
 import { buildAuditDocx, clientFileSlug, type AuditForDocx } from '../src/lib/report/docx-builder';
+import { loadDiagramAssetsForAudit } from '../api/_storageAuditDiagrams';
 
 async function main() {
   const url = process.env.VITE_SUPABASE_URL ?? process.env.SUPABASE_URL;
@@ -28,7 +29,7 @@ async function main() {
   const targetId = process.argv[2];
   let query = supabase
     .from('audits')
-    .select('id, intake_data, skill_1_output, skill_2_output, skill_5_output, admin_notes_global, reviewed_at, delivered_at, created_at, status')
+    .select('id, intake_data, skill_1_output, skill_2_output, skill_5_output, admin_notes_global, reviewed_at, delivered_at, created_at, status, diagrams_metadata')
     .not('skill_5_output', 'is', null);
 
   if (targetId) {
@@ -47,14 +48,18 @@ async function main() {
   await mkdir('tmp', { recursive: true });
 
   for (const row of data) {
-    const audit = row as unknown as AuditForDocx & { status: string };
+    const audit = row as unknown as AuditForDocx & {
+      status: string;
+      diagrams_metadata?: Parameters<typeof loadDiagramAssetsForAudit>[0];
+    };
     const slug = clientFileSlug(audit);
     try {
-      const buffer = await buildAuditDocx(audit);
+      const diagramAssets = await loadDiagramAssetsForAudit(audit.diagrams_metadata);
+      const buffer = await buildAuditDocx(audit, diagramAssets);
       const path = join('tmp', `audit-${slug}-${audit.id.slice(0, 8)}.docx`);
       await writeFile(path, buffer);
       console.log(
-        `✅ ${audit.id} (${slug}, ${(audit as { status: string }).status}) → ${path} · ${(buffer.length / 1024).toFixed(1)} Ko`,
+        `✅ ${audit.id} (${slug}, ${audit.status}) → ${path} · ${(buffer.length / 1024).toFixed(1)} Ko · ${diagramAssets.size} diagramme(s)`,
       );
     } catch (err) {
       console.error(`❌ ${audit.id} (${slug}) :`, err instanceof Error ? err.message : err);

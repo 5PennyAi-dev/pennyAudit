@@ -43,9 +43,19 @@ interface AuditRow {
   docx_generated_at: string | null;
 }
 
+interface DiagramsSignedMap {
+  [solutionId: string]: {
+    title: string;
+    status: 'ok' | 'failed';
+    signed_url?: string;
+    failure_reason?: string;
+  };
+}
+
 interface GetResponse {
   audit: AuditRow;
   review_events: ReviewEvent[];
+  diagrams_signed_urls?: DiagramsSignedMap;
 }
 
 const VALID_TABS = new Set<AuditTabId>(AUDIT_TABS.map((t) => t.id));
@@ -149,7 +159,7 @@ export function AuditDetail() {
     );
   }
 
-  const { audit, review_events } = data;
+  const { audit, review_events, diagrams_signed_urls } = data;
   const firstName = getStringField(audit.intake_data, 'first_name');
   const email = getStringField(audit.intake_data, 'email');
 
@@ -197,6 +207,7 @@ export function AuditDetail() {
         tab={activeTab}
         audit={audit}
         reviewEvents={review_events}
+        diagramsSignedUrls={diagrams_signed_urls}
         notesCache={notesCache}
         onNoteSaved={handleNoteSaved}
       />
@@ -208,11 +219,12 @@ interface TabContentProps {
   tab: AuditTabId;
   audit: AuditRow;
   reviewEvents: ReviewEvent[];
+  diagramsSignedUrls?: DiagramsSignedMap;
   notesCache: Record<NoteSection, string>;
   onNoteSaved: (section: NoteSection, value: string) => void;
 }
 
-function TabContent({ tab, audit, reviewEvents, notesCache, onNoteSaved }: TabContentProps) {
+function TabContent({ tab, audit, reviewEvents, diagramsSignedUrls, notesCache, onNoteSaved }: TabContentProps) {
   const wrap = (section: NoteSection, view: React.ReactNode) => (
     <SectionWithEditor
       auditId={audit.id}
@@ -237,7 +249,7 @@ function TabContent({ tab, audit, reviewEvents, notesCache, onNoteSaved }: TabCo
     case 'stack':
       return wrap('stack', <StackView data={audit.skill_4_output} />);
     case 'report':
-      return wrap('report', <ReportView data={audit.skill_5_output} />);
+      return wrap('report', <ReportView data={audit.skill_5_output} diagrams={diagramsSignedUrls} />);
     case 'notes':
       return (
         <NotesTabContent

@@ -24,6 +24,7 @@ import {
   buildDocxStoragePath,
   uploadDocx,
 } from '../../../_storageAuditReports';
+import { loadDiagramAssetsForAudit } from '../../../_storageAuditDiagrams';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') {
@@ -43,7 +44,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const { data: audit, error: fetchErr } = await supabase
     .from('audits')
     .select(
-      'id, status, intake_data, skill_1_output, skill_2_output, skill_5_output, admin_notes_global, reviewed_at, delivered_at, created_at',
+      'id, status, intake_data, skill_1_output, skill_2_output, skill_5_output, admin_notes_global, reviewed_at, delivered_at, created_at, diagrams_metadata',
     )
     .eq('id', id)
     .maybeSingle();
@@ -66,10 +67,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   // changement d'état : l'audit reste en pending_review et l'admin peut
   // réessayer après diagnostic.
   const auditForDocx = audit as unknown as AuditForDocx;
+  // Pré-charge les diagrammes depuis Storage. Best-effort : un échec
+  // partiel n'empêche pas la livraison — le DOCX sera généré avec un
+  // placeholder discret pour les diagrammes manquants.
+  const diagramAssets = await loadDiagramAssetsForAudit(
+    audit.diagrams_metadata as Parameters<typeof loadDiagramAssetsForAudit>[0],
+  );
   let docxBuffer: Buffer;
   let docxStoragePath: string;
   try {
-    docxBuffer = await buildAuditDocx(auditForDocx);
+    docxBuffer = await buildAuditDocx(auditForDocx, diagramAssets);
   } catch (err) {
     console.error('[approve-and-send] docx build error:', err);
     return res.status(500).json({

@@ -15,6 +15,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { getSupabaseAdmin } from '../../_supabaseAdmin';
 import { verifyReportToken } from '../../_reportToken';
+import { buildDiagramsSignedMap } from '../../_storageAuditDiagrams';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'GET') {
@@ -42,7 +43,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const { data: audit, error } = await supabase
     .from('audits')
     .select(
-      'id, status, intake_data, skill_2_output, skill_5_output, public_report_token, public_report_token_expires_at, delivered_at, reviewed_at, admin_notes_global',
+      'id, status, intake_data, skill_2_output, skill_5_output, public_report_token, public_report_token_expires_at, delivered_at, reviewed_at, admin_notes_global, diagrams_metadata',
     )
     .eq('id', payload.auditId)
     .maybeSingle();
@@ -91,7 +92,21 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       ? { ...report, closing_notes: stripReviewMentions(report.closing_notes) }
       : report;
 
-  // Cache léger côté client (révision périodique)
+  // Signed URLs (15 min) pour les diagrammes intégrés au rapport HTML.
+  // Côté client, les status === 'failed' sont silencieusement masqués
+  // (le client n'a pas à voir les échecs techniques).
+  const diagramsSigned = await buildDiagramsSignedMap(
+    audit.diagrams_metadata as Parameters<typeof buildDiagramsSignedMap>[0],
+  );
+  const diagramsForClient: Record<string, { title: string; signed_url: string }> = {};
+  for (const [solutionId, entry] of Object.entries(diagramsSigned)) {
+    if (entry.status === 'ok' && entry.signed_url) {
+      diagramsForClient[solutionId] = { title: entry.title, signed_url: entry.signed_url };
+    }
+  }
+
+  // Cache léger côté client (révision périodique). Volontairement court
+  // car les signed URLs expirent en 15 min.
   res.setHeader('Cache-Control', 'private, max-age=60');
 
   return res.status(200).json({
@@ -103,6 +118,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       report: sanitizedReport,
       opportunity_titles: opportunityTitles,
       reviewed,
+      diagrams: diagramsForClient,
     },
   });
 }

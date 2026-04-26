@@ -9,6 +9,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { getSupabaseAdmin } from '../../../_supabaseAdmin';
 import { requireAdmin } from '../../../_adminAuth';
+import { buildDiagramsSignedMap } from '../../../_storageAuditDiagrams';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'GET') {
@@ -66,8 +67,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       if (error) console.error('[admin/audits/get] insert opened event:', error);
     });
 
+  // Signed URLs courte durée (15 min) pour afficher les diagrammes
+  // dans le panneau Rapport. Les entrées status === 'failed' sont
+  // incluses sans signed_url pour signaler l'échec côté UI.
+  const diagrams_signed_urls = await buildDiagramsSignedMap(
+    audit.diagrams_metadata as Parameters<typeof buildDiagramsSignedMap>[0],
+  );
+
   return res.status(200).json({
     audit,
     review_events: events ?? [],
+    diagrams_signed_urls,
   });
 }

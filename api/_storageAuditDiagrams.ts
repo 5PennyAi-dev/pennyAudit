@@ -75,6 +75,110 @@ export async function downloadDiagram(storagePath: string): Promise<Buffer> {
 }
 
 /**
+ * Charge tous les diagrammes d'un audit depuis Storage en parallèle, à
+ * partir du contenu de `audits.diagrams_metadata`. Utilisé par les
+ * endpoints qui construisent le DOCX (generate-docx, approve-and-send).
+ *
+ * Comportement :
+ *   - Pour chaque entrée status === 'ok', télécharge le buffer et le
+ *     stocke dans la map sous solution_id.
+ *   - Les entrées status === 'failed' sont ignorées (pas de download).
+ *   - Si un download individuel échoue (blob manquant, droits), on
+ *     log un warning et on continue avec les autres — un diagramme
+ *     manquant ne bloque pas la génération du DOCX.
+ */
+export interface DiagramAsset {
+  buffer: Buffer;
+  mimeType: DiagramMimeType;
+  title: string;
+}
+
+export interface DiagramsMetadataEntry {
+  title: string;
+  storage_path?: string;
+  prompt_used: string;
+  generated_at: string;
+  status: 'ok' | 'failed';
+  failure_reason?: string;
+}
+
+/**
+ * Pour chaque diagramme avec status === 'ok', génère une URL signée
+ * de courte durée (15 min) prête à afficher dans <img>. Format renvoyé
+ * mappé par solution_id pour faciliter le rendu côté React.
+ *
+ * Les entrées status === 'failed' sont incluses (sans signed_url) pour
+ * que le client puisse afficher la pastille « Échec » associée.
+ */
+export interface DiagramSignedEntry {
+  title: string;
+  status: 'ok' | 'failed';
+  signed_url?: string;
+  failure_reason?: string;
+}
+
+export async function buildDiagramsSignedMap(
+  diagramsMetadata: Record<string, DiagramsMetadataEntry> | null | undefined,
+): Promise<Record<string, DiagramSignedEntry>> {
+  const out: Record<string, DiagramSignedEntry> = {};
+  if (!diagramsMetadata) return out;
+
+  await Promise.all(
+    Object.entries(diagramsMetadata).map(async ([solutionId, m]) => {
+      if (!m) return;
+      const entry: DiagramSignedEntry = {
+        title: m.title,
+        status: m.status,
+      };
+      if (m.status === 'failed' && m.failure_reason) {
+        entry.failure_reason = m.failure_reason;
+      }
+      if (m.status === 'ok' && m.storage_path) {
+        try {
+          entry.signed_url = await getDiagramSignedUrl(m.storage_path);
+        } catch (err) {
+          console.warn(
+            `[storage-diagrams] sign ${solutionId} failed: ${(err as Error).message}`,
+          );
+        }
+      }
+      out[solutionId] = entry;
+    }),
+  );
+
+  return out;
+}
+
+export async function loadDiagramAssetsForAudit(
+  diagramsMetadata: Record<string, DiagramsMetadataEntry> | null | undefined,
+): Promise<Map<string, DiagramAsset>> {
+  const result = new Map<string, DiagramAsset>();
+  if (!diagramsMetadata) return result;
+
+  const entries = Object.entries(diagramsMetadata).filter(
+    ([, m]) => m?.status === 'ok' && m.storage_path,
+  );
+
+  await Promise.all(
+    entries.map(async ([solutionId, m]) => {
+      try {
+        const buffer = await downloadDiagram(m.storage_path!);
+        const mimeType: DiagramMimeType = m.storage_path!.endsWith('.jpg')
+          ? 'image/jpeg'
+          : 'image/png';
+        result.set(solutionId, { buffer, mimeType, title: m.title });
+      } catch (err) {
+        console.warn(
+          `[storage-diagrams] download ${solutionId} failed: ${(err as Error).message}`,
+        );
+      }
+    }),
+  );
+
+  return result;
+}
+
+/**
  * Génère une URL signée temporaire pour afficher le diagramme dans
  * l'admin ou dans la page rapport publique. Expire par défaut après
  * 15 minutes — à régénérer à chaque chargement de page.

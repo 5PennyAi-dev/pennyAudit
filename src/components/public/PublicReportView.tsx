@@ -106,9 +106,11 @@ interface PublicReportViewProps {
   data: unknown;
   /** Mapping pattern_id → adapted_title pour rendre les ids techniques lisibles. */
   opportunityTitles: Record<string, string>;
+  /** Diagrammes signed URL par solution_id (= pattern_id). */
+  diagrams?: Record<string, { title: string; signed_url: string }>;
 }
 
-export function PublicReportView({ data, opportunityTitles }: PublicReportViewProps) {
+export function PublicReportView({ data, opportunityTitles, diagrams }: PublicReportViewProps) {
   const obj = asObject(data);
   if (!obj) {
     return <p className="text-muted italic">Rapport indisponible.</p>;
@@ -210,8 +212,8 @@ export function PublicReportView({ data, opportunityTitles }: PublicReportViewPr
       {roadmap && (
         <Section title="Feuille de route">
           <div className="flex flex-col gap-6">
-            <RoadmapPhaseBlock num={1} title="Quick wins" phase={roadmap.phase_1_quick_wins} titleFor={titleFor} />
-            <RoadmapPhaseBlock num={2} title="Moyen terme" phase={roadmap.phase_2_medium_term} titleFor={titleFor} />
+            <RoadmapPhaseBlock num={1} title="Quick wins" phase={roadmap.phase_1_quick_wins} titleFor={titleFor} diagrams={diagrams} />
+            <RoadmapPhaseBlock num={2} title="Moyen terme" phase={roadmap.phase_2_medium_term} titleFor={titleFor} diagrams={diagrams} />
             <RoadmapPhaseBlock num={3} title="Long terme" phase={roadmap.phase_3_long_term} titleFor={titleFor} />
           </div>
         </Section>
@@ -394,13 +396,16 @@ function RoadmapPhaseBlock({
   title,
   phase,
   titleFor,
+  diagrams,
 }: {
   num: number;
   title: string;
   phase?: RoadmapPhase;
   titleFor: (id?: string) => string;
+  diagrams?: Record<string, { title: string; signed_url: string }>;
 }) {
   if (!phase) return null;
+  const opportunities = asArray<string>(phase.opportunities);
   return (
     <div className="break-inside-avoid">
       <header className="flex items-baseline gap-3 mb-2">
@@ -413,15 +418,37 @@ function RoadmapPhaseBlock({
         )}
       </header>
       <div className="ml-10 flex flex-col gap-3">
-        {asArray<string>(phase.opportunities).length > 0 && (
+        {opportunities.length > 0 && (
           <p className="text-sm text-navy-600">
             <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted block mb-1">
               Opportunités traitées
             </span>
-            {asArray<string>(phase.opportunities)
-              .map((o) => titleFor(o))
-              .join(' · ')}
+            {opportunities.map((o) => titleFor(o)).join(' · ')}
           </p>
+        )}
+        {diagrams && opportunities.length > 0 && (
+          <div className="flex flex-col gap-5 mt-2">
+            {opportunities.map((solutionId) => {
+              const d = diagrams[solutionId];
+              if (!d) return null;
+              return (
+                <figure
+                  key={solutionId}
+                  className="flex flex-col items-center gap-2 break-inside-avoid"
+                >
+                  <img
+                    src={d.signed_url}
+                    alt={d.title}
+                    className="w-full max-w-2xl rounded-lg border border-line bg-white"
+                    loading="lazy"
+                  />
+                  <figcaption className="text-xs italic text-muted text-center">
+                    {d.title}
+                  </figcaption>
+                </figure>
+              );
+            })}
+          </div>
         )}
         {asArray<string>(phase.key_milestones).length > 0 && (
           <ul className="list-disc list-outside ml-5 text-sm leading-relaxed space-y-1">

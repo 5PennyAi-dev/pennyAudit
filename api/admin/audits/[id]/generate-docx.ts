@@ -25,6 +25,7 @@ import {
   getSignedUrl,
   uploadDocx,
 } from '../../../_storageAuditReports';
+import { loadDiagramAssetsForAudit } from '../../../_storageAuditDiagrams';
 import {
   buildAuditDocx,
   clientFileSlug,
@@ -50,7 +51,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const { data: audit, error: fetchErr } = await supabase
     .from('audits')
     .select(
-      'id, intake_data, skill_1_output, skill_2_output, skill_5_output, admin_notes_global, reviewed_at, delivered_at, created_at',
+      'id, intake_data, skill_1_output, skill_2_output, skill_5_output, admin_notes_global, reviewed_at, delivered_at, created_at, diagrams_metadata',
     )
     .eq('id', id)
     .maybeSingle();
@@ -70,9 +71,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   const auditForDocx = audit as unknown as AuditForDocx;
 
+  // Pré-charge les diagrammes depuis Storage (best-effort : échec
+  // partiel toléré, le builder insérera "Diagramme non disponible"
+  // pour les solutions manquantes).
+  const diagramAssets = await loadDiagramAssetsForAudit(
+    audit.diagrams_metadata as Parameters<typeof loadDiagramAssetsForAudit>[0],
+  );
+
   let buffer: Buffer;
   try {
-    buffer = await buildAuditDocx(auditForDocx);
+    buffer = await buildAuditDocx(auditForDocx, diagramAssets);
   } catch (err) {
     console.error('[generate-docx] build error:', err);
     return res.status(500).json({
