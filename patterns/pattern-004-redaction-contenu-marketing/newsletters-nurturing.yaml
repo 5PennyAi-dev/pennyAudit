@@ -1,0 +1,423 @@
+type: implementation_template
+id: newsletters-nurturing
+use_case_fr: |
+  Production d'une newsletter régulière et de séquences d'emails
+  de nurturing pour entretenir la relation avec une base de contacts
+  qualifiés (clients passés, prospects tièdes, communauté).
+triggers_when:
+  industry_in:
+    - commerce-en-ligne
+    - boutique-vetements
+    - bijouterie
+    - cosmetiques
+    - immobilier
+    - agent-immobilier
+    - courtier-immobilier
+    - coach-vie
+    - coach-business
+    - consultant-solo
+    - therapie
+    - nutritionniste
+    - formation-cours-prives
+    - agence-marketing
+    - studio-danse
+    - yoga-pilates
+    - fitness-gym
+    - spa-beaute
+    - salon-coiffure
+    - photographe
+    - designer-freelance
+    - traiteur
+    - restaurant
+  automation_wish_keywords:
+    - newsletter
+    - infolettre
+    - courriel
+    - email
+    - relance
+    - nurturing
+    - leads tièdes
+    - clients passés
+    - communauté
+    - fidélisation
+  tools_to_recommend:
+    - claude-pro
+    - brevo
+    - mailchimp
+voie_a_self_serve:
+  overview_fr: |
+    Vous configurez un Claude Project dédié à votre communication
+    courriel, alimenté par votre voix de marque et vos messages
+    clés. Vous l'utilisez pour produire newsletters mensuelles ou
+    trimestrielles et séquences de relance personnalisées. Une
+    newsletter passe de 2-3 heures à 30-45 minutes incluant la
+    mise en page dans Brevo ou Mailchimp.
+  stack_fr:
+    - tool: Claude Pro (claude.ai)
+      cost: 20 $ USD/mois
+      why_fr: |
+        Qualité française pour ton chaleureux et naturel sans tomber
+        dans le marketing creux. Les Projects gardent voix de
+        marque et messages clés.
+    - tool: Brevo (anciennement Sendinblue)
+      cost: gratuit jusqu'à 300 envois/jour, plans payants dès 9 $/mois
+      why_fr: |
+        Plateforme française avec interface en français de qualité.
+        Conformité RGPD et Loi 25 robuste. Hébergement européen
+        par défaut. Alternative québécoise pertinente à Mailchimp.
+    - tool: Alternative — Mailchimp
+      cost: gratuit jusqu'à 500 contacts, plans payants dès 13 $/mois USD
+      why_fr: |
+        Si déjà déployé chez le client. Interface partiellement
+        traduite, hébergement US (vérification Loi 25 via DPA).
+  configuration_fr:
+    step_1_creer_le_project:
+      title_fr: 1. Créer le Claude Project
+      duration: 5 minutes
+      instructions_fr: |
+        Dans claude.ai, cliquer « Projects » puis « Create Project ».
+        Nommer le Project : « Communication courriel — [votre marque] ».
+        Choisir « Custom instructions ».
+    step_2_project_instructions:
+      title_fr: 2. Coller les Project Instructions
+      duration: 15 minutes
+      instructions_fr: |
+        Copier le texte ci-dessous dans le champ « Custom instructions ».
+        Adapter chaque section [ADAPTER] à votre marque et vos
+        obligations réglementaires.
+      template_to_paste_fr: |
+        Tu es l'assistant de rédaction de communication courriel
+        pour [NOM DE LA MARQUE], qui opère dans le secteur [SECTEUR]
+        au [Québec / Canada / international].
+
+        Objectif des communications : [ADAPTER : entretenir la
+        relation avec mes clients passés / réveiller des prospects
+        tièdes / informer ma communauté des nouveautés / éduquer
+        sur ma méthode / etc.]
+
+        Audience principale :
+        [ADAPTER : qui sont les destinataires ? Anciens clients ?
+        Prospects qui ont téléchargé un guide ? Communauté
+        d'abonnés à votre newsletter ? Mélange ?]
+
+        Voix de marque :
+        - Ton : [ADAPTER : amical et tutoiement / professionnel et
+          vouvoiement / chaleureux et personnel / etc.]
+        - Niveau de proximité : [ADAPTER : signature « Marie » ou
+          « Marie Dubois, fondatrice de... » ?]
+        - Émojis : [ADAPTER : aucun / parcimonieux / fréquents]
+
+        Règles absolues :
+        - Pas de marketing creux (« incroyable opportunité »,
+          « offre exclusive », « ne ratez pas »)
+        - Pas de pression artificielle (« plus que 24h », « stocks
+          limités ») sauf si c'est vraiment vrai
+        - Toujours apporter de la valeur (information, perspective,
+          utilité) avant l'appel à l'action commercial
+        - Inclure systématiquement le lien de désabonnement obligatoire
+          (Loi 25 / CASL au Canada / RGPD si Europe)
+        - Si une donnée chiffrée n'est pas vérifiée, écrire [À VÉRIFIER]
+
+        Formats de sortie selon le type :
+
+        NEWSLETTER MENSUELLE OU TRIMESTRIELLE :
+        - 300-500 mots
+        - Structure : objet accrocheur (40-60 caractères) + ouverture
+          personnelle + 2-3 sections (actualité / conseil / coulisses
+          ou témoignage) + appel à l'action discret + signature
+        - Préférer un sujet principal bien traité à 5 sujets survolés
+
+        EMAIL DE RELANCE INDIVIDUEL (lead tiède) :
+        - 100-150 mots
+        - Structure : référence à un échange passé + observation
+          récente pertinente pour le destinataire + proposition
+          d'un appel court ou d'une réponse simple
+        - Pas de pression, pas de pitch, juste reprendre contact
+
+        SÉQUENCE D'EMAILS DE NURTURING (3-5 emails sur 3-4 semaines) :
+        - Chaque email 200-350 mots
+        - Email 1 : valeur pure (un guide, une perspective utile)
+        - Email 2 : approfondissement, exemple concret
+        - Email 3 : témoignage ou cas d'usage
+        - Email 4 : invitation soft à un appel ou une démo
+        - Email 5 (optionnel) : « dernière chance » sans pression
+          artificielle
+    step_3_project_knowledge:
+      title_fr: 3. Téléverser le Project Knowledge
+      duration: 20-30 minutes
+      instructions_fr: |
+        Téléverser dans le Project Knowledge :
+
+        (a) 4 à 6 newsletters ou emails passés représentatifs.
+            Critères de sélection :
+            - Mélange de types (newsletter, relance, séquence)
+            - Privilégier ceux qui ont eu de bons taux d'ouverture
+              et de clics (vérifier dans votre plateforme courriel)
+            - Inclure 1-2 emails purement informatifs (pas
+              promotionnels) pour calibrer le ton de valeur
+            Format : document « courriels-exemplaires.md ».
+
+        (b) Vos messages clés permanents.
+            Les arguments que vous voulez répéter de manière variée
+            au fil de l'année (positionnement, différenciation,
+            offre signature, valeurs).
+            Format : document « messages-cles.md ». Peut être
+            partagé avec le Project « Contenu social » si vous
+            en avez un.
+
+        (c) Calendrier éditorial annuel (12 mois).
+            Identifier les rendez-vous incontournables : saisons
+            commerciales, anniversaires de la marque, événements
+            sectoriels, lancements prévus. Avec ce calendrier,
+            Claude propose des angles cohérents avec votre stratégie.
+            Format : document « calendrier-courriel-[année].md ».
+
+        (d) Document de conformité légale.
+            Mention de désabonnement standard, mention de votre
+            identité légale, politique de confidentialité applicable.
+            Claude doit l'inclure systématiquement dans les pieds
+            d'email.
+            Format : document « pieds-email-conformite.md ».
+  workflow_fr:
+    title_fr: Workflow opérationnel
+    steps_fr:
+      - step: Au début du mois (ou trimestre selon votre cadence), consulter le calendrier éditorial
+        details_fr: |
+          Identifier le thème principal de la newsletter du mois :
+          actualité de la marque, conseil saisonnier, témoignage,
+          etc. Décider des séquences de nurturing à lancer pour
+          le segment prioritaire de leads.
+      - step: Pour la newsletter, ouvrir une conversation dans le Project
+        details_fr: |
+          Message à coller : « Rédige la newsletter de [MOIS] sur
+          [THÈME PRINCIPAL]. Inclure ces 2-3 éléments concrets :
+          [détails]. Ton newsletter habituel. Propose 3 objets
+          alternatifs à tester. »
+      - step: Claude produit le draft + les objets alternatifs en 30 secondes
+        details_fr: |
+          Demander explicitement plusieurs objets permet de tester
+          en A/B sur la moitié de la liste si votre plateforme
+          le supporte.
+      - step: Relire et ajuster (10-15 minutes)
+        details_fr: |
+          Personnaliser avec une anecdote vécue, un nom propre,
+          une actualité du jour. Vérifier les données factuelles.
+          Tester les liens.
+      - step: Importer dans Brevo ou Mailchimp et appliquer un gabarit visuel (10-15 minutes)
+        details_fr: |
+          Utiliser un gabarit pré-configuré aux couleurs de marque.
+          Ajouter images si pertinentes. Vérifier rendu desktop
+          et mobile.
+      - step: Programmer l'envoi
+        details_fr: 'Total estimé : 30-45 minutes pour une newsletter complète.'
+  validation_method_fr:
+    title_fr: Méthode de validation initiale (4 premières semaines)
+    weeks_fr:
+      - week: 1
+        action_fr: |
+          Produire la première newsletter via le Project. Comparer
+          avec une newsletter récente que vous avez écrite à la
+          main. Documenter les écarts perçus (ton, structure,
+          longueur, intérêt du contenu).
+      - week: 2
+        action_fr: |
+          Tester un email de relance individuel sur 5-10 leads
+          tièdes. Mesurer taux d'ouverture, taux de réponse,
+          qualité des réponses reçues vs vos relances habituelles.
+      - week: 3
+        action_fr: |
+          Si écart notable : ajuster les Project Instructions ou
+          ajouter de nouveaux exemples au Knowledge. Tester une
+          séquence de nurturing à 3 emails sur un petit segment
+          (20-50 contacts).
+      - week: 4
+        action_fr: |
+          Verrouiller la version 1.0 du Project. Documenter les
+          taux d'ouverture, clics et réponses constatés vs baseline.
+    ongoing_fr: |
+      Maintenance trimestrielle : ajouter 1-2 newsletters
+      particulièrement performantes au Knowledge. Revue annuelle :
+      mettre à jour le calendrier éditorial pour l'année suivante.
+  pitfalls_fr:
+    title_fr: Pièges courants à éviter
+    items_fr:
+      - pitfall: Demander à Claude une newsletter « générique » sans contexte de marque
+        why_problematic_fr: |
+          Vous obtenez le ton « LinkedIn motivation Monday » qui ne
+          ressemble à personne. Les abonnés se désabonnent ou
+          ignorent.
+        how_to_avoid_fr: |
+          Toujours fournir le thème, le contexte saisonnier ou
+          l'actualité, et 2-3 éléments concrets à intégrer. Le
+          Project fait le reste.
+      - pitfall: Oublier le pied d'email conforme (désabonnement, identité)
+        why_problematic_fr: |
+          Risque légal réel : Loi 25 au Québec, CASL au Canada,
+          RGPD pour clients européens. Un email sans désabonnement
+          clair peut entraîner une plainte.
+        how_to_avoid_fr: |
+          Toujours configurer le pied d'email dans Brevo ou Mailchimp
+          une fois pour toutes — la plateforme l'ajoute automatiquement.
+          Vérifier que le Project Knowledge contient le document
+          de conformité.
+      - pitfall: Envoyer une séquence de nurturing à toute la base indistinctement
+        why_problematic_fr: |
+          Un client récent ne devrait pas recevoir un email de
+          « réveil de prospect tiède ». Un prospect tiède ne devrait
+          pas recevoir un email qui présume une relation établie.
+        how_to_avoid_fr: |
+          Segmenter votre base avant d'envoyer (Brevo et Mailchimp
+          le supportent nativement). Adapter les séquences au segment.
+      - pitfall: Tester sur toute la base au lieu d'un échantillon
+        why_problematic_fr: |
+          Si la séquence ne marche pas, vous avez brûlé toute votre
+          base. Difficile de revenir en arrière.
+        how_to_avoid_fr: |
+          Toujours tester sur un échantillon de 50-100 contacts
+          d'abord. Mesurer 7-14 jours avant de scaler au reste de
+          la base.
+      - pitfall: Confondre fréquence et valeur
+        why_problematic_fr: |
+          Envoyer une newsletter par semaine sans contenu fort
+          fatigue les abonnés et fait monter les désabonnements.
+          Mieux vaut moins, mais avec de la vraie valeur à chaque
+          envoi.
+        how_to_avoid_fr: |
+          Mensuelle ou trimestrielle est souvent suffisant pour
+          les PME. Hebdomadaire seulement si vous avez vraiment
+          du contenu nouveau utile chaque semaine.
+      - pitfall: Ne pas mesurer les taux d'ouverture et clics
+        why_problematic_fr: |
+          Sans mesure, vous ne savez pas si vos communications
+          fonctionnent. Vous continuez à produire à l'aveugle.
+        how_to_avoid_fr: |
+          Bloquer 15 minutes après chaque envoi pour noter les
+          taux d'ouverture, clics, désabonnements. Ajuster au
+          prochain envoi si signal négatif.
+  success_criteria_fr:
+    title_fr: Critères de succès mesurables
+    milestones_fr:
+      - timeframe: 30 jours
+        criteria_fr: |
+          Au moins 1 newsletter produite via le Project, taux
+          d'ouverture au moins équivalent à votre baseline. Au
+          moins 1 séquence de nurturing testée sur échantillon.
+          Temps de production newsletter sous 60 minutes.
+      - timeframe: 60 jours
+        criteria_fr: |
+          Temps de production sous 45 minutes. Taux d'ouverture
+          et clics au moins équivalents à baseline. Au moins une
+          séquence de nurturing déployée sur un segment plus large
+          avec résultats mesurés.
+      - timeframe: 90 jours
+        criteria_fr: |
+          Routine établie. Taux d'ouverture, clics et réponses
+          en ligne avec ou supérieurs à baseline. Vous identifiez
+          spontanément les angles à proposer selon le calendrier.
+  when_accompaniment_makes_sense_fr:
+    title_fr: Signaux qu'un accompagnement deviendrait pertinent
+    items_fr:
+      - Vous n'arrivez pas à descendre sous 60 minutes par newsletter après 4 semaines
+      - Taux d'ouverture en baisse depuis l'introduction de l'IA
+      - Vous voulez segmenter votre base et lancer plusieurs séquences en parallèle
+      - Vous êtes dans un secteur réglementé (santé, financier, immobilier) où les obligations de conformité sont complexes
+      - Vous voulez intégrer la communication courriel à votre CRM et automatiser des séquences déclenchées par comportement
+voie_b_accompagnee:
+  includes_voie_a_fr: |
+    L'accompagnement 5PennyAi inclut tout le travail décrit en voie A,
+    exécuté pour vous, plus la dimension stratégique (segmentation,
+    séquences automatisées, conformité) qui demande une vue
+    d'ensemble difficile à transmettre par écrit.
+  what_we_do_for_you_fr:
+    title_fr: Ce que nous faisons à votre place
+    items_fr:
+      - service: Audit de votre base de contacts et stratégie de segmentation
+        details_fr: |
+          Analyse de votre base actuelle (clients passés, prospects,
+          tièdes, froids), proposition d'une segmentation concrète
+          avec critères clairs, identification des séquences
+          prioritaires à déployer pour chaque segment.
+        estimated_value_hours: 3-4
+      - service: Configuration complète du Claude Project
+        details_fr: |
+          Project Instructions calibrées sur votre voix de marque
+          et vos obligations réglementaires. Sélection et
+          structuration des 4-6 emails exemplaires les plus
+          représentatifs. Téléversement du Project Knowledge.
+        estimated_value_hours: 2-3
+      - service: Configuration de la plateforme courriel (Brevo ou Mailchimp)
+        details_fr: |
+          Création des listes segmentées, des gabarits visuels aux
+          couleurs de marque, des automatisations de base (welcome,
+          relance, anniversaire). Configuration des pieds d'email
+          conformes Loi 25 / CASL.
+        estimated_value_hours: 3-4
+      - service: Production de la première newsletter et 1 séquence de nurturing
+        details_fr: |
+          Newsletter mensuelle complète prête à envoyer. Séquence
+          de nurturing à 3 emails sur le segment prioritaire,
+          programmée et testée.
+        estimated_value_hours: 2-3
+      - service: Construction du calendrier éditorial annuel
+        details_fr: |
+          Atelier d'1h30 pour identifier vos rendez-vous incontournables,
+          événements, lancements. Rédaction du calendrier 12 mois
+          avec angles suggérés par envoi.
+        estimated_value_hours: 2
+      - service: Séance de calibrage à 30 jours
+        details_fr: |
+          Appel d'1 heure pour analyser les premiers envois, taux
+          d'ouverture, clics, réponses, ajuster les Project
+          Instructions et la stratégie de segmentation.
+        estimated_value_hours: 1
+      - service: Support courriel pendant 30 jours
+        details_fr: |
+          Questions sur cas particuliers, ajustements rapides,
+          dépannage. Réponses dans les 24-48h ouvrables.
+  what_we_bring_that_text_cannot_fr:
+    title_fr: Ce qui ne se transmet pas par écrit
+    items_fr:
+      - element: La stratégie de segmentation pertinente pour votre cas
+        why_fr: |
+          Comment découper sa base ? Par récence ? Par valeur ?
+          Par comportement ? La bonne segmentation dépend de votre
+          modèle d'affaires, votre cycle de vente, votre taille
+          de base. Un client autonome segmente souvent trop ou
+          trop peu.
+      - element: La conformité Loi 25 / CASL appliquée à votre cas réel
+        why_fr: |
+          Les principes sont publics, mais leur application au cas
+          spécifique (consentement implicite vs explicite, opt-in
+          double, gestion des données sensibles) demande de
+          l'expérience pour ne pas tomber dans un piège
+          réglementaire.
+      - element: Le calibrage du rythme et de la pression commerciale
+        why_fr: |
+          Combien d'emails par mois ? Quand glisser un appel à
+          l'action commercial vs rester sur le contenu de valeur ?
+          Ce dosage demande une vue sur ce qui marche dans des
+          secteurs comparables.
+      - element: La détection des signaux faibles dans les métriques
+        why_fr: |
+          Un taux d'ouverture qui baisse de 2 points chaque mois
+          sans raison apparente est un signal. Détecter cette
+          dérive précoce et identifier la cause (fatigue, mauvais
+          segment, ton qui ne ressemble plus) demande l'œil d'un
+          accompagnateur.
+  total_investment_fr:
+    accompaniment_cad: 1 800 - 3 800 $
+    ongoing_monthly_cad: 20-40 (Claude Pro 20 $ USD + Brevo gratuit ou 9 $/mois selon volume)
+    client_time_required_hours: 5-7 (vs 18-25 en voie A pure)
+    time_to_operational_weeks: 3-4 (vs 5-7 en voie A pure)
+  deliverables_fr:
+    title_fr: Livrables tangibles que vous recevez
+    items_fr:
+      - Document « Stratégie de segmentation et séquences » avec cartographie de votre base et plan d'activation
+      - Claude Project « Communication courriel — [votre marque] » configuré et opérationnel
+      - Plateforme courriel (Brevo ou Mailchimp) configurée avec listes segmentées, gabarits visuels et automatisations de base
+      - Première newsletter envoyée avec rapport de performance
+      - Première séquence de nurturing déployée et mesurée
+      - Calendrier éditorial annuel personnalisé (12 mois)
+      - Document de conformité Loi 25 / CASL appliqué à votre cas
+      - Notes de la séance de calibrage 30 jours
+      - Procédure de maintenance trimestrielle documentée

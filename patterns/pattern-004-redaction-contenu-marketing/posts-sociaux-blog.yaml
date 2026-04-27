@@ -1,0 +1,414 @@
+type: implementation_template
+id: posts-sociaux-blog
+use_case_fr: |
+  Production cadencée de posts pour Facebook, Instagram, LinkedIn et
+  d'articles de blog SEO, avec voix de marque cohérente entre les canaux.
+triggers_when:
+  industry_in:
+    - commerce-en-ligne
+    - boutique-vetements
+    - bijouterie
+    - fleuriste
+    - cosmetiques
+    - restaurant
+    - cafe
+    - traiteur
+    - coach-vie
+    - coach-business
+    - coach-fitness
+    - photographe
+    - designer-freelance
+    - consultant-solo
+    - therapie
+    - spa-beaute
+    - salon-coiffure
+    - barbier
+    - fitness-gym
+    - yoga-pilates
+    - studio-danse
+    - plomberie
+    - electricite
+    - renovation
+    - paysagement
+    - mecanique-auto
+    - tatoueur
+    - formation-cours-prives
+  automation_wish_keywords:
+    - post
+    - publication
+    - réseaux sociaux
+    - facebook
+    - instagram
+    - linkedin
+    - tiktok
+    - blog
+    - article
+    - contenu
+  tools_to_recommend:
+    - claude-pro
+    - canva
+voie_a_self_serve:
+  overview_fr: |
+    Vous configurez un Claude Project dédié à vos contenus sociaux
+    et blog, alimenté par votre voix de marque, vos messages clés
+    et un calendrier éditorial trimestriel. Une publication passe
+    de 30-60 minutes à 8-12 minutes (rédaction + visuel via Canva
+    Magic Write). La voix reste cohérente entre les canaux et dans
+    le temps.
+  stack_fr:
+    - tool: Claude Pro (claude.ai)
+      cost: 20 $ USD/mois
+      why_fr: |
+        Qualité française nettement supérieure à ChatGPT pour le
+        ton naturel québécois et bilingue. Les Projects gardent la
+        voix de marque persistante entre conversations.
+    - tool: Canva Pro
+      cost: 16,99 $ CAD/mois
+      why_fr: |
+        Magic Write pour ajustements rapides, gabarits sociaux
+        préformatés, banque visuelle, redimensionnement automatique
+        entre formats. Largement adopté au Québec.
+    - tool: Notion ou Google Docs
+      cost: gratuit
+      why_fr: Pour héberger le calendrier éditorial trimestriel.
+  configuration_fr:
+    step_1_creer_le_project:
+      title_fr: 1. Créer le Claude Project
+      duration: 5 minutes
+      instructions_fr: |
+        Dans claude.ai, cliquer « Projects » dans la barre latérale,
+        puis « Create Project ». Nommer le Project : « Contenu social
+        et blog — [votre marque] ». Choisir « Custom instructions »
+        lors de la configuration.
+    step_2_project_instructions:
+      title_fr: 2. Coller les Project Instructions
+      duration: 15 minutes (la calibration de la voix prend du temps)
+      instructions_fr: |
+        Copier le texte ci-dessous dans le champ « Custom instructions »
+        du Project. Adapter chaque section marquée [ADAPTER] à votre
+        marque réelle — c'est ici que se joue la cohérence du ton.
+      template_to_paste_fr: |
+        Tu es l'assistant de rédaction de contenu social et blog pour
+        [NOM DE LA MARQUE OU ENTREPRISE], qui opère dans le secteur
+        [SECTEUR]. La marque est positionnée [ADAPTER : haut de gamme
+        accessible / artisanale authentique / premium technique /
+        communauté chaleureuse / etc.].
+
+        Audience cible :
+        [ADAPTER : qui sont les clients idéaux ? Tranches d'âge,
+        contexte de vie, problèmes qu'ils cherchent à résoudre,
+        valeurs auxquelles ils tiennent.]
+
+        Voix de marque (à respecter strictement) :
+        - Ton : [ADAPTER : chaleureux et tutoiement / professionnel
+          et vouvoiement / décontracté et moderne / rigoureux et
+          vouvoiement québécois / etc.]
+        - Vocabulaire : [ADAPTER : termes signature à utiliser, mots
+          à éviter, niveau de jargon technique acceptable]
+        - Rythme : phrases courtes et incisives, ou phrases développées
+          et nuancées ? [ADAPTER]
+        - Émojis : oui / non / parcimonieux ? [ADAPTER]
+        - Tutoiement ou vouvoiement ? [ADAPTER]
+
+        Règles absolues :
+        - Pas de superlatifs creux (« incroyable », « exceptionnel »,
+          « le meilleur ») — privilégier les faits et bénéfices concrets
+        - Pas de promesses non tenables (« vous allez doubler vos
+          revenus », « garanti ») — sauf si vraiment garanti par écrit
+        - Pas de comparaisons agressives avec la concurrence
+        - Si une donnée chiffrée n'est pas vérifiée, écrire [À VÉRIFIER]
+        - Respecter les directives publicitaires de votre secteur
+          (santé, financier, immobilier ont des règles strictes)
+
+        Format de sortie selon le canal demandé :
+
+        FACEBOOK :
+        - 80-150 mots
+        - Structure : accroche en une ligne + corps + appel à l'action
+          ou question ouverte
+        - Émojis selon ton de marque
+
+        INSTAGRAM :
+        - Légende 70-150 mots
+        - Première ligne accrocheuse (les utilisateurs voient seulement
+          125 caractères avant le « plus »)
+        - 8-12 hashtags pertinents en fin de post (mélange de hashtags
+          populaires et de niche)
+
+        LINKEDIN :
+        - 150-300 mots
+        - Ton plus professionnel même si la voix de marque est décontractée
+        - Pas plus de 3 hashtags
+        - Encourager engagement par question en fin de post
+
+        ARTICLE DE BLOG :
+        - 600-1200 mots selon le sujet
+        - Titre H1 + 3-5 sous-titres H2 + paragraphes courts
+        - Mots-clés SEO intégrés naturellement (ne pas bourrer)
+        - Conclusion avec appel à l'action vers une page produit ou
+          service
+    step_3_project_knowledge:
+      title_fr: 3. Téléverser le Project Knowledge
+      duration: 30-45 minutes
+      instructions_fr: |
+        Téléverser dans le Project Knowledge :
+
+        (a) 8 à 12 publications passées qui incarnent votre voix
+            de marque idéale.
+            Critères de sélection :
+            - Mélange de canaux (3-4 Facebook, 3-4 Instagram, 2-3
+              LinkedIn si actif, 1-2 articles blog)
+            - Privilégier celles qui ont eu un bon engagement
+              (commentaires, partages, réactions)
+            - Couvrir différents types : promotionnel, éducatif,
+              coulisses, témoignage, actualité
+            Format : un document « publications-exemplaires.md »
+            avec un titre par publication précisant le canal.
+
+        (b) Vos 5-8 messages clés permanents.
+            Ce sont les arguments que vous voulez répéter de
+            manière variée tout au long de l'année (votre
+            positionnement, votre différenciation, vos valeurs,
+            votre offre signature).
+            Format : document « messages-cles.md ».
+
+        (c) Calendrier éditorial trimestriel (12 semaines).
+            Liste les thèmes par semaine, événements à couvrir,
+            promotions prévues, contenu saisonnier. Sans calendrier,
+            Claude reproduit les mêmes patterns. Avec calendrier,
+            il varie les angles intelligemment.
+            Format : document « calendrier-Q[N]-[année].md ».
+
+        (d) Liste des sujets à éviter.
+            Sujets politiques, controverses passées, concurrents
+            à ne pas mentionner, ton à proscrire.
+            Format : document « sujets-a-eviter.md ».
+  workflow_fr:
+    title_fr: Workflow opérationnel hebdomadaire
+    steps_fr:
+      - step: Le lundi matin, planifier la semaine en consultant le calendrier éditorial trimestriel
+        details_fr: |
+          Identifier les 3-7 publications de la semaine selon votre
+          cadence cible. Noter pour chacune : canal, thème, type
+          (promotionnel/éducatif/coulisses/etc.), événement ou
+          contexte.
+      - step: Pour chaque publication, ouvrir une nouvelle conversation dans le Project
+        details_fr: |
+          Message à coller : « Pour [CANAL], rédige une publication
+          sur [THÈME], type [TYPE], en lien avec [CONTEXTE OU
+          ÉVÉNEMENT]. Voici les éléments concrets à inclure :
+          [détails spécifiques]. »
+      - step: Claude produit 2-3 variantes en 30 secondes
+        details_fr: |
+          Demander explicitement « propose-moi 2-3 variantes avec
+          des angles différents » donne plus de matière à choisir
+          que d'accepter le premier draft.
+      - step: Choisir la meilleure variante, ajuster (3-5 minutes)
+        details_fr: |
+          Personnaliser avec un détail vécu, un nom propre, une
+          actualité du jour qui apporte de l'authenticité.
+      - step: Créer le visuel dans Canva (3-5 minutes)
+        details_fr: |
+          Utiliser un gabarit de marque préconfiguré, ajuster le
+          texte d'accroche, exporter aux formats du canal.
+      - step: Programmer la publication via Meta Business Suite ou outil de planification
+        details_fr: 'Total estimé : 8-12 minutes par publication.'
+  validation_method_fr:
+    title_fr: Méthode de validation initiale (4 premières semaines)
+    weeks_fr:
+      - week: 1
+        action_fr: |
+          Produire la moitié des publications via le Project, l'autre
+          moitié à votre méthode habituelle. Comparer engagement
+          (réactions, commentaires, partages) sur 7 jours pour les
+          deux groupes. Documenter les écarts perçus.
+      - week: 2-3
+        action_fr: |
+          Si les publications IA performent moins : ajuster les
+          Project Instructions (la voix de marque est probablement
+          mal calibrée). Ajouter ou retirer des publications
+          exemplaires. Tester avec une approche différente (plus
+          de personnalisation manuelle, ou changement d'angles).
+      - week: 4
+        action_fr: |
+          Verrouiller la version 1.0 du Project. Documenter les
+          ajustements appliqués et le niveau d'engagement constaté
+          vs baseline.
+    ongoing_fr: |
+      Maintenance mensuelle : ajouter 1-2 publications particulièrement
+      performantes au Project Knowledge. Maintenance trimestrielle :
+      mettre à jour le calendrier éditorial pour le trimestre suivant.
+  pitfalls_fr:
+    title_fr: Pièges courants à éviter
+    items_fr:
+      - pitfall: Demander à Claude de « faire un post » sans contexte de marque ni canal
+        why_problematic_fr: |
+          Sans Project Instructions calibrées et sans précision de
+          canal, vous obtenez du contenu générique « LinkedIn-marketing-
+          speak » qui ne ressemble à personne. C'est le syndrome
+          ChatGPT-pour-tout.
+        how_to_avoid_fr: |
+          Toujours préciser canal + thème + type + contexte dans
+          le message. Le Project fait le reste.
+      - pitfall: Utiliser le même Project pour plusieurs marques ou activités très différentes
+        why_problematic_fr: |
+          La voix de marque se dilue, le modèle devient incohérent.
+          Vous obtenez des posts qui sonnent ni comme une marque ni
+          comme l'autre.
+        how_to_avoid_fr: |
+          Un Project par marque ou activité distincte. Si vous gérez
+          plusieurs comptes, accepter le coût des Projects multiples.
+      - pitfall: Ne pas mettre à jour le Project Knowledge pendant 6 mois
+        why_problematic_fr: |
+          Votre marque évolue, votre offre change, vos succès
+          récents ne sont pas reflétés. Le Project produit du contenu
+          décalé du présent.
+        how_to_avoid_fr: |
+          Bloquer 30 minutes par mois pour ajouter 1-2 publications
+          récentes performantes et retirer celles qui ne représentent
+          plus la marque actuelle.
+      - pitfall: Demander un calendrier éditorial à Claude au lieu de le construire vous-même
+        why_problematic_fr: |
+          Claude ne connaît pas vos événements, vos lancements, vos
+          saisons commerciales. Il vous proposera un calendrier
+          générique « lundi motivation, mercredi tip, vendredi
+          coulisses » qui ne sert pas votre stratégie.
+        how_to_avoid_fr: |
+          Construire le calendrier trimestriel à la main (1-2h par
+          trimestre), Claude exécute ensuite la production sur cette
+          trame.
+      - pitfall: Publier les drafts sans relecture humaine
+        why_problematic_fr: |
+          Risque de halluciner un chiffre, de manquer une nuance
+          culturelle, de produire un ton légèrement off. Une seule
+          publication maladroite peut nuire à la marque.
+        how_to_avoid_fr: |
+          Toujours relire avant publication, même si la routine
+          est rapide. C'est 30 secondes qui protègent l'image.
+      - pitfall: Produire trop de publications d'un coup en mode batch
+        why_problematic_fr: |
+          Le risque est de tomber dans la production industrielle
+          et perdre la spontanéité. Les abonnés sentent quand un
+          compte devient une usine à contenu.
+        how_to_avoid_fr: |
+          Rythmer la production : préparer 1-3 jours d'avance
+          maximum, pas 2 semaines. Garder de la place pour
+          l'actualité spontanée.
+  success_criteria_fr:
+    title_fr: Critères de succès mesurables
+    milestones_fr:
+      - timeframe: 30 jours
+        criteria_fr: |
+          Au moins 12 publications produites via le Project. Temps
+          moyen par publication descendu sous 20 minutes (rédaction
+          + visuel). Cohérence de voix perceptible à la relecture.
+      - timeframe: 60 jours
+        criteria_fr: |
+          Temps moyen sous 12 minutes. Niveau d'engagement (taux
+          de réactions, commentaires) au moins équivalent à votre
+          baseline pré-IA. Vous savez quand le draft initial est
+          bon vs quand il faut le retravailler.
+      - timeframe: 90 jours
+        criteria_fr: |
+          Production stable et confortable. Engagement en ligne
+          avec ou supérieur à la baseline. Le Project fait partie
+          de votre routine, vous y pensez naturellement quand un
+          sujet émerge.
+  when_accompaniment_makes_sense_fr:
+    title_fr: Signaux qu'un accompagnement deviendrait pertinent
+    items_fr:
+      - Vous n'arrivez pas à descendre sous 20 minutes par publication après 4 semaines
+      - Les publications produites sonnent encore génériques malgré ajustements répétés
+      - Votre engagement (taux de réactions, commentaires) baisse depuis l'introduction de l'IA
+      - Vous gérez plusieurs canaux ou plusieurs marques et voulez de la cohérence systémique
+      - Vous voulez ajouter le canal vidéo (TikTok, Reels, YouTube Shorts) avec des scripts adaptés
+voie_b_accompagnee:
+  includes_voie_a_fr: |
+    L'accompagnement 5PennyAi inclut tout le travail décrit en voie A,
+    exécuté pour vous, plus la calibration approfondie de la voix de
+    marque qui demande une conversation et un audit de votre contenu
+    existant.
+  what_we_do_for_you_fr:
+    title_fr: Ce que nous faisons à votre place
+    items_fr:
+      - service: Audit de voix de marque sur 50-100 publications passées
+        details_fr: |
+          Analyse de vos publications les plus engageantes, identification
+          de patterns linguistiques (longueur de phrases, types
+          d'accroches qui fonctionnent, vocabulaire signature, sujets
+          à éviter détectés implicitement). Production d'un document
+          « Voix de marque — version 1.0 » qui devient la référence.
+        estimated_value_hours: 4-6
+      - service: Configuration complète du Claude Project
+        details_fr: |
+          Project Instructions calibrées sur la voix de marque
+          auditée. Sélection et structuration des 8-12 publications
+          exemplaires les plus représentatives. Téléversement et
+          configuration du Project Knowledge.
+        estimated_value_hours: 3-4
+      - service: Construction du calendrier éditorial trimestriel
+        details_fr: |
+          Atelier d'1h30 pour identifier vos thèmes annuels, événements
+          clés, lancements à venir, saisons commerciales. Rédaction
+          du calendrier de 12 semaines avec angles suggérés.
+        estimated_value_hours: 2-3
+      - service: Production de 5-7 publications de validation
+        details_fr: |
+          Génération de publications sur des sujets concrets de votre
+          marque, comparaison avec votre style habituel, ajustement
+          des Project Instructions selon les écarts.
+        estimated_value_hours: 2
+      - service: Séance de calibrage à 30 jours
+        details_fr: |
+          Appel d'1 heure pour analyser les publications produites,
+          comparer engagement vs baseline, ajuster les Instructions,
+          identifier les angles à approfondir ou éviter.
+        estimated_value_hours: 1
+      - service: Support courriel pendant 30 jours
+        details_fr: |
+          Questions sur des cas particuliers, dépannage, ajustements
+          rapides. Réponses dans les 24-48h ouvrables.
+  what_we_bring_that_text_cannot_fr:
+    title_fr: Ce qui ne se transmet pas par écrit
+    items_fr:
+      - element: La capture précise de votre voix de marque
+        why_fr: |
+          Identifier ce qui rend VOTRE marque reconnaissable parmi
+          des centaines de marques similaires demande une analyse
+          comparative et une conversation de calibrage. Un client
+          autonome verra son contenu ressembler à celui de la
+          concurrence sans comprendre pourquoi.
+      - element: Le choix curatorial des publications exemplaires
+        why_fr: |
+          Toutes vos publications populaires ne sont pas exemplaires.
+          Certaines ont marché par circonstances (actualité, chance,
+          partage par influenceur). Identifier celles qui incarnent
+          durablement votre voix demande de l'expérience.
+      - element: La détection des patterns inconscients
+        why_fr: |
+          Vous avez probablement des tics linguistiques (« vraiment »,
+          « du coup », formulations récurrentes) que vous ne voyez
+          pas. Un regard externe les identifie et décide lesquels
+          garder (ils font partie de votre marque) et lesquels
+          corriger (ils alourdissent).
+      - element: La construction d'un calendrier éditorial qui respire
+        why_fr: |
+          Un bon calendrier alterne types de contenu, niveaux
+          d'engagement demandés, sujets légers et profonds. Cette
+          respiration ne s'apprend qu'en gérant plusieurs marques.
+  total_investment_fr:
+    accompaniment_cad: 1 200 - 2 800 $
+    ongoing_monthly_cad: ~37 (Claude Pro 20 $ USD + Canva Pro 17 $ CAD)
+    client_time_required_hours: 6-8 (vs 18-25 en voie A pure)
+    time_to_operational_weeks: 2-3 (vs 4-6 en voie A pure)
+  deliverables_fr:
+    title_fr: Livrables tangibles que vous recevez
+    items_fr:
+      - Document « Voix de marque — version 1.0 » avec analyse de vos publications passées et caractéristiques identifiées
+      - Claude Project « Contenu social et blog — [votre marque] » configuré et opérationnel sur votre compte
+      - Bibliothèque de 8-12 publications exemplaires sélectionnées et commentées
+      - Document « Messages clés permanents » synthétisant votre positionnement en arguments réutilisables
+      - Calendrier éditorial trimestriel personnalisé (12 semaines) avec thèmes, types et angles suggérés
+      - Document « Sujets à éviter » synthétisant les zones à risque
+      - Notes de la séance de calibrage 30 jours
+      - Procédure de maintenance mensuelle documentée

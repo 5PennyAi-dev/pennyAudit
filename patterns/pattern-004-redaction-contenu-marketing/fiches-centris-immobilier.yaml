@@ -1,0 +1,310 @@
+type: implementation_template
+id: fiches-centris-immobilier
+use_case_fr: Production de fiches descriptives Centris pour courtage immobilier résidentiel québécois
+triggers_when:
+  industry_in:
+    - immobilier
+    - courtage-immobilier
+    - agent-immobilier
+    - courtier-immobilier
+  automation_wish_keywords:
+    - fiche
+    - centris
+    - description
+    - propriété
+    - listing
+    - mandat
+  tools_to_recommend:
+    - claude-pro
+voie_a_self_serve:
+  overview_fr: |
+    Vous configurez un Claude Project dédié aux fiches Centris,
+    l'alimentez avec vos meilleures fiches passées et les règles
+    publicitaires OACIQ, puis l'utilisez quotidiennement avec un
+    gabarit de saisie standardisé. Une fiche passe de 45-60 min
+    à 10-15 min, conforme par construction.
+  stack_fr:
+    - tool: Claude Pro (claude.ai)
+      cost: 20 $ USD/mois
+      why_fr: |
+        Qualité française nettement supérieure à ChatGPT pour le ton
+        québécois nuancé. Les Projects gardent contexte et règles
+        persistants entre conversations.
+    - tool: Notion ou Google Docs
+      cost: gratuit
+      why_fr: Pour héberger le gabarit de saisie standardisé.
+  configuration_fr:
+    step_1_creer_le_project:
+      title_fr: 1. Créer le Claude Project
+      duration: 5 minutes
+      instructions_fr: |
+        Dans claude.ai, cliquer « Projects » dans la barre latérale,
+        puis « Create Project ». Nommer le Project : « Fiches Centris
+        — [votre nom] ». Choisir « Custom instructions » lors de la
+        configuration.
+    step_2_project_instructions:
+      title_fr: 2. Coller les Project Instructions
+      duration: 10 minutes
+      instructions_fr: |
+        Copier le texte ci-dessous dans le champ « Custom instructions »
+        du Project, puis adapter les sections marquées [ADAPTER] à
+        votre situation.
+      template_to_paste_fr: |
+        Tu es l'assistant de rédaction de [VOTRE NOM], courtier ou
+        courtière immobilière résidentielle au Québec, agissant sous
+        la bannière [VOTRE BANNIÈRE].
+
+        Ton rôle : produire des fiches descriptives Centris factuelles,
+        chaleureuses, conformes aux règles publicitaires OACIQ, en
+        français québécois.
+
+        Règles absolues :
+        - Pas de superlatifs invérifiables (« le plus beau », « unique »,
+          « exceptionnel », « parfait ») — uniquement des faits observables
+        - Pas de comparaison avec d'autres courtiers ou propriétés
+        - Pas de promesses de rendement, plus-value ou rentabilité future
+        - Si une donnée chiffrée ou factuelle est manquante, écris
+          [À VÉRIFIER] — n'invente jamais
+        - Mentionne la bannière [VOTRE BANNIÈRE] et le statut professionnel
+          en signature de fiche
+
+        Style :
+        - 180-220 mots
+        - Ton chaleureux mais factuel, pas de jargon
+        - Phrases courtes, structure claire (extérieur, intérieur,
+          particularités, secteur, atouts)
+        - Vocabulaire québécois (« stationnement » plutôt que « parking »,
+          « salle de bain » plutôt que « salle d'eau » sauf si applicable)
+
+        Format de sortie attendu :
+        1. La fiche Centris formatée, prête à copier dans Matrix
+        2. Une liste « À vérifier avant publication » des données
+           marquées [À VÉRIFIER]
+        3. Si pertinent : 2-3 suggestions d'angles complémentaires
+           à explorer (ex: argument écoles, transport, secteur en
+           développement)
+    step_3_project_knowledge:
+      title_fr: 3. Téléverser le Project Knowledge
+      duration: 30-45 minutes
+      instructions_fr: |
+        Téléverser dans le Project Knowledge :
+
+        (a) 5 à 8 fiches Centris exemplaires que vous avez déjà publiées.
+            Critères de sélection :
+            - Au moins 1 condo, 1 maison unifamiliale, 1 plex
+            - Privilégier les fiches dont les propriétés se sont vendues
+              en moins de 30 jours (signal de qualité commerciale)
+            - Récentes (moins de 12 mois) pour refléter le style courant
+            - Diversité de fourchettes de prix
+            Format : copier le texte de chaque fiche dans un document
+            « fiches-exemplaires.md » avec un titre par fiche.
+
+        (b) Les règles publicitaires OACIQ pertinentes.
+            Source officielle :
+            https://www.oaciq.com/fr/centre-de-savoir
+            Extraire les sections sur la publicité en courtage immobilier
+            et les déposer dans un document « regles-oaciq.md ».
+
+        (c) Une fiche-type vierge avec les sections obligatoires de
+            Centris/Matrix (à reproduire depuis votre interface Matrix).
+  workflow_fr:
+    title_fr: Workflow opérationnel quotidien
+    steps_fr:
+      - step: À la signature d'un nouveau mandat, remplir le gabarit de saisie standardisé (5 minutes)
+        details_fr: |
+          Le gabarit contient les champs : type de propriété, secteur,
+          année de construction, superficie habitable et terrain,
+          nombre de chambres et salles de bain, points forts factuels
+          (garage, foyer, rénovations avec année), particularités du
+          secteur (écoles, transport, commerces).
+      - step: Ouvrir une nouvelle conversation dans le Claude Project et coller le gabarit avec un message court
+        details_fr: |
+          Exemple de message : « Voici les caractéristiques d'une
+          nouvelle propriété pour fiche Centris : [coller gabarit].
+          Produis la fiche selon le format habituel. »
+      - step: Claude produit une première version en 30 secondes
+        details_fr: |
+          Vous obtenez la fiche formatée + la liste des [À VÉRIFIER]
+          + les suggestions d'angles complémentaires.
+      - step: Relire, ajuster contextuellement (3-5 minutes)
+        details_fr: |
+          Corriger les éléments contextuels que Claude ne peut pas
+          connaître (anecdotes du quartier, particularités de la
+          propriété), vérifier les données marquées [À VÉRIFIER].
+      - step: Copier dans Matrix/Centris
+        details_fr: 'Total estimé : 10-12 minutes par fiche.'
+  validation_method_fr:
+    title_fr: Méthode de validation initiale (4 premières semaines)
+    weeks_fr:
+      - week: 1
+        action_fr: |
+          Produire 2-3 fiches en parallèle : une à votre méthode
+          habituelle, une via le Project. Comparer qualité et temps.
+          Documenter les écarts (ton trop générique ? Manque de
+          spécificités du secteur ? Format mal calibré ?).
+      - week: 2-3
+        action_fr: |
+          Ajuster les Project Instructions selon les écarts détectés.
+          Ajouter ou retirer des fiches exemplaires si certains styles
+          s'avèrent moins performants. Tester sur 4-5 nouvelles fiches.
+      - week: 4
+        action_fr: |
+          Verrouiller la version 1.0 du Project. Documenter dans un
+          fichier « notes-projet-centris.md » les ajustements appliqués
+          et la date de verrouillage.
+    ongoing_fr: |
+      Maintenance trimestrielle : revue pour intégrer 1-2 nouvelles
+      fiches exemplaires (les plus performantes du trimestre) et
+      ajuster aux évolutions des règles OACIQ si applicable.
+  pitfalls_fr:
+    title_fr: Pièges courants à éviter
+    items_fr:
+      - pitfall: Sélectionner uniquement vos plus belles fiches
+        why_problematic_fr: |
+          Biaise le modèle vers un type de propriété (haut de gamme
+          par exemple). Les fiches générées pour un condo d'entrée
+          de gamme sonneront alors faussement luxueuses.
+        how_to_avoid_fr: |
+          Inclure une diversité réelle : 1 condo entrée de gamme,
+          1 unifamiliale milieu, 1 plex, 1 propriété atypique, etc.
+      - pitfall: Copier-coller les règles OACIQ sans les transposer en contexte concret
+        why_problematic_fr: |
+          Claude devient trop défensif, produit des fiches plates
+          et sans engagement émotionnel. Les règles OACIQ ne sont
+          pas écrites pour générer du contenu, elles sont écrites
+          pour le réguler.
+        how_to_avoid_fr: |
+          Reformuler les règles en directives positives dans les
+          Project Instructions (« privilégie les faits observables »
+          plutôt que « pas de superlatifs »).
+      - pitfall: Ne pas tester en parallèle avec votre méthode actuelle pendant 2 semaines
+        why_problematic_fr: |
+          Sans baseline objective, vous ne saurez pas si l'IA produit
+          vraiment mieux ou si elle vous fait gagner du temps au
+          détriment de la qualité commerciale.
+        how_to_avoid_fr: |
+          Bloquer 2-3 heures en semaine 1 pour produire 2-3 fiches
+          en double et comparer.
+      - pitfall: Oublier le marqueur [À VÉRIFIER] et publier des données inventées
+        why_problematic_fr: |
+          Risque réputationnel ET disciplinaire OACIQ. Une fiche
+          avec un chiffre faux peut entraîner une plainte.
+        how_to_avoid_fr: |
+          Vérifier systématiquement la liste « À vérifier » avant
+          copier dans Matrix. En faire un réflexe.
+      - pitfall: Utiliser le même Project pour les fiches en français et en anglais
+        why_problematic_fr: |
+          Les Project Instructions sont en français et orientent le
+          modèle vers ce ton. Les fiches anglaises produites seront
+          de qualité variable.
+        how_to_avoid_fr: |
+          Créer un deuxième Project « Fiches Centris EN — [nom] »
+          avec ses propres instructions adaptées.
+  success_criteria_fr:
+    title_fr: Critères de succès mesurables
+    milestones_fr:
+      - timeframe: 30 jours
+        criteria_fr: |
+          Au moins 5 fiches produites via le Project. Temps moyen
+          par fiche descendu sous 20 minutes. Aucune publication
+          avec donnée non vérifiée.
+      - timeframe: 60 jours
+        criteria_fr: |
+          Temps moyen sous 15 minutes par fiche. Vous identifiez
+          spontanément quand le draft initial doit être ajusté
+          (signal d'appropriation du processus).
+      - timeframe: 90 jours
+        criteria_fr: |
+          Temps moyen 10-12 minutes par fiche, gain horaire mesurable
+          (10-15 h économisées sur le trimestre selon le volume).
+          Le Project est devenu un outil de routine, pas une
+          expérimentation.
+  when_accompaniment_makes_sense_fr:
+    title_fr: Signaux qu'un accompagnement deviendrait pertinent
+    items_fr:
+      - Vous n'arrivez pas à descendre sous 20 minutes par fiche après 4 semaines d'usage
+      - Les fiches produites sonnent encore génériques même après ajustements
+      - Vous hésitez sur la sélection des fiches exemplaires et craignez de biaiser le modèle
+      - Vous voulez ajouter d'autres cas d'usage (newsletters, réponses courriels) sans tâtonner
+      - Vous voulez sécuriser la conformité OACIQ par un audit externe avant de scaler
+voie_b_accompagnee:
+  includes_voie_a_fr: |
+    L'accompagnement 5PennyAi inclut tout le travail décrit ci-dessus
+    en voie A, exécuté pour vous, plus les éléments qui demandent
+    un jugement contextuel difficile à transmettre par écrit.
+  what_we_do_for_you_fr:
+    title_fr: Ce que nous faisons à votre place
+    items_fr:
+      - service: Configuration complète du Claude Project sur votre compte
+        details_fr: |
+          Project Instructions calibrées sur votre marque réelle (ton,
+          positionnement, secteur dominant). Téléversement et
+          structuration du Project Knowledge. Vous recevez le Project
+          prêt à utiliser.
+        estimated_value_hours: 3-5
+      - service: Sélection guidée et préparation de vos fiches exemplaires
+        details_fr: |
+          Audit de 15-20 de vos fiches récentes. Sélection des 5-8
+          plus représentatives selon les critères de diversité,
+          performance commerciale, qualité du ton. Préparation des
+          fichiers téléversés.
+        estimated_value_hours: 2-3
+      - service: Test de validation avec 3 propriétés réelles
+        details_fr: |
+          Génération de 3 fiches en conditions réelles avec vos
+          prochains mandats. Comparaison avec votre méthode habituelle.
+          Ajustements des Instructions selon les écarts.
+        estimated_value_hours: 2
+      - service: Séance de calibrage à 30 jours
+        details_fr: |
+          Appel d'1 heure pour analyser les fiches produites depuis
+          le déploiement, ajuster les Project Instructions, identifier
+          les patterns à corriger ou amplifier.
+        estimated_value_hours: 1
+      - service: Support courriel pendant 30 jours
+        details_fr: |
+          Questions sur des cas particuliers, ajustements rapides,
+          dépannage. Réponses dans les 24-48 heures ouvrables.
+  what_we_bring_that_text_cannot_fr:
+    title_fr: Ce qui ne se transmet pas par écrit
+    items_fr:
+      - element: Le calibrage fin du ton de votre marque
+        why_fr: |
+          Un audit de votre vocabulaire, de vos formulations habituelles,
+          de votre positionnement (haut de gamme, accessible, jeune
+          famille, retraités) demande une conversation. Le résultat
+          est un Project qui ne sonne pas générique mais qui est
+          VOUS.
+      - element: Le choix curatorial des fiches exemplaires
+        why_fr: |
+          Identifier que telle fiche performante n'est pas représentative
+          parce que la propriété était exceptionnelle, ou que telle
+          autre est moins flashy mais incarne mieux votre style
+          durable — ça demande de l'expérience et un regard externe.
+      - element: La détection précoce des biais
+        why_fr: |
+          Sur les premières 5-10 fiches générées, un œil entraîné
+          voit ce qu'un client autonome ne verra qu'après 50 fiches :
+          une tendance subtile à sur-vendre certains attributs,
+          un manque de variété dans les formulations d'ouverture,
+          une dérive vers un secteur géographique non représentatif.
+      - element: Le rythme d'itération sur les premières semaines
+        why_fr: |
+          Combien d'ajustements faire ? Quand verrouiller ? Quand
+          accepter une imperfection vs continuer à raffiner ? C'est
+          du jugement basé sur de multiples déploiements.
+  total_investment_fr:
+    accompaniment_cad: 1 500 - 3 500 $
+    ongoing_monthly_cad: ~50 (Claude Pro + un éventuel deuxième Project EN)
+    client_time_required_hours: 4-6 (vs 15-20 en voie A pure)
+    time_to_operational_weeks: 2-3 (vs 4-6 en voie A pure)
+  deliverables_fr:
+    title_fr: Livrables tangibles que vous recevez
+    items_fr:
+      - Claude Project « Fiches Centris — [votre nom] » configuré et opérationnel sur votre compte
+      - Document « Instructions du Project — version 1.0 » avec historique des ajustements appliqués
+      - Bibliothèque de 5-8 fiches exemplaires sélectionnées et commentées (pourquoi cette fiche, ce qu'elle apporte au modèle)
+      - Gabarit de saisie standardisé personnalisé (Notion ou Google Doc)
+      - Document de validation « Test 3 propriétés » avec résultats chiffrés et comparaisons
+      - Notes de la séance de calibrage 30 jours
+      - Procédure de maintenance trimestrielle documentée
