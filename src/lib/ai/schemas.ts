@@ -115,7 +115,9 @@ export const skill2OutputSchema = z.object({
             name: z.string(),
             tier: z.string(),
             why_this_tool: z.string(),
-            estimated_monthly_cost_cad: z.string(),
+            // Claude oublie parfois ce champ ; default tolérant pour
+            // ne pas faire échouer toute l'opportunité sur un coût manquant.
+            estimated_monthly_cost_cad: z.string().default('non précisé'),
           }),
         ),
         expected_impact: z.object({
