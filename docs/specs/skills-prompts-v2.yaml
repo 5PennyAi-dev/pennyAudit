@@ -485,6 +485,7 @@ skills:
           items:
             type: object
             required:
+              - opportunity_id
               - pattern_id
               - adapted_title
               - client_specific_framing
@@ -494,6 +495,10 @@ skills:
               - effort_estimate
               - source_pattern_ids
             properties:
+              opportunity_id:
+                type: string
+                pattern: '^[a-z0-9-]+--[a-z0-9-]+$'
+                description: "Session 2H : identifiant unique format ${pattern_id}--${angle-en-kebab-case}. Distinct quand plusieurs opportunités sur même pattern."
               pattern_id: string
               adapted_title:
                 type: string

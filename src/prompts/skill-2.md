@@ -48,6 +48,8 @@ TON TRAVAIL
    - Complémentarité: les opportunités devraient s'enchaîner logiquement
 
 4. Pour chaque opportunité sélectionnée, produis:
+   - opportunity_id: identifiant unique de l'opportunité (voir
+     section FORMAT DE L'OPPORTUNITY_ID ci-dessous)
    - adapted_title: reformule le titre du pattern pour qu'il parle au
      client (ex: pattern "Réceptionniste IA vocale 24/7" devient
      "Répondeur intelligent pour la clinique en dehors des heures")
@@ -67,6 +69,57 @@ TON TRAVAIL
 
 5. Pour chaque pattern candidat écarté, note brièvement pourquoi
    (rejected_patterns). Utile pour la revue humaine.
+
+FORMAT DE L'OPPORTUNITY_ID (nouveau session 2H)
+
+Pour chaque opportunité produite, tu fournis un opportunity_id unique
+au format :
+
+  ${pattern_id}--${angle-court-en-kebab-case}
+
+Exemples :
+- ai-voice-receptionist--standard
+- ai-marketing-content-creation--fiches-centris
+- ai-marketing-content-creation--reveil-leads
+- ai-meeting-transcription-summary--rencontres-vendeur
+- ai-appointment-scheduling--clinique
+- ai-customer-support-helpdesk--commerce-en-ligne
+
+Règles strictes pour l'angle :
+- Court : 1-3 mots maximum
+- Descriptif du cas d'usage spécifique de cette opportunité
+- En kebab-case : minuscules, tirets simples entre mots, pas
+  d'accent, pas d'espace
+- Distinctif : si tu produis 2 opportunités sur le même pattern,
+  leurs angles doivent clairement différer (pas de "principal" vs
+  "secondaire" — utilise plutôt l'objet métier comme "fiches-centris"
+  vs "reveil-leads")
+
+Le séparateur entre pattern_id et angle est un DOUBLE tiret `--`.
+Cela permet de distinguer le séparateur de structure (--) des
+tirets internes au pattern_id ou à l'angle (-).
+
+Pattern de validation : `^[a-z0-9-]+--[a-z0-9-]+$` — un id mal formé
+fera échouer la validation Zod et toute l'opportunité sera rejetée.
+
+MULTI-OPPORTUNITÉS SUR UN MÊME PATTERN
+
+Tu peux produire plusieurs opportunités basées sur un même pattern_id
+quand le pattern couvre plusieurs angles distincts pertinents pour
+ce client. Par exemple, le pattern ai-marketing-content-creation
+peut générer simultanément :
+- ai-marketing-content-creation--fiches-centris (fiches immobilières)
+- ai-marketing-content-creation--reveil-leads (relances courriel)
+
+Dans ce cas :
+- Chaque opportunité a son propre opportunity_id unique
+- Chaque opportunité a son propre adapted_title clairement
+  différencié (pas le même libellé)
+- Chaque opportunité a son propre client_specific_framing,
+  expected_impact, etc.
+
+Ne produis pas plus de 2 opportunités sur un même pattern sauf cas
+exceptionnel justifié dans selection_rationale.
 
 ESTIMATION CHIFFRÉE PERSONNALISÉE (nouveau en v2)
 
@@ -230,6 +283,7 @@ inclusivement.
 {
   "selected_opportunities": [
     {
+      "opportunity_id": "string (format: ${pattern_id}--${angle-en-kebab-case}, ex: ai-marketing-content-creation--fiches-centris)",
       "pattern_id": "string (id du pattern source)",
       "adapted_title": "string",
       "client_specific_framing": "string (2-3 paragraphes)",
