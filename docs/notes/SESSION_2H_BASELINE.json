@@ -1,0 +1,332 @@
+{
+  "audit_id": "5737176f-3048-47ee-bfda-a7b607485b34",
+  "captured_at": "2026-04-27T12:50:32.234Z",
+  "selected_opportunities": [
+    {
+      "pattern_id": "ai-voice-receptionist",
+      "adapted_title": "Répondeur intelligent 24/7 pour capter les appels Centris du soir et de la fin de semaine",
+      "effort_estimate": {
+        "setup_effort": "medium",
+        "learning_curve": "Faible à moyenne pour la cliente. Marie-Pier est « à l'aise » technologiquement et a déjà testé ChatGPT — comprendre un script d'agent vocal sera dans son confort. Sandrine devra être formée pour gérer les transferts d'appels qualifiés.",
+        "estimated_setup_hours": "8-16 heures côté 5PennyAi, 4-6 heures côté cliente"
+      },
+      "expected_impact": {
+        "qualitative": "Capture des appels qui sont actuellement perdus en haute saison et hors heures de bureau. Réduction du sentiment de courir après les leads, et alignement avec la cible de croissance de 18 à 25 transactions sans embauche. Bénéfice secondaire : Sandrine peut se concentrer sur les tâches à plus forte valeur en avant-midi plutôt que d'éponger les rappels manqués.",
+        "quantitative_estimate": {
+          "basis": "hybrid",
+          "figures": [
+            {
+              "unit": "appels/semaine",
+              "metric": "Appels actuellement ratés et capturés par l'IA en haute saison",
+              "low_range": "9",
+              "timeframe": "hebdomadaire",
+              "high_range": "12"
+            },
+            {
+              "unit": "mandats/an",
+              "metric": "Nouveaux mandats ou rendez-vous qualifiés gagnés",
+              "low_range": "1",
+              "timeframe": "annuel",
+              "high_range": "3"
+            }
+          ],
+          "available": true,
+          "confidence": "medium",
+          "assumptions": [
+            "La cliente déclare 30 % d'appels ratés en haute saison; sur un volume estimé de 30-40 appels/semaine, cela représente 9 à 12 appels manqués hebdomadaires.",
+            "L'étude HBR/MIT (référencée dans le portrait sectoriel) indique qu'une réponse sous 1h rend un lead 7× plus susceptible d'être qualifié; on suppose ici que l'agent IA convertit 10-20 % des appels capturés en RDV qualifié.",
+            "L'écart de 7 transactions entre actuel (18) et cible (25) est partiellement adressable par cette opportunité; on estime qu'un quart à la moitié de ce gap pourrait venir de la meilleure réactivité aux appels Centris hors heures.",
+            "Hypothèse prudente : le délai actuel de 2h de rappel est un cas typique, pas le pire cas."
+          ]
+        }
+      },
+      "recommended_path": "voie_b_accompagne",
+      "recommended_tools": [
+        {
+          "name": "AgentZap",
+          "tier": "1",
+          "why_this_tool": "Documentation exhaustive de cas immobilier (Apex Realty Group : 3× plus de leads, 18 closings additionnels/an), tarification publique transparente, garantie 30 jours. Plan Starter à 109 $ USD/mois pour 150 minutes incluses convient au volume estimé.",
+          "estimated_monthly_cost_cad": "200-300$"
+        },
+        {
+          "name": "Anthropic API (Claude)",
+          "tier": "3",
+          "why_this_tool": "À garder en réserve si le test français québécois sur AgentZap n'est pas concluant — Claude performe mieux en français nuancé et permettrait une voie C custom. Pas activé d'emblée, mais à documenter comme plan B technique.",
+          "estimated_monthly_cost_cad": "10-50$"
+        }
+      ],
+      "source_pattern_ids": [
+        "ai-voice-receptionist"
+      ],
+      "client_specific_framing": "Marie-Pier identifie elle-même son point de fuite principal : « je rate facilement 30 % de mes appels en haute saison » et « quand je rappelle 2 heures plus tard », le prospect a déjà parlé à un autre courtier. Avec une couverture humaine limitée à 9h-13h via Sandrine, les après-midi, soirées et fins de semaine sont à découvert — précisément le moment où les leads Centris arrivent (l'exemple cité est un samedi soir). Un agent vocal IA branché à la ligne VoIP existante répondrait en moins de trois secondes, qualifierait acheteur ou vendeur, capterait secteur, budget et urgence, et proposerait un créneau dans l'agenda du lundi. C'est exactement le souhait d'automatisation déclaré.\n\nLa voie B (accompagnement hybride) s'impose ici. Le test français québécois est non négociable pour une cliente qui revend de l'image professionnelle, et la conformité OACIQ (archivage 6 ans) plus Loi 25 (données financières d'acheteurs : revenus, capacité d'emprunt) demande une configuration soignée que la voie A self-serve à 109 $ USD/mois ne couvre pas. Le budget de 2 000-5 000 $ et l'horizon 1-3 mois cadrent bien avec la voie B."
+    },
+    {
+      "pattern_id": "ai-marketing-content-creation",
+      "adapted_title": "Production de fiches Centris en 10 minutes au lieu de 45-60 minutes, conformes OACIQ",
+      "effort_estimate": {
+        "setup_effort": "medium",
+        "learning_curve": "Faible. Marie-Pier connaît déjà ChatGPT, donc la transition vers Claude Pro avec un Project bien configuré sera intuitive. Le seul nouvel apprentissage est le gabarit de saisie standardisé.",
+        "estimated_setup_hours": "10-15 heures côté 5PennyAi, 4-6 heures côté cliente"
+      },
+      "expected_impact": {
+        "qualitative": "Libération de 12-18 heures par année actuellement consacrées aux fiches Centris, redirigées vers la prospection et le suivi des leads. Qualité de fiche améliorée et conformité OACIQ par construction (les règles publicitaires sont encodées dans le Project Instructions). Réduction de la friction perçue lors du démarrage d'un nouveau mandat.",
+        "quantitative_estimate": {
+          "basis": "client_figures",
+          "figures": [
+            {
+              "unit": "minutes/fiche",
+              "metric": "Temps de production par fiche Centris",
+              "low_range": "10",
+              "timeframe": "par_evenement",
+              "high_range": "15"
+            },
+            {
+              "unit": "heures/an",
+              "metric": "Heures totales libérées par année",
+              "low_range": "12",
+              "timeframe": "annuel",
+              "high_range": "18"
+            }
+          ],
+          "available": true,
+          "confidence": "high",
+          "assumptions": [
+            "La cliente déclare 45-60 minutes par fiche actuellement; le sous-template indique 10-15 minutes après calibrage (incluant relecture et copier dans Matrix).",
+            "20 mandats par année déclarés, donc gain de 30-50 minutes × 20 = 10-17 heures économisées annuellement; arrondi à 12-18 pour intégrer aussi les ajustements et révisions de fiches en cours de mandat.",
+            "Suppose que la sélection curatoriale des fiches exemplaires et les Project Instructions calibrées résolvent l'écart de qualité que Marie-Pier a constaté avec ChatGPT brut."
+          ]
+        }
+      },
+      "recommended_path": "voie_b_accompagne",
+      "recommended_tools": [
+        {
+          "name": "Claude Pro (Anthropic)",
+          "tier": "1",
+          "why_this_tool": "Qualité française nettement supérieure à ChatGPT pour le ton québécois nuancé que Marie-Pier juge manquant. La feature Projects garde le contexte (fiches exemplaires, règles OACIQ, voix de marque) persistant entre conversations. C'est la cause directe de l'écart de qualité qu'elle a constaté avec ChatGPT.",
+          "estimated_monthly_cost_cad": "25-30$"
+        }
+      ],
+      "source_pattern_ids": [
+        "ai-marketing-content-creation"
+      ],
+      "client_specific_framing": "Marie-Pier décrit précisément le problème : « ça me prend 45 à 60 minutes de rédiger une description » et « multiplié par 20 mandats par année, ça fait 15-20 heures perdues ». Elle a déjà testé ChatGPT pour les fiches Centris et juge le résultat « trop générique » — c'est un bon signal : elle a fait l'expérience seule, identifié la limite, et est maintenant prête pour une approche calibrée. Le sous-template fiches-centris-immobilier de ce pattern est conçu exactement pour ce cas : un Claude Project alimenté par 5 à 8 de ses meilleures fiches passées plus les règles publicitaires OACIQ, avec des Project Instructions calibrées sur sa marque RE/MAX du Cartier.\n\nLa voie B est le sweet spot ici. La voie A est techniquement faisable mais c'est précisément le piège qu'elle a déjà rencontré avec ChatGPT brut : sans calibrage curatorial des fiches exemplaires et sans Project Instructions ajustées, le résultat reste générique. L'accompagnement apporte la sélection des fiches représentatives, l'ajustement de la voix, et le test de validation sur 3 propriétés réelles. Investissement 1 500-3 500 $ qui s'amortit rapidement."
+    },
+    {
+      "pattern_id": "ai-marketing-content-creation",
+      "adapted_title": "Réveil du Excel de 200+ leads tièdes par séquences de nurturing personnalisées",
+      "effort_estimate": {
+        "setup_effort": "medium",
+        "learning_curve": "Moyenne. Configuration de Brevo demande quelques heures pour comprendre listes, segments et automatisations, mais l'interface est en français et bien documentée. La rédaction des séquences se fait via le Project Claude.",
+        "estimated_setup_hours": "12-18 heures côté 5PennyAi, 5-7 heures côté cliente"
+      },
+      "expected_impact": {
+        "qualitative": "Réveil systématique d'une base actuellement dormante, avec sentiment retrouvé de contrôle sur le pipeline. Bénéfice secondaire : structuration en CRM léger via Brevo, ce qui résout partiellement le problème « tout dans ma tête » identifié dans les pain points. Contribution directe à la cible 18 → 25 transactions.",
+        "quantitative_estimate": {
+          "basis": "hybrid",
+          "figures": [
+            {
+              "unit": "leads/an",
+              "metric": "Contacts entretenus régulièrement",
+              "low_range": "150",
+              "timeframe": "annuel",
+              "high_range": "200"
+            },
+            {
+              "unit": "transactions/an",
+              "metric": "Transactions additionnelles potentiellement issues du nurturing",
+              "low_range": "1",
+              "timeframe": "annuel",
+              "high_range": "3"
+            }
+          ],
+          "available": true,
+          "confidence": "medium",
+          "assumptions": [
+            "La cliente déclare 200+ contacts qualifiés dans un Excel non systématiquement relancé.",
+            "Hypothèse prudente : 75-100 % de la base est encore réveillable (les autres ont déjà transigé ailleurs ou ne sont plus dans le marché).",
+            "Taux de conversion estimé d'un lead tiède réactivé en transaction sur 12 mois : 0,5 % à 1,5 %, ce qui est une fourchette conservatrice pour le secteur immobilier où le cycle est long.",
+            "Aucune donnée client directe sur le taux de conversion historique de cette base; à valider lors de l'audit pour ajuster la projection."
+          ]
+        }
+      },
+      "recommended_path": "voie_b_accompagne",
+      "recommended_tools": [
+        {
+          "name": "Claude Pro (Anthropic)",
+          "tier": "1",
+          "why_this_tool": "Même Project Pro que pour les fiches Centris peut être réutilisé avec un sous-Project dédié à la communication courriel — économie d'abonnement. Excellence en français pour ton chaleureux et personnel (essentiel en immobilier où la relation prime).",
+          "estimated_monthly_cost_cad": "25-30$"
+        },
+        {
+          "name": "Brevo (ex-Sendinblue)",
+          "tier": "2",
+          "why_this_tool": "Plateforme française avec interface française native, conformité Loi 25 et CASL robuste, hébergement européen par défaut. Plan gratuit jusqu'à 300 envois/jour, suffisant pour démarrer avec une base de 200 contacts et des envois trimestriels. Alternative québécoise pertinente.",
+          "estimated_monthly_cost_cad": "0-15$"
+        }
+      ],
+      "source_pattern_ids": [
+        "ai-marketing-content-creation"
+      ],
+      "client_specific_framing": "Marie-Pier dit textuellement : « j'ai un Excel avec 200+ contacts qualifiés », et exprime le sentiment que des « transactions dorment » dans cette base. C'est exactement le profil que cible le sous-template newsletters-nurturing : une base existante de prospects et clients passés qui n'est pas systématiquement entretenue, faute de temps pour rédiger et segmenter. Une newsletter trimestrielle plus une séquence de réveil ciblée sur les leads tièdes par secteur géographique réactiveraient cette base sans qu'elle ait à y consacrer ses soirées.\n\nLa voie B est essentielle ici parce que la valeur n'est pas dans la rédaction (Claude la fait bien) mais dans la stratégie de segmentation : qui contacter en priorité, avec quel angle, à quelle fréquence, et comment respecter Loi 25 et CASL pour des contacts qui n'ont peut-être pas tous donné un consentement formel. Pour 200 contacts, même 1-2 transactions additionnelles réveillées sur 12 mois justifient amplement l'investissement de 1 800-3 800 $."
+    },
+    {
+      "pattern_id": "ai-meeting-transcription-summary",
+      "adapted_title": "Transcription des rencontres acheteurs/vendeurs pour ne plus jamais perdre les nuances 3 mois plus tard",
+      "effort_estimate": {
+        "setup_effort": "low",
+        "learning_curve": "Faible. tl;dv s'intègre au calendrier (Google ou Outlook), rejoint automatiquement les réunions virtuelles. Pour les rencontres en personne, captation via app mobile ou ordinateur portable. Marie-Pier devra ajouter la mention de consentement dans ses invitations de rencontre.",
+        "estimated_setup_hours": "2-4 heures côté cliente avec audit guidé 5PennyAi"
+      },
+      "expected_impact": {
+        "qualitative": "Capture verbatim des rencontres acheteurs et vendeurs avec résumé structuré, versé dans le CRM. Élimine la double charge cognitive (écouter + écrire). Couverture partielle de l'obligation OACIQ d'archivage 6 ans pour les rencontres enregistrées (à valider avec un avocat). Marie-Pier peut revenir à des détails 3 mois plus tard sans dépendre de notes manuscrites incomplètes.",
+        "quantitative_estimate": {
+          "basis": "client_figures",
+          "figures": [
+            {
+              "unit": "heures/an",
+              "metric": "Heures économisées sur la prise et la retranscription de notes",
+              "low_range": "15",
+              "timeframe": "annuel",
+              "high_range": "25"
+            }
+          ],
+          "available": true,
+          "confidence": "medium",
+          "assumptions": [
+            "La cliente déclare 1h à 1,5h de prise de notes par rencontre.",
+            "Hypothèse de 30-50 rencontres annuelles (briefings vendeurs sur 20 mandats + qualifications acheteurs).",
+            "Gain estimé : 30 minutes par rencontre récupérées (la rencontre dure le même temps mais la retranscription post-rencontre est éliminée et remplacée par 5-10 min de relecture du résumé).",
+            "Estimation conservatrice; le gain réel inclut aussi la valeur de ne plus perdre d'information 3 mois plus tard, qui est qualitatif."
+          ]
+        }
+      },
+      "recommended_path": "voie_a_self_serve",
+      "recommended_tools": [
+        {
+          "name": "tl;dv",
+          "tier": "1",
+          "why_this_tool": "Conforme RGPD (basé en Allemagne), SOC 2, partenariat Anthropic (qualité française Claude). Plan gratuit avec enregistrements illimités. Promesse explicite de ne pas entraîner les modèles sur les données client — pertinent pour la dimension Loi 25 et données financières sensibles. Bot visible dans la réunion à atténuer en mentionnant l'enregistrement en début de rencontre (obligation de transparence de toute façon).",
+          "estimated_monthly_cost_cad": "0-25$"
+        },
+        {
+          "name": "Noota",
+          "tier": "2",
+          "why_this_tool": "Alternative française avec spécialisations vente B2B utiles ici (signaux d'achat, objections capturées). EU data centers, conformité RGPD/SOC2/ISO 27001. À évaluer pendant l'audit selon préférence d'interface.",
+          "estimated_monthly_cost_cad": "20-50$"
+        }
+      ],
+      "source_pattern_ids": [
+        "ai-meeting-transcription-summary"
+      ],
+      "client_specific_framing": "Marie-Pier décrit un problème précis : « je prends des notes manuscrites pendant 1h-1h30 » par rencontre, et « 3 mois plus tard quand le mandat évolue », elle perd des détails importants. Avec environ 20 mandats par an plus les qualifications acheteurs, c'est facilement 30 à 50 rencontres annuelles de 1 à 1,5 heure. Un outil de transcription IA capturerait verbatim tout l'échange et produirait un résumé structuré (motivations, prix souhaité, calendrier, objections) à verser directement dans son CRM — répondant aussi à l'obligation OACIQ d'archivage 6 ans des communications client.\n\nLa voie A self-serve est ici réaliste : Marie-Pier est à l'aise techno, le besoin est clair, et un outil français comme tl;dv ou Noota ne nécessite pas de configuration lourde. Cependant, attention à la sensibilité des données financières d'acheteurs (revenus, capacité d'emprunt, préapprobations) — un audit Loi 25 préalable est nécessaire pour valider l'outil retenu, ce qui justifie un audit payant 5PennyAi (199-299 $) plutôt qu'un déploiement totalement autonome."
+    }
+  ],
+  "roadmap": {
+    "phase_3_long_term": {
+      "timeframe": "6-12 mois",
+      "opportunities": [
+        "ai-marketing-content-creation-nurturing"
+      ],
+      "strategic_direction": "Une fois les trois premiers chantiers stabilisés et le ROI démontré, attaquer le réveil de la base de 200+ leads dans Brevo. Cette phase suppose que la conformité CASL/Loi 25 ait été clarifiée pour chaque cohorte de contacts (clients passés, prospects ayant demandé info, contacts sans base de consentement claire). L'investissement de 1 800-3 800 $ se finance naturellement par les transactions additionnelles capturées en phases 1 et 2."
+    },
+    "phase_1_quick_wins": {
+      "timeframe": "0-3 mois",
+      "opportunities": [
+        "ai-marketing-content-creation",
+        "ai-meeting-transcription-summary"
+      ],
+      "key_milestones": [
+        "Semaine 1-2 : audit Loi 25 unifié couvrant les 4 outils retenus + politique de confidentialité publiée sur la couche additive du site RE/MAX du Cartier",
+        "Semaine 2-4 : configuration du Claude Project Fiches Centris, sélection curatoriale de 5-8 fiches exemplaires, encodage des règles publicitaires OACIQ",
+        "Semaine 4-6 : test de validation sur 3 propriétés réelles, ajustement des Project Instructions, verrouillage version 1.0",
+        "Semaine 5-8 : déploiement tl;dv avec script de consentement intégré aux invitations Outlook/Google",
+        "Semaine 8-12 : mesure des heures économisées, séance de calibrage 30 jours sur les fiches"
+      ],
+      "estimated_budget_range_cad": "2 000 - 4 000 $ (couvre votre budget déclaré)"
+    },
+    "phase_2_medium_term": {
+      "timeframe": "3-6 mois",
+      "opportunities": [
+        "ai-voice-receptionist"
+      ],
+      "key_milestones": [
+        "Mois 3 : confirmation suite courriel/calendrier (Google Workspace ou Microsoft 365), consolidation du référentiel d'affaires (services, tarifs, secteurs, FAQ)",
+        "Mois 3-4 : configuration AgentZap avec script français québécois, glossaire phonétique des quartiers, branchement sur la VoIP existante",
+        "Mois 4 : batterie de 20 appels-tests scénarisés avant le go-live (seuil de qualité : 18/20 réussis)",
+        "Mois 4-5 : ouverture progressive (d'abord soir et week-end seulement, Sandrine garde les heures de jour), suivi du taux de raccrochage",
+        "Mois 5-6 : ajustement du script selon les 50 premiers appels réels, intégration au flux de qualification de leads"
+      ],
+      "estimated_budget_range_cad": "2 500 - 4 000 $"
+    }
+  },
+  "architectures_de_la_solution": [
+    {
+      "opportunity_id": "ai-marketing-content-creation",
+      "adapted_content": "## Architecture — Fiches Centris en 10-15 minutes\n\n**Stack retenu (voie B accompagnée)**\n- Claude Pro (25-30 $ CAD/mois) — qualité française québécoise nettement supérieure à ChatGPT\n- Notion ou Google Docs — gabarit de saisie standardisé\n- Investissement accompagnement : 1 500-3 500 $\n\n**Configuration du Claude Project (faite par 5PennyAi)**\n1. Project « Fiches Centris — Marie-Pier Lavigne » créé sur votre compte Claude Pro\n2. Project Instructions calibrées sur votre marque RE/MAX du Cartier : ton chaleureux et factuel, vocabulaire québécois, règles publicitaires OACIQ encodées en directives positives, signature professionnelle conforme\n3. Project Knowledge alimenté par 5-8 de vos meilleures fiches passées (audit curatorial sur 15-20 fiches récentes), les règles publicitaires OACIQ pertinentes, et la fiche-type Matrix vierge\n\n**Workflow opérationnel (10-12 min/fiche)**\n1. Remplir le gabarit standardisé (5 min) : type, secteur, année, superficies, chambres, salles de bain, particularités\n2. Coller dans une nouvelle conversation du Project (30 secondes pour le draft)\n3. Relire, ajuster anecdotes secteur, vérifier les [À VÉRIFIER] (3-5 min)\n4. Copier dans Matrix\n\n**Pièges à éviter**\n- Sélectionner uniquement vos fiches les plus flashy biaise le modèle vers le haut de gamme\n- Copier-coller les règles OACIQ sans les transposer en directives positives produit des fiches plates\n- Publier sans vérifier les marqueurs [À VÉRIFIER] expose à un risque OACIQ\n\n**Critères de succès à 90 jours**\nTemps moyen 10-12 min/fiche, gain 12-18 h/année, zéro publication avec donnée non vérifiée, le Project est devenu un outil de routine.\n\n**Livrables 5PennyAi**\nProject configuré, bibliothèque de 5-8 fiches commentées, gabarit personnalisé, test de validation sur 3 propriétés, séance de calibrage à 30 jours, support courriel 30 jours.",
+      "sub_template_id": "fiches-centris-immobilier",
+      "sub_template_match_score": 8
+    },
+    {
+      "opportunity_id": "ai-marketing-content-creation-nurturing",
+      "adapted_content": "## Architecture — Réveil des 200+ leads tièdes\n\n**Stack retenu (voie B accompagnée)**\n- Claude Pro (25-30 $ CAD/mois) — sous-Project dédié à la communication courriel, réutilise le compte des fiches Centris\n- Brevo (gratuit jusqu'à 300 envois/jour, suffisant pour 200 contacts en envois trimestriels) — interface française native, conformité Loi 25 robuste, hébergement européen\n- Investissement accompagnement : 1 800-3 800 $ (phase 3, mois 6-12)\n\n**Préalables critiques (avant tout envoi)**\n1. Audit qualité du fichier Excel : doublons, normalisation des champs, dates dernier contact (4-6 h)\n2. Tri du statut de consentement Loi 25/CASL pour les 200 contacts en 3 cohortes :\n   - (a) Clients ayant transigé : consentement implicite valide 24 mois\n   - (b) Prospects ayant explicitement demandé info : consentement implicite 6 mois\n   - (c) Contacts sans base claire : NE PAS envoyer de courriel commercial — appel personnel ou SMS individuel pour rétablir\n3. Politique de confidentialité publiée + pied d'email Brevo conforme (désabonnement, identité, adresse)\n\n**Configuration (faite par 5PennyAi)**\n1. Sous-Project Claude « Communication courriel — Marie-Pier Lavigne / RE/MAX du Cartier »\n2. Brevo configuré : listes segmentées (acheteurs/vendeurs, secteur, statut tiède/froid), gabarit visuel aux couleurs RE/MAX du Cartier, automatisation welcome\n3. Calendrier éditorial annuel personnalisé (12 mois, ancré sur saisons immobilières québécoises)\n\n**Cadence opérationnelle**\n- Newsletter trimestrielle (4 envois/an) à toute la base éligible — production 30-45 min via Claude\n- 1-2 séquences de nurturing ciblées par secteur (3 emails sur 3-4 semaines) lancées sur petit segment d'abord (50 contacts), puis scalées si performance OK\n\n**Pièges à éviter**\n- Envoyer à toute la base sans segmentation dilue les taux d'ouverture\n- Confondre fréquence et valeur : trimestriel suffit, hebdomadaire fatigue\n- Tester sur toute la base au lieu d'un échantillon de 50-100 contacts d'abord\n\n**Critères de succès à 90 jours (phase 3)**\nTaux d'ouverture 25-35 %, au moins 1 séquence de nurturing déployée et mesurée, base segmentée propre, 1-3 transactions additionnelles potentiellement issues sur 12 mois.\n\n**Livrables 5PennyAi**\nStratégie de segmentation, sous-Project Claude, Brevo configuré, première newsletter envoyée + 1 séquence déployée, calendrier éditorial 12 mois, doc conformité Loi 25/CASL appliqué, calibrage 30 jours.",
+      "sub_template_id": "newsletters-nurturing",
+      "sub_template_match_score": 7
+    }
+  ],
+  "impact_effort_matrix": [
+    {
+      "quadrant": "projet_strategique",
+      "effort_score": 7,
+      "impact_score": 9,
+      "opportunity_id": "ai-voice-receptionist"
+    },
+    {
+      "quadrant": "quick_win",
+      "effort_score": 4,
+      "impact_score": 7,
+      "opportunity_id": "ai-marketing-content-creation"
+    },
+    {
+      "quadrant": "projet_strategique",
+      "effort_score": 6,
+      "impact_score": 7,
+      "opportunity_id": "ai-marketing-content-creation-nurturing"
+    },
+    {
+      "quadrant": "quick_win",
+      "effort_score": 3,
+      "impact_score": 6,
+      "opportunity_id": "ai-meeting-transcription-summary"
+    }
+  ],
+  "roi_estimates": [
+    {
+      "notes": "Une seule transaction additionnelle nette (~9 000-12 000 $ de commission selon le marché montréalais) rentabilise plusieurs fois l'investissement annuel total (setup + abonnement). Le ROI dépend de la qualité du test français québécois préalable au go-live.",
+      "opportunity_id": "ai-voice-receptionist",
+      "time_saved_qualitative": "Sandrine récupère du temps en avant-midi parce qu'elle n'éponge plus les rappels manqués. Vous récupérez la charge mentale de courir après les leads.",
+      "payback_period_qualitative": "court",
+      "revenue_impact_qualitative": "9 à 12 appels par semaine actuellement perdus en haute saison sont capturés et qualifiés. En projection annuelle prudente, cela représente 1 à 3 nouveaux mandats ou rendez-vous qualifiés gagnés — directement aligné avec votre cible 18 → 25 transactions."
+    },
+    {
+      "notes": "Investissement 1 500-3 500 $ + 25-30 $/mois Claude Pro. La courbe d'apprentissage est faible vu votre confort déjà acquis avec ChatGPT.",
+      "opportunity_id": "ai-marketing-content-creation",
+      "time_saved_qualitative": "12 à 18 heures par année libérées sur la production des fiches Centris (passage de 45-60 minutes à 10-15 minutes par fiche, sur ~20 mandats annuels).",
+      "payback_period_qualitative": "court",
+      "revenue_impact_qualitative": "Impact indirect : ces heures redirigées vers la prospection et le suivi des leads tièdes contribuent à l'objectif de croissance. Bénéfice qualité : conformité OACIQ par construction et fiches qui sonnent enfin comme vous, pas comme un ChatGPT générique."
+    },
+    {
+      "notes": "Voie A self-serve viable, mais l'audit Loi 25 préalable (199-299 $) est non négociable étant donné les données financières d'acheteurs collectées.",
+      "opportunity_id": "ai-meeting-transcription-summary",
+      "time_saved_qualitative": "15 à 25 heures par année récupérées sur la prise et la retranscription de notes (gain de ~30 minutes par rencontre sur 30-50 rencontres annuelles).",
+      "payback_period_qualitative": "court",
+      "revenue_impact_qualitative": "Impact qualitatif fort : vous ne perdez plus les nuances 3 mois plus tard quand un mandat évolue. Couverture partielle de l'obligation OACIQ d'archivage 6 ans (à valider juridiquement). Pas de projection de revenus directe."
+    },
+    {
+      "notes": "Investissement 1 800-3 800 $. Aucune donnée client directe sur le taux de conversion historique de cette base : à valider avec les premiers envois pour ajuster la projection. Phase 3 délibérément séquencée après l'agent vocal pour ne pas saturer la capacité d'apprentissage.",
+      "opportunity_id": "ai-marketing-content-creation-nurturing",
+      "time_saved_qualitative": "Pas de gain de temps direct — c'est un investissement de temps (5-7 heures côté cliente pour la phase setup) qui crée un actif de communication récurrent.",
+      "payback_period_qualitative": "moyen",
+      "revenue_impact_qualitative": "Sur 12 mois, 1 à 3 transactions additionnelles potentiellement issues du réveil de la base de 200 contacts (taux de conversion conservateur 0,5-1,5 %). Bénéfice secondaire : structuration en CRM léger via Brevo, ce qui résout partiellement le « tout dans ma tête »."
+    }
+  ]
+}
