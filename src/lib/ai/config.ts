@@ -41,7 +41,9 @@ export const SKILL_MODEL_CONFIG: Record<1 | 2 | 3 | 4 | 5 | 6, SkillModelParams>
   2: { model: ANTHROPIC_MODEL_DEFAULT, maxTokens: 16000 },
   3: { model: ANTHROPIC_MODEL_DEFAULT, maxTokens: 16000 },
   4: { model: ANTHROPIC_MODEL_DEFAULT, maxTokens: 16000 },
-  5: { model: ANTHROPIC_MODEL_DEFAULT, maxTokens: 28000 },
+  // Skill 5 plafonné à 20000 : au-delà (~21000), le SDK Anthropic exige
+  // le streaming (estime > 10 min). callClaudeJSON est non-streaming.
+  5: { model: ANTHROPIC_MODEL_DEFAULT, maxTokens: 20000 },
   6: { model: ANTHROPIC_MODEL_DEFAULT, maxTokens: 20000 },
 };
 
