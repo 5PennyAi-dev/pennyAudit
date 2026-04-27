@@ -1,0 +1,396 @@
+{
+  "candidates": [
+    {
+      "id": "5737176f-3048-47ee-bfda-a7b607485b34",
+      "status": "pending_review",
+      "business_name": "Marie-Pier Lavigne — Courtier immobilier résidentiel",
+      "created_at": "2026-04-26T20:13:12.083593+00:00",
+      "updated_at": "2026-04-27T13:41:14.547406+00:00"
+    }
+  ],
+  "most_recent_id": "5737176f-3048-47ee-bfda-a7b607485b34",
+  "most_recent_skill_5_output": {
+    "roadmap": {
+      "phase_3_long_term": {
+        "timeframe": "6-12 mois",
+        "opportunities": [
+          "ai-marketing-content-creation--reveil-leads"
+        ],
+        "strategic_direction": "Une fois les trois premiers chantiers stabilisés et votre routine adaptée, lancer le réveil du pipeline de 200+ leads tièdes via Brevo. La condition préalable est un tri rigoureux du consentement CASL : sans cette étape, l'opportunité ne peut pas démarrer. Cette phase est aussi le bon moment pour envisager un CRM léger (HubSpot Free, Folk ou un CRM immobilier QC) pour consolider fiches d'appels IA, comptes rendus de rencontre et historiques d'emailing — sans CRM, le bénéfice cumulé des trois premiers chantiers se diluera vite."
+      },
+      "phase_1_quick_wins": {
+        "timeframe": "0-3 mois",
+        "opportunities": [
+          "ai-marketing-content-creation--fiches-centris",
+          "ai-meeting-transcription-summary--rencontres-vendeur-acheteur"
+        ],
+        "key_milestones": [
+          "Mois 1 — Configuration du Claude Project Fiches Centris : audit de 15-20 fiches existantes, sélection des 5-8 exemplaires, encodage des règles OACIQ, validation V1.0.",
+          "Mois 1 — Mise en place de tl;dv et Plaud NotePin avec clause de consentement standardisée à intégrer dans toutes les invitations de rencontre.",
+          "Mois 2 — Production en conditions réelles d'au moins 5 fiches Centris via le Project, mesure du temps moyen et de la conformité.",
+          "Mois 2 — Configuration de l'archivage automatique des transcriptions vers OneDrive ou Google Drive nominatif (rétention OACIQ 6 ans).",
+          "Mois 3 — Séance de calibrage à 30 jours avec 5PennyAi, ajustement des Project Instructions et verrouillage de la version 1.0."
+        ],
+        "estimated_budget_range_cad": "1 500 $ - 2 800 $ (accompagnement initial des deux chantiers + outils)"
+      },
+      "phase_2_medium_term": {
+        "timeframe": "3-6 mois",
+        "opportunities": [
+          "ai-voice-receptionist--reception-24-7"
+        ],
+        "key_milestones": [
+          "Mois 3-4 — Audit Loi 25 du fournisseur (AgentZap), signature DPA, évaluation des facteurs relatifs à la vie privée (EFVP) documentée.",
+          "Mois 4 — Configuration du script en français québécois, des règles de qualification et de l'intégration calendrier ; 5-10 appels simulés en QC avant go-live.",
+          "Mois 4-5 — Pilote contrôlé de 2 semaines sur les soirs et fins de semaine uniquement, écoute systématique des 100 premiers appels.",
+          "Mois 5 — Décision go/no-go : si qualité française < 90 %, bascule plan B vers solution custom Claude API.",
+          "Mois 5-6 — Ouverture progressive 24/7 et option « tapez 0 pour laisser un message direct à Marie-Pier »."
+        ],
+        "estimated_budget_range_cad": "1 200 $ - 2 200 $ (setup + 3 mois d'abonnement)"
+      }
+    },
+    "closing_notes": "Marie-Pier, merci d'avoir pris le temps de remplir le formulaire avec autant de précision — la richesse de vos réponses (chiffres concrets, contraintes réglementaires explicites, contraintes de bannière documentées) a permis de produire un audit qui colle vraiment à votre réalité de courtière chez RE/MAX du Cartier, et non à un cas générique. Ce rapport a fait l'objet d'une révision humaine par Christian Couillard, fondateur de 5PennyAi, pour s'assurer que les recommandations tiennent compte de votre objectif 25 transactions, de votre budget 2-5 k$ et de l'horizon 1-3 mois.\n\nLa feuille de route est ambitieuse mais réaliste si on respecte le séquencement : phase 1 stabilisée avant de lancer la réceptionniste IA, et tri CASL validé avant tout envoi Brevo. Si vous souhaitez démarrer la phase 1 ou explorer un point précis du rapport, n'hésitez pas à nous contacter — un appel de 30 minutes suffit généralement à clarifier les zones grises identifiées en kickoff (suite courriel/calendrier, périmètre de qualification IA, statut CASL des contacts).",
+    "roi_estimates": [
+      {
+        "notes": "Le Claude Pro à ~25 $ CAD/mois est largement amorti dès la deuxième fiche produite. L'accompagnement 5PennyAi (1 500-3 500 $) se rentabilise sur les heures libérées et l'évitement du retravail constaté avec ChatGPT.",
+        "opportunity_id": "ai-marketing-content-creation--fiches-centris",
+        "time_saved_qualitative": "12 à 16 heures par année récupérées sur la rédaction des fiches Centris, soit l'équivalent de 2 journées de travail. À 25 transactions visées, le gain peut grimper vers 18-20 heures.",
+        "payback_period_qualitative": "court",
+        "revenue_impact_qualitative": "Pas de revenu direct, mais effet indirect : fiches plus rapides à publier = mises en marché accélérées = avantage concurrentiel sur les délais."
+      },
+      {
+        "notes": "tl;dv en plan gratuit + Plaud NotePin (achat unique ~159 $ USD) = coût marginal très faible. Risque critique à traiter en amont : le consentement explicite à l'enregistrement, sans quoi l'outil ne peut pas être utilisé.",
+        "opportunity_id": "ai-meeting-transcription-summary--rencontres-vendeur-acheteur",
+        "time_saved_qualitative": "30 à 45 minutes par rencontre, soit 20 à 35 heures par année cumulées sur 40-60 rencontres acheteur/vendeur. Bénéfice supplémentaire qualitatif : retrouver précisément les détails d'une rencontre 3 mois plus tard.",
+        "payback_period_qualitative": "court",
+        "revenue_impact_qualitative": "Réduit le risque de perdre un mandat parce que vous avez oublié les motivations du vendeur ou les critères précis de l'acheteur. Soutient la conformité OACIQ (archivage 6 ans)."
+      },
+      {
+        "notes": "Le coût mensuel (200-500 $ CAD) plus le setup (1 000 $ USD AgentZap) demande 1 à 2 transactions additionnelles sur l'année pour s'amortir — réaliste compte tenu du potentiel. Garantie 30 jours d'AgentZap permet de valider la qualité française avant engagement long. Plan B Claude API documenté.",
+        "opportunity_id": "ai-voice-receptionist--reception-24-7",
+        "time_saved_qualitative": "Pas de temps libéré direct mais récupération de 9 à 12 appels par semaine en haute saison qui partent actuellement à la concurrence après 2 heures de délai de rappel.",
+        "payback_period_qualitative": "moyen",
+        "revenue_impact_qualitative": "Potentiel de 3 à 7 transactions additionnelles par année attribuables à la captation des appels hors heures, dans un marché où 78 % des acheteurs choisissent le premier courtier qui répond."
+      },
+      {
+        "notes": "Coût mensuel très bas (Brevo gratuit jusqu'à 300 envois/jour + Claude déjà payé pour les fiches). Le vrai coût est le tri CASL préalable, sans lequel le projet ne peut pas démarrer. ROI conditionné à la qualité du consentement de la base.",
+        "opportunity_id": "ai-marketing-content-creation--reveil-leads",
+        "time_saved_qualitative": "Pas de temps libéré direct mais activation d'un actif dormant (200+ contacts) qui ne génère actuellement aucune transaction systématique.",
+        "payback_period_qualitative": "moyen",
+        "revenue_impact_qualitative": "1 à 3 transactions additionnelles par année estimées de manière conservatrice sur une base tiède bien segmentée. Confiance basse — le portrait sectoriel ne fournit pas de benchmark direct sur la conversion d'un pipeline tiède en immobilier résidentiel québécois."
+      }
+    ],
+    "reviewer_notes": "",
+    "confidence_level": "high",
+    "recommended_path": {
+      "rationale": "Votre préférence déclarée pour la voie B est cohérente avec votre profil : vous êtes techniquement à l'aise mais votre charge transactionnelle (objectif 25 mandats) limite votre bande passante d'apprentissage, et la sensibilité réglementaire (OACIQ + Loi 25 sur données financières) demande un calibrage rigoureux qu'un parcours autonome rendrait risqué. L'accompagnement 5PennyAi sécurise les éléments où l'erreur coûte cher (qualité française de la réceptionniste IA, conformité OACIQ des fiches Centris, tri CASL des 200+ leads) et libère votre attention pour ce qui crée vraiment de la valeur : les rencontres clients et les transactions. Votre budget de 2-5 k$ couvre confortablement les phases 1 et 2, avec marge pour la phase 3.",
+      "primary_path": "voie_b_accompagne",
+      "alternative_consideration": "Une voie A pure pour les fiches Centris uniquement pourrait être envisagée si vous souhaitiez réduire l'investissement initial — la documentation du sous-template fiches-centris-immobilier permet une mise en place autonome. Cette option deviendrait pertinente si votre bande passante augmentait significativement (par exemple via une saison plus calme) ou si vous vouliez tester le format avant d'engager 5PennyAi sur les autres chantiers."
+    },
+    "executive_summary": {
+      "key_findings": [
+        "30 % d'appels manqués en haute saison sur fond d'un marché où 78 % des acheteurs choisissent le premier courtier qui répond — chaque appel non capté est statistiquement un mandat perdu.",
+        "15 à 20 heures par année consommées par la rédaction des fiches Centris, alors qu'un Claude Project bien calibré ramène l'effort sous 12 minutes par fiche tout en sécurisant la conformité OACIQ.",
+        "Pipeline de 200+ leads tièdes dormant dans un Excel sans nurturing systématique — un actif latent dans un marché québécois où 16 682 courtiers se disputent les mêmes mandats.",
+        "Notes manuscrites de rencontres jamais retranscrites complètement : perte d'information stratégique et risque sur l'obligation d'archivage 6 ans de l'OACIQ.",
+        "Deux risques critiques à traiter avant tout go-live : le consentement à la transcription des rencontres et la base de consentement CASL des 200+ contacts Excel."
+      ],
+      "opening_paragraph": "Marie-Pier, votre situation est celle d'une courtière qui performe déjà au-dessus de la médiane (18 transactions vs 10 selon le NAR) mais qui laisse fuir des leads précieux par manque de couverture téléphonique et par absence de système de suivi. Avec une bannière qui impose certains outils, des données financières sensibles et une obligation OACIQ d'archivage 6 ans, votre contexte exige des solutions IA branchées en couches additionnelles, calibrées en français québécois et conformes Loi 25. Le potentiel identifié est substantiel : capter les appels hors heures, industrialiser la production des fiches Centris, réveiller votre pipeline dormant de 200+ leads et capturer fidèlement le contenu des rencontres. La cible 25 transactions est atteignable si la roadmap est exécutée avec rigueur sur 12 mois.",
+      "top_3_recommendations": [
+        "Industrialiser la rédaction des fiches Centris avec un Claude Project calibré sur votre voix et les règles OACIQ — gain rapide, faible risque, libère 12-16 h/an.",
+        "Déployer une réceptionniste IA vocale 24/7 pour capter les appels hors heures et le samedi soir, avec pilote contrôlé en français québécois avant ouverture complète.",
+        "Réveiller votre fichier de 200+ leads tièdes via Brevo et des séquences de nurturing rédigées avec Claude, après tri préalable du consentement CASL."
+      ],
+      "expected_outcome_12_months": "Si la feuille de route est suivie, vous gagnez 35 à 55 heures par année de temps administratif, vous captez 9 à 12 appels hors heures de plus par semaine en haute saison, et vous mettez en mouvement un pipeline qui peut contribuer 4 à 10 transactions additionnelles vers la cible de 25 — tout en renforçant votre conformité OACIQ et Loi 25."
+    },
+    "impact_effort_matrix": [
+      {
+        "quadrant": "quick_win",
+        "effort_score": 3,
+        "impact_score": 7,
+        "opportunity_id": "ai-marketing-content-creation--fiches-centris"
+      },
+      {
+        "quadrant": "quick_win",
+        "effort_score": 3,
+        "impact_score": 7,
+        "opportunity_id": "ai-meeting-transcription-summary--rencontres-vendeur-acheteur"
+      },
+      {
+        "quadrant": "projet_strategique",
+        "effort_score": 7,
+        "impact_score": 9,
+        "opportunity_id": "ai-voice-receptionist--reception-24-7"
+      },
+      {
+        "quadrant": "projet_strategique",
+        "effort_score": 6,
+        "impact_score": 6,
+        "opportunity_id": "ai-marketing-content-creation--reveil-leads"
+      }
+    ],
+    "actionable_deliverables": [
+      {
+        "title": "Banque de 15 prompts Claude pour Marie-Pier — courtage immobilier résidentiel",
+        "content": {
+          "prompts": [
+            {
+              "title": "Courriel de premier contact à un lead Centris hors heures",
+              "use_case": "Communication client — répondre rapidement à une demande Centris reçue le soir ou la fin de semaine",
+              "prompt_text": "Tu es l'assistante de Marie-Pier Lavigne, courtière immobilière résidentielle chez RE/MAX du Cartier. Rédige un courriel de premier contact à un prospect qui a soumis une demande sur Centris pour la propriété suivante : [ADRESSE OU NUMÉRO DE FICHE]. Le prospect a indiqué : [ACHETEUR/VENDEUR], secteur [SECTEUR], commentaire libre [COMMENTAIRE]. Ton chaleureux et factuel, vouvoiement, 100-130 mots. Mentionner que Marie-Pier rappelle dans les 24h ouvrables, proposer 2-3 créneaux indicatifs (ex: lundi 9h, mardi 14h). Signature : Marie-Pier Lavigne, courtière immobilière résidentielle, RE/MAX du Cartier. Ne pas inventer de chiffres sur la propriété ; si information manquante, écrire [À VÉRIFIER]."
+            },
+            {
+              "title": "Courriel de relance à un lead tiède du fichier Excel",
+              "use_case": "Communication client — réveiller un prospect rencontré il y a plusieurs mois",
+              "prompt_text": "Rédige un courriel court (90-120 mots) de reprise de contact à un prospect que j'ai rencontré il y a [NOMBRE DE MOIS] mois. Contexte de la rencontre : [BRIEF — acheteur cherchait quoi, vendeur envisageait quoi]. Actualité du marché à intégrer : [ACTUALITÉ — ex: hausse 8 % des ventes au QC en 2025, taux hypothécaires en baisse, etc.]. Pas de pression commerciale, ton chaleureux et utile, signature Marie-Pier Lavigne RE/MAX du Cartier. Inclure une question ouverte courte pour relancer la conversation. Mention de désabonnement non requise (courriel individuel, pas marketing de masse)."
+            },
+            {
+              "title": "Réponse à une demande de présentation de mandat de vendeur",
+              "use_case": "Communication client — confirmer un rendez-vous de présentation et préparer le vendeur",
+              "prompt_text": "Rédige une confirmation de rendez-vous pour une présentation de mandat de vente à [NOM DU VENDEUR] le [DATE] à [HEURE], adresse [ADRESSE]. Inclure : (1) confirmation du rendez-vous, (2) liste des 3-4 documents à préparer (titre de propriété, comptes de taxes municipales et scolaires, déclaration du vendeur, certificat de localisation), (3) durée estimée 1h-1h30, (4) clause de consentement à l'enregistrement de la rencontre par outil de prise de notes IA (formulation : 'Avec votre accord, j'utilise un outil de prise de notes assistée par IA qui transcrit notre conversation pour mon dossier uniquement; aucune information n'est partagée à un tiers à des fins commerciales'). Ton professionnel chaleureux, signature RE/MAX du Cartier."
+            },
+            {
+              "title": "Compte rendu structuré de rencontre acheteur",
+              "use_case": "Rédaction interne — transformer mes notes manuscrites en compte rendu retrouvable 3 mois plus tard",
+              "prompt_text": "Voici mes notes brutes prises en rencontre avec un acheteur : [COLLER NOTES]. Transforme-les en compte rendu structuré avec les sections suivantes : (1) Profil acheteur (situation, financement, urgence), (2) Critères de recherche (secteurs, type de propriété, budget, must-have, nice-to-have, exclusions), (3) Motivations principales et freins exprimés, (4) Prochaines étapes convenues avec dates, (5) Points sensibles à mémoriser pour les prochains échanges. Si une donnée est ambiguë dans mes notes, écrire [À CLARIFIER]. Ne rien inventer."
+            },
+            {
+              "title": "Compte rendu structuré de présentation de mandat vendeur",
+              "use_case": "Rédaction interne — capturer les motivations du vendeur pour ne rien oublier",
+              "prompt_text": "Voici mes notes de présentation de mandat chez un vendeur : [COLLER NOTES]. Produis un compte rendu avec : (1) Profil vendeur et raison de la vente, (2) Caractéristiques de la propriété (factuels uniquement), (3) Attentes de prix et flexibilité, (4) Échéance souhaitée, (5) Points émotionnels (souvenirs, attachement, contraintes familiales) à manier avec délicatesse, (6) Objections soulevées et réponses apportées, (7) Décision prise ou prochaines étapes. Marquer [À VÉRIFIER] toute donnée chiffrée non confirmée."
+            },
+            {
+              "title": "Brouillon de fiche Centris à partir d'un gabarit rempli",
+              "use_case": "Rédaction interne — produire un draft de fiche Centris en 10 minutes",
+              "prompt_text": "Voici les caractéristiques d'une nouvelle propriété pour fiche Centris : type [TYPE], secteur [SECTEUR], année [ANNÉE], superficie habitable [SUP M²], terrain [TERRAIN M²], chambres [NB], salles de bain [NB], points forts factuels [LISTE — garage, foyer, rénovations avec année], particularités secteur [ÉCOLES, TRANSPORT, COMMERCES]. Produis la fiche Centris (180-220 mots) selon mes Project Instructions habituelles : ton chaleureux factuel, pas de superlatifs, vocabulaire québécois, mention RE/MAX du Cartier en signature. Lister à la fin tous les [À VÉRIFIER] avant publication."
+            },
+            {
+              "title": "Réponse à une objection prix en présentation de mandat",
+              "use_case": "Communication client — préparer une réponse pondérée à 'mon voisin a vendu plus cher'",
+              "prompt_text": "Aide-moi à formuler une réponse écrite (à transmettre par courriel après une rencontre) à un vendeur qui invoque le prix de vente d'un voisin pour justifier un prix supérieur à mon évaluation. Données à intégrer : prix recommandé [X], prix souhaité par le vendeur [Y], comparables récents dans le secteur [LISTE], délai moyen de vente dans le secteur [JOURS]. Ton respectueux, vouvoiement, factuel, sans contredire frontalement. 200-250 mots. Conclure par une proposition concrète (ex: période d'essai à son prix sur 3 semaines avec révision si pas d'offre)."
+            },
+            {
+              "title": "Note de suivi post-visite acheteur",
+              "use_case": "Rédaction interne — synthétiser une visite pour aider l'acheteur à se projeter",
+              "prompt_text": "Voici mes observations après une visite avec un acheteur sur la propriété [ADRESSE] : [NOTES]. Produis une courte note de suivi (150-200 mots) à envoyer à l'acheteur : ce qu'il a aimé, ce qui l'a fait hésiter, mes observations professionnelles factuelles (état général, points à valider en inspection si applicable), suggestion de prochaine étape (autre visite, offre, retour réflexion). Ton chaleureux, vouvoiement, signature RE/MAX du Cartier."
+            },
+            {
+              "title": "Synthèse comparative de 3 propriétés visitées",
+              "use_case": "Analyse — aider un acheteur à départager 3 options",
+              "prompt_text": "Voici les caractéristiques et impressions de 3 propriétés que mon acheteur a visitées : Propriété A [DÉTAILS], Propriété B [DÉTAILS], Propriété C [DÉTAILS]. Critères prioritaires de l'acheteur : [LISTE]. Produis un tableau comparatif synthétique (texte structuré) puis un paragraphe de synthèse (100 mots) qui éclaire la décision sans la prendre à la place du client. Marquer [À VÉRIFIER] tout chiffre non confirmé."
+            },
+            {
+              "title": "Texte court pour publication Facebook après une vente",
+              "use_case": "Marketing — célébrer une vente sans tomber dans l'autopromo",
+              "prompt_text": "Rédige un post Facebook de 80-120 mots célébrant la vente d'une propriété à [SECTEUR]. Type de propriété [TYPE], temps sur le marché [JOURS]. Ton chaleureux, accent sur l'expérience client (sans nommer le client) et sur la dynamique du secteur, pas sur la commission ou ma performance. Pas de superlatifs creux. Inclure 1-2 émojis discrets. Mention RE/MAX du Cartier. Question ouverte en fin de post pour engagement (ex: 'Vous pensez à vendre cette année dans [SECTEUR] ?')."
+            },
+            {
+              "title": "Newsletter mensuelle aux clients passés",
+              "use_case": "Marketing — entretenir la relation avec les clients après transaction",
+              "prompt_text": "Rédige la newsletter mensuelle (300-400 mots) à mes clients passés. Thème principal du mois : [THÈME — ex: marché, fiscalité immobilière, rénovation rentable, saisonnier]. Inclure : ouverture personnelle (référence à la saison), section principale avec 1 conseil concret, section courte 'actualité du marché QC' (si pertinent intégrer chiffre APCIQ 2025 : 97 214 ventes au QC, +8 %), invitation soft à me référer un proche. Ton chaleureux factuel, pas de marketing creux, signature Marie-Pier Lavigne RE/MAX du Cartier. Pied d'email avec désabonnement et adresse complète obligatoires (Loi 25/CASL)."
+            },
+            {
+              "title": "Relance d'un acheteur préqualifié inactif depuis 60 jours",
+              "use_case": "Communication client — réactiver un acheteur qui a perdu de l'élan",
+              "prompt_text": "Rédige un courriel court (100 mots) à un acheteur préqualifié qui n'a pas visité depuis 60 jours. Données : préapprobation [VALIDE JUSQU'AU], dernière visite [PROPRIÉTÉ ET DATE], critères de recherche [BRIEF]. Mentionner sans pression : 1-2 propriétés récemment listées qui pourraient l'intéresser (formulation neutre : 'quelques options correspondent à vos critères'), rappel de l'expiration possible de sa préapprobation, proposition d'un appel de 15 min. Ton chaleureux, vouvoiement."
+            },
+            {
+              "title": "Offre d'achat — préparation d'une note explicative au client",
+              "use_case": "Communication client — accompagner un acheteur sur les clauses d'une promesse d'achat",
+              "prompt_text": "Voici les clauses principales que je m'apprête à inclure dans une promesse d'achat pour mon client acheteur : prix offert [X], conditions [INSPECTION/FINANCEMENT/VENTE PROPRIÉTÉ], délai de réponse [HEURES]. Rédige une note explicative écrite (200-250 mots) à envoyer à l'acheteur AVANT la signature, qui vulgarise chaque clause, ses implications et les délais. Pas de conseil juridique (rappeler que je suis courtière, pas notaire), inviter à poser questions avant signature. Ton pédagogique chaleureux, vouvoiement."
+            },
+            {
+              "title": "Procédure interne — checklist d'archivage OACIQ post-transaction",
+              "use_case": "Administratif — m'assurer que rien n'est oublié pour la conservation 6 ans",
+              "prompt_text": "Produis une checklist en 10-15 points pour l'archivage post-transaction d'un dossier acheteur ou vendeur, conforme à l'obligation OACIQ de conservation 6 ans. Inclure : documents contractuels, communications client (courriels, transcriptions de rencontres, fiches d'appels IA), preuves de consentement (Loi 25), justificatifs de divulgations, copies des annonces publiées. Format : case à cocher + description courte. Adapter à un travailleur autonome avec adjointe à temps partiel et stockage Drive/OneDrive."
+            },
+            {
+              "title": "Brief de remplacement pour Sandrine en cas d'absence",
+              "use_case": "RH — préparer une note opérationnelle quand je suis en visite ou absente",
+              "prompt_text": "Rédige un brief opérationnel court (200 mots) pour Sandrine, mon adjointe (présente 9h-13h), couvrant la matinée pendant que je suis en présentation d'offre. Inclure : (1) 3 dossiers prioritaires à surveiller [LISTE], (2) appels attendus [LISTE], (3) ce qu'elle peut traiter seule vs ce qui doit attendre, (4) procédure si lead chaud Centris arrive (qualifier avec les 4 questions habituelles : acheteur/vendeur, secteur, budget approximatif, urgence ; promettre rappel sous 24h), (5) où trouver les documents si demande client. Ton direct et clair."
+            }
+          ]
+        },
+        "rationale": "Vous êtes déjà familière avec ChatGPT et avez un Claude Pro inclus dans la roadmap : cette banque vous donne immédiatement de la matière calibrée OACIQ et RE/MAX du Cartier pour amortir l'investissement dès la semaine 1.",
+        "deliverable_type": "ai_prompts_pack"
+      },
+      {
+        "title": "Tableau de bord 90 jours — Marie-Pier Lavigne",
+        "content": {
+          "kpis": [
+            {
+              "name": "Temps moyen par fiche Centris",
+              "how_to_measure": "Chronométrer 5 fiches au hasard chaque mois, noter dans un fichier Excel simple (date, type de propriété, minutes).",
+              "target_after_90_days": "10 à 15 minutes par fiche",
+              "current_baseline_if_known": "45 à 60 minutes par fiche"
+            },
+            {
+              "name": "Taux d'appels manqués en haute saison",
+              "how_to_measure": "Relevé hebdomadaire VoIP : appels reçus vs appels pris (par vous, Sandrine ou IA). Calculer le % manqué non rappelé dans les 30 minutes.",
+              "target_after_90_days": "Mesure post-Phase 2 — cible < 10 % grâce à la réceptionniste IA",
+              "current_baseline_if_known": "30 % en haute saison"
+            },
+            {
+              "name": "Leads qualifiés captés hors heures par la réceptionniste IA",
+              "how_to_measure": "Compteur dans le tableau de bord AgentZap (ou export hebdo) : nombre d'appels traités hors heures avec qualification complète (4 champs : acheteur/vendeur, secteur, budget, urgence).",
+              "target_after_90_days": "Phase 2 — 6 à 9 leads qualifiés/semaine en haute saison après calibrage",
+              "current_baseline_if_known": "0 (pas de couverture hors heures actuellement)"
+            },
+            {
+              "name": "Taux de conversion lead capté → rendez-vous pris",
+              "how_to_measure": "Pour chaque fiche d'appel IA, noter dans un Excel simple : RDV pris OUI/NON dans les 7 jours. Calculer le ratio mensuel.",
+              "target_after_90_days": "≥ 40 % des leads qualifiés débouchent sur un RDV en personne ou téléphonique",
+              "current_baseline_if_known": "Non mesuré"
+            },
+            {
+              "name": "Taux de rencontres avec compte rendu archivé",
+              "how_to_measure": "Vérification mensuelle : pour chaque rencontre tenue, compte rendu présent dans le dossier Drive/OneDrive du client. Audit aléatoire de 5 dossiers.",
+              "target_after_90_days": "100 % des rencontres acheteur/vendeur ont un compte rendu structuré archivé dans le dossier nominatif",
+              "current_baseline_if_known": "~0 % de retranscription complète actuelle"
+            },
+            {
+              "name": "Transactions cumulées vs cible 25",
+              "how_to_measure": "Compteur trimestriel basé sur dates d'acte notarié, à recouper avec votre relevé de commissions.",
+              "target_after_90_days": "Avancement proportionnel — environ 6-7 transactions cumulées au T1",
+              "current_baseline_if_known": "18 transactions l'an dernier"
+            }
+          ],
+          "cadence": "mensuel",
+          "review_questions": [
+            "Quel KPI a le plus progressé ce mois-ci et qu'est-ce qui l'explique ?",
+            "Quel KPI stagne ou recule, et qu'est-ce qui doit être ajusté (script, calibrage, communication) ?",
+            "Y a-t-il un signal d'abandon ou de surcharge sur un des outils que je devrais traiter avant le mois prochain ?",
+            "Sandrine a-t-elle rencontré une difficulté récurrente avec un des nouveaux outils que je devrais documenter ou simplifier ?",
+            "Suis-je sur la trajectoire pour atteindre 25 transactions à fin d'année, et sinon, sur quel chantier accélérer ?"
+          ]
+        },
+        "rationale": "Avec 4 chantiers étalés sur 12 mois et un objectif chiffré de 18 → 25 transactions, vous avez besoin d'indicateurs simples pour mesurer ce qui fonctionne et ajuster vite — sans complexité d'outil.",
+        "deliverable_type": "kpi_tracking_sheet"
+      },
+      {
+        "title": "Politique de confidentialité Loi 25 — Marie-Pier Lavigne, courtière immobilière RE/MAX du Cartier",
+        "content": {
+          "policy_text": "POLITIQUE DE PROTECTION DES RENSEIGNEMENTS PERSONNELS\n\nMarie-Pier Lavigne, courtière immobilière résidentielle inscrite à l'OACIQ et affiliée à RE/MAX du Cartier, accorde une importance fondamentale à la protection des renseignements personnels qui lui sont confiés dans le cadre de ses activités de courtage immobilier. La présente politique décrit les pratiques applicables conformément à la Loi sur la protection des renseignements personnels dans le secteur privé du Québec (Loi 25).\n\n1. RESPONSABLE DE LA PROTECTION DES RENSEIGNEMENTS PERSONNELS\nMarie-Pier Lavigne agit à titre de responsable de la protection des renseignements personnels. Toute question ou demande peut être adressée par courriel à [COURRIEL DE CONTACT] ou par téléphone au [NUMÉRO].\n\n2. RENSEIGNEMENTS COLLECTÉS\nDans le cadre du courtage résidentiel, les renseignements suivants peuvent être collectés : identité et coordonnées (nom, adresse, courriel, téléphone), situation familiale pertinente à la transaction, situation financière (préapprobation hypothécaire, capacité d'emprunt, mise de fonds), motivations de vente ou d'achat, critères de recherche immobilière, historique des communications.\n\n3. FINALITÉS DE LA COLLECTE\nLes renseignements sont utilisés exclusivement aux fins suivantes : exécution du mandat de courtage, communication relative à la transaction, conformité aux obligations OACIQ (incluant la conservation pendant 6 ans), réponse aux obligations légales et fiscales applicables.\n\n4. CONSENTEMENT\nLe consentement est recueilli au moment de l'ouverture du mandat et peut être retiré en tout temps, sous réserve des obligations légales de conservation. Pour l'enregistrement et la transcription d'appels ou de rencontres assistés par intelligence artificielle, un consentement spécifique est demandé verbalement en début d'appel ou de rencontre, et confirmé à l'écrit dans les invitations de rendez-vous.\n\n5. UTILISATION DE TECHNOLOGIES D'IA\nMarie-Pier Lavigne utilise les outils suivants pour soutenir son activité : un service de réceptionniste vocale assistée par IA pour la qualification des appels reçus hors heures ouvrables, un outil de transcription assistée par IA pour les rencontres acheteur/vendeur (avec consentement préalable du client), un assistant de rédaction (Claude, Anthropic) pour la production de fiches descriptives et de communications. Aucun de ces outils n'est autorisé à utiliser les données client pour entraînement de modèles.\n\n6. COMMUNICATION HORS QUÉBEC\nCertains fournisseurs technologiques peuvent traiter ou héberger des données hors du Québec. Une évaluation préalable est réalisée pour chaque fournisseur afin de s'assurer d'un niveau de protection équivalent et des engagements contractuels appropriés (DPA) sont signés.\n\n7. CONSERVATION ET DESTRUCTION\nLes renseignements liés à un dossier de courtage sont conservés pendant 6 ans après la fin de la relation, conformément aux obligations OACIQ. Au-delà de cette période, ou sur demande de la personne concernée (sous réserve d'obligations légales), les renseignements sont détruits de manière sécuritaire.\n\n8. DROITS DE LA PERSONNE CONCERNÉE\nToute personne dont les renseignements sont détenus dispose des droits suivants : droit d'accès, de rectification, de retrait du consentement, de portabilité, et de désindexation. Les demandes peuvent être adressées au responsable identifié au paragraphe 1 et seront traitées dans les 30 jours.\n\n9. INCIDENT DE CONFIDENTIALITÉ\nUn registre des incidents de confidentialité est tenu. En cas d'incident à risque sérieux de préjudice, la Commission d'accès à l'information du Québec et les personnes concernées seront notifiées dans les meilleurs délais.\n\n10. MISE À JOUR\nLa présente politique est révisée annuellement. Date de la dernière mise à jour : [DATE].",
+          "customization_notes": [
+            "Compléter [COURRIEL DE CONTACT], [NUMÉRO] et [DATE] avant publication.",
+            "Publier la politique sur votre site personnel (si l'imposition de la bannière le permet) et la lier en pied de tous vos courriels Brevo.",
+            "Faire valider par le directeur d'agence RE/MAX du Cartier si la bannière a une politique parapluie qui doit primer.",
+            "Compléter le paragraphe 5 au fur et à mesure du déploiement réel des outils (ne pas mentionner un outil tant qu'il n'est pas en service)."
+          ],
+          "loi25_compliance_checklist": [
+            {
+              "obligation": "Désigner formellement un responsable de la protection des renseignements personnels",
+              "action_suggeree": "Vous-même par défaut. Publier nom et coordonnées dans la politique et sur votre site.",
+              "statut_probable": "à faire"
+            },
+            {
+              "obligation": "Publier une politique de confidentialité accessible",
+              "action_suggeree": "Utiliser le texte ci-dessus, l'adapter et le publier sur le site personnel + en lien dans le pied de courriels Brevo.",
+              "statut_probable": "à faire"
+            },
+            {
+              "obligation": "Évaluation des facteurs relatifs à la vie privée (EFVP) avant chaque outil IA déployé",
+              "action_suggeree": "Une fiche EFVP de 2-3 pages par outil (réceptionniste IA, tl;dv, Claude, Brevo). 5PennyAi peut fournir un gabarit et le remplir avec vous en kickoff.",
+              "statut_probable": "à faire"
+            },
+            {
+              "obligation": "Signer un DPA avec chaque fournisseur traitant des données hors Québec",
+              "action_suggeree": "Demander les DPA standard à AgentZap, Anthropic, tl;dv et Brevo. Les signer et les conserver dans un dossier 'Conformité' nommé.",
+              "statut_probable": "à faire"
+            },
+            {
+              "obligation": "Clause de consentement explicite à l'enregistrement (réceptionniste IA et transcription)",
+              "action_suggeree": "Préambule vocal automatique en début d'appel IA + clause écrite dans toutes les invitations de rencontre + énoncé verbal en début de rencontre.",
+              "statut_probable": "à faire"
+            },
+            {
+              "obligation": "Tenir un registre des incidents de confidentialité",
+              "action_suggeree": "Fichier Excel simple avec colonnes : date, nature, données touchées, mesures prises, notification CAI/personnes (oui/non). À ouvrir dès le début.",
+              "statut_probable": "à faire"
+            },
+            {
+              "obligation": "Procédure de réponse aux demandes d'accès, rectification ou retrait",
+              "action_suggeree": "Document court d'1 page indiquant qui reçoit la demande (Marie-Pier), délai de traitement (30 jours), étapes de vérification d'identité du demandeur.",
+              "statut_probable": "à faire"
+            },
+            {
+              "obligation": "Formation de Sandrine à la Loi 25 et à la procédure d'incident",
+              "action_suggeree": "Session d'1 heure en kickoff phase 1, support écrit d'1 page conservé sur le bureau.",
+              "statut_probable": "à faire"
+            },
+            {
+              "obligation": "Révision annuelle de la conformité (politique, registre, contrats)",
+              "action_suggeree": "Bloquer 2 heures dans l'agenda chaque année à la même date pour la revue.",
+              "statut_probable": "à faire"
+            }
+          ]
+        },
+        "rationale": "Vous traitez des données financières sensibles (préapprobations, capacité d'emprunt) et vous allez multiplier les outils tiers (réceptionniste IA, transcription, emailing) — cette politique vous met en conformité avant le go-live de la Phase 1.",
+        "deliverable_type": "loi_25_policy_template"
+      }
+    ],
+    "consolidated_impact_summary": {
+      "cautions": [
+        "Les gains supposent une exécution séquentielle selon la roadmap (phase 1 stabilisée avant phase 2) et ne se matérialisent pleinement qu'après 3-6 mois d'utilisation et de calibrage.",
+        "Les benchmarks de conversion lead→mandat utilisés pour estimer les transactions additionnelles sont d'origine américaine (NAR, Real Trends) faute de données canadiennes équivalentes — les chiffres réels au Québec peuvent diverger.",
+        "L'estimation des transactions additionnelles via le réveil pipeline (confidence_level low) est la plus incertaine ; elle dépend fortement du tri CASL préalable et de la qualité du consentement de la base.",
+        "Les heures libérées sur la rédaction de fiches augmentent proportionnellement avec le volume de mandats — si Marie-Pier atteint 25 transactions, le gain réel sera plus proche de la borne haute."
+      ],
+      "total_opportunities": 4,
+      "consolidated_figures": [
+        {
+          "unit": "heures/an",
+          "metric": "Temps administratif libéré par année",
+          "low_range": "32",
+          "timeframe": "annuel",
+          "high_range": "51",
+          "overlap_note": "Somme brute des fiches Centris (12-16 h) et de la transcription des rencontres (20-35 h) = 32-51 h. Pas de chevauchement significatif puisque les deux chantiers touchent des tâches distinctes (rédaction vs prise de notes). Aucun facteur de réduction appliqué."
+        },
+        {
+          "unit": "appels/semaine",
+          "metric": "Appels et leads captés par semaine en haute saison",
+          "low_range": "6",
+          "timeframe": "hebdomadaire",
+          "high_range": "9",
+          "overlap_note": "Estimation brute de la réceptionniste IA : 9-12 appels manqués récupérés/semaine. Facteur de prudence de 30 % appliqué pour tenir compte des appels que Marie-Pier aurait quand même rappelés à temps, des prospects que l'IA n'arrivera pas à qualifier correctement en pilote, et de la courbe d'apprentissage des 3 premiers mois."
+        },
+        {
+          "unit": "transactions/an",
+          "metric": "Transactions additionnelles attribuables sur 12 mois",
+          "low_range": "3",
+          "timeframe": "annuel",
+          "high_range": "7",
+          "overlap_note": "Somme brute : 3-7 (réceptionniste) + 1-3 (réveil pipeline) = 4-10. Facteur de prudence de 25 % appliqué pour tenir compte du chevauchement (un lead réveillé par Brevo qui appelle hors heures sera capté par la réceptionniste IA — il ne faut pas le compter deux fois). Fourchette consolidée : 3-7 transactions."
+        }
+      ],
+      "consolidation_method": "Les figures proviennent directement des quantitative_estimate du Skill 2. Pour chaque métrique, j'ai (1) listé les figures pertinentes des opportunités concernées, (2) évalué le recoupement entre opportunités et appliqué un facteur de prudence de 25-30 % quand le chevauchement est probable, (3) retenu les trois métriques les plus parlantes pour la cliente : temps libéré, volume capté et transactions additionnelles."
+    },
+    "architectures_de_la_solution": [
+      {
+        "opportunity_id": "ai-marketing-content-creation--fiches-centris",
+        "adapted_content": "## Architecture — Production des fiches Centris en voie B accompagnée\n\n### Vue d'ensemble\nUn Claude Project dédié, calibré sur votre voix RE/MAX du Cartier et les règles publicitaires OACIQ, alimenté par 5-8 de vos meilleures fiches passées. Chaque fiche descend de 45-60 min à 10-15 min, conforme par construction. 5PennyAi exécute la configuration et le calibrage ; vous récupérez un outil opérationnel.\n\n### Stack et coûts récurrents\n- **Claude Pro** (claude.ai) : ~25 $ CAD/mois — qualité française québécoise nettement supérieure à ChatGPT que vous avez déjà testé sans succès.\n- **Notion ou Google Doc** (gratuit) : gabarit de saisie standardisé pour vos caractéristiques de propriété.\n\n### Ce que 5PennyAi fait pour vous\n1. **Audit de 15-20 fiches passées** et sélection des 5-8 plus représentatives (diversité : condo entrée de gamme, unifamiliale milieu, plex, atypique).\n2. **Configuration complète du Project** sur votre compte : Custom Instructions calibrées (ton, marque RE/MAX du Cartier, règles OACIQ en directives positives), Project Knowledge structuré, gabarit de saisie personnalisé.\n3. **Test de validation sur 3 propriétés réelles** : génération comparée, ajustements selon écarts.\n4. **Séance de calibrage à 30 jours** (1h) pour verrouiller la version 1.0.\n5. **Support courriel 30 jours** pour cas particuliers.\n\n### Workflow quotidien après mise en service\n1. À la signature d'un mandat, remplir le gabarit (5 min) — type, secteur, année, superficie, points forts factuels.\n2. Coller dans Claude : « Voici les caractéristiques pour fiche Centris : [...] Produis la fiche selon le format habituel. »\n3. Claude produit fiche + liste [À VÉRIFIER] + suggestions d'angles (30 sec).\n4. Vous relisez et personnalisez (3-5 min) : anecdotes secteur, vérifications.\n5. Copier dans Matrix/Centris. **Total : 10-12 min/fiche.**\n\n### Pièges critiques évités par l'accompagnement\n- **Sélection biaisée des fiches exemplaires** (toutes haut de gamme) qui ferait sonner vos condos d'entrée de gamme faussement luxueux.\n- **Règles OACIQ copiées sans transposition** : Claude devient défensif et produit des fiches plates.\n- **Données inventées** sans marqueur [À VÉRIFIER] : risque réputationnel et disciplinaire OACIQ.\n\n### Critères de succès mesurables\n- **30 jours** : 5 fiches produites, temps moyen < 20 min.\n- **60 jours** : temps moyen < 15 min, vous identifiez spontanément les ajustements.\n- **90 jours** : temps moyen 10-12 min, 12-16 h libérées sur l'année.\n\n### Investissement\n- **Accompagnement initial** : 1 500 - 2 500 $ (chantier 1 seul).\n- **Récurrent** : ~25 $/mois.\n- **Temps de votre côté** : 4-6 h sur 3-4 semaines.\n- **Opérationnel en** : 2-3 semaines.",
+        "sub_template_id": "fiches-centris-immobilier",
+        "sub_template_match_score": 8
+      },
+      {
+        "opportunity_id": "ai-marketing-content-creation--reveil-leads",
+        "adapted_content": "## Architecture — Réveil du fichier Excel de 200+ leads tièdes en voie B accompagnée\n\n### Vue d'ensemble\nMigration de votre Excel vers Brevo (plateforme française, conforme Loi 25/CASL, hébergement européen), segmentation en 4 listes, et déploiement de séquences de nurturing rédigées via un Claude Project calibré sur votre voix. 5PennyAi gère le tri CASL préalable, la migration, la rédaction, et la conformité — éléments à risque difficiles à improviser seule.\n\n### Stack et coûts récurrents\n- **Brevo** : gratuit jusqu'à 300 envois/jour (suffisant pour démarrer une base de 200 leads).\n- **Claude Pro** : déjà payé pour les fiches Centris — section dédiée nurturing dans le Project mutualisé.\n- **Coût récurrent total** : ~25 $ CAD/mois (Brevo gratuit + Claude déjà inclus).\n\n### Ce que 5PennyAi fait pour vous\n1. **Audit du fichier Excel et tri CASL** : segmentation en 3 catégories (consentement exprès / consentement tacite défendable / zone grise) avec décision documentée par segment.\n2. **Stratégie de segmentation par finalité** : clients passés, prospects acheteurs, prospects vendeurs, leads anciens.\n3. **Configuration complète de Brevo** : listes, gabarits visuels aux couleurs RE/MAX du Cartier, automatisations de base, pieds d'email conformes Loi 25/CASL (désabonnement, identité, mention OACIQ).\n4. **Production de la première séquence de 3 emails de nurturing** sur le segment prioritaire, calibrée via le Project Claude.\n5. **Calendrier éditorial annuel** : 12 mois avec angles suggérés (saisons immobilières, fiscalité, conseils acheteur/vendeur).\n6. **Séance de calibrage à 30 jours** : analyse taux d'ouverture, clics, ajustement Project.\n\n### Workflow opérationnel mensuel\n1. Consulter le calendrier éditorial du mois (thème principal défini d'avance).\n2. Coller dans Claude : « Rédige la newsletter de [MOIS] sur [THÈME]. Inclure ces éléments : [...]. Propose 3 objets à tester. » — 30 sec.\n3. Relire et personnaliser (10-15 min).\n4. Importer dans Brevo, gabarit visuel, vérifier rendu mobile (10-15 min).\n5. Programmer envoi. **Total : 30-45 min/newsletter.**\n\n### Pièges critiques évités par l'accompagnement\n- **Envoi sans tri CASL préalable** : risque d'amende jusqu'à 1 M$ + plaintes Loi 25. Sans cette étape, le projet ne peut pas démarrer.\n- **Segmentation absente** : un client récent ne devrait pas recevoir un email de réveil prospect ; les taux d'ouverture s'effondrent.\n- **Pieds d'email non conformes** : risque légal sur chaque envoi.\n- **Test sur toute la base au lieu d'un échantillon** : si une séquence échoue, vous brûlez votre base.\n\n### Critères de succès mesurables\n- **30 jours** : 1 newsletter envoyée, taux d'ouverture ≥ 25 %, 1 séquence de nurturing testée sur échantillon.\n- **60 jours** : séquence déployée sur segment plus large, ≥ 1 réponse qualifiée par 50 leads.\n- **90 jours** : routine établie, 1-3 transactions attribuables sur 12 mois (estimation prudente).\n\n### Investissement\n- **Accompagnement initial** : 1 800 - 3 000 $ (incluant tri CASL et stratégie de segmentation).\n- **Récurrent** : ~25 $/mois.\n- **Temps de votre côté** : 5-7 h sur 4-5 semaines.\n- **Opérationnel en** : 3-4 semaines.\n\n### Préalable bloquant\nAucun envoi tant que le tri CASL n'est pas validé et documenté. Cette étape conditionne l'ensemble du chantier.",
+        "sub_template_id": "newsletters-nurturing",
+        "sub_template_match_score": 7
+      }
+    ]
+  },
+  "most_recent_architectures": [
+    {
+      "opportunity_id": "ai-marketing-content-creation--fiches-centris",
+      "adapted_content": "## Architecture — Production des fiches Centris en voie B accompagnée\n\n### Vue d'ensemble\nUn Claude Project dédié, calibré sur votre voix RE/MAX du Cartier et les règles publicitaires OACIQ, alimenté par 5-8 de vos meilleures fiches passées. Chaque fiche descend de 45-60 min à 10-15 min, conforme par construction. 5PennyAi exécute la configuration et le calibrage ; vous récupérez un outil opérationnel.\n\n### Stack et coûts récurrents\n- **Claude Pro** (claude.ai) : ~25 $ CAD/mois — qualité française québécoise nettement supérieure à ChatGPT que vous avez déjà testé sans succès.\n- **Notion ou Google Doc** (gratuit) : gabarit de saisie standardisé pour vos caractéristiques de propriété.\n\n### Ce que 5PennyAi fait pour vous\n1. **Audit de 15-20 fiches passées** et sélection des 5-8 plus représentatives (diversité : condo entrée de gamme, unifamiliale milieu, plex, atypique).\n2. **Configuration complète du Project** sur votre compte : Custom Instructions calibrées (ton, marque RE/MAX du Cartier, règles OACIQ en directives positives), Project Knowledge structuré, gabarit de saisie personnalisé.\n3. **Test de validation sur 3 propriétés réelles** : génération comparée, ajustements selon écarts.\n4. **Séance de calibrage à 30 jours** (1h) pour verrouiller la version 1.0.\n5. **Support courriel 30 jours** pour cas particuliers.\n\n### Workflow quotidien après mise en service\n1. À la signature d'un mandat, remplir le gabarit (5 min) — type, secteur, année, superficie, points forts factuels.\n2. Coller dans Claude : « Voici les caractéristiques pour fiche Centris : [...] Produis la fiche selon le format habituel. »\n3. Claude produit fiche + liste [À VÉRIFIER] + suggestions d'angles (30 sec).\n4. Vous relisez et personnalisez (3-5 min) : anecdotes secteur, vérifications.\n5. Copier dans Matrix/Centris. **Total : 10-12 min/fiche.**\n\n### Pièges critiques évités par l'accompagnement\n- **Sélection biaisée des fiches exemplaires** (toutes haut de gamme) qui ferait sonner vos condos d'entrée de gamme faussement luxueux.\n- **Règles OACIQ copiées sans transposition** : Claude devient défensif et produit des fiches plates.\n- **Données inventées** sans marqueur [À VÉRIFIER] : risque réputationnel et disciplinaire OACIQ.\n\n### Critères de succès mesurables\n- **30 jours** : 5 fiches produites, temps moyen < 20 min.\n- **60 jours** : temps moyen < 15 min, vous identifiez spontanément les ajustements.\n- **90 jours** : temps moyen 10-12 min, 12-16 h libérées sur l'année.\n\n### Investissement\n- **Accompagnement initial** : 1 500 - 2 500 $ (chantier 1 seul).\n- **Récurrent** : ~25 $/mois.\n- **Temps de votre côté** : 4-6 h sur 3-4 semaines.\n- **Opérationnel en** : 2-3 semaines.",
+      "sub_template_id": "fiches-centris-immobilier",
+      "sub_template_match_score": 8
+    },
+    {
+      "opportunity_id": "ai-marketing-content-creation--reveil-leads",
+      "adapted_content": "## Architecture — Réveil du fichier Excel de 200+ leads tièdes en voie B accompagnée\n\n### Vue d'ensemble\nMigration de votre Excel vers Brevo (plateforme française, conforme Loi 25/CASL, hébergement européen), segmentation en 4 listes, et déploiement de séquences de nurturing rédigées via un Claude Project calibré sur votre voix. 5PennyAi gère le tri CASL préalable, la migration, la rédaction, et la conformité — éléments à risque difficiles à improviser seule.\n\n### Stack et coûts récurrents\n- **Brevo** : gratuit jusqu'à 300 envois/jour (suffisant pour démarrer une base de 200 leads).\n- **Claude Pro** : déjà payé pour les fiches Centris — section dédiée nurturing dans le Project mutualisé.\n- **Coût récurrent total** : ~25 $ CAD/mois (Brevo gratuit + Claude déjà inclus).\n\n### Ce que 5PennyAi fait pour vous\n1. **Audit du fichier Excel et tri CASL** : segmentation en 3 catégories (consentement exprès / consentement tacite défendable / zone grise) avec décision documentée par segment.\n2. **Stratégie de segmentation par finalité** : clients passés, prospects acheteurs, prospects vendeurs, leads anciens.\n3. **Configuration complète de Brevo** : listes, gabarits visuels aux couleurs RE/MAX du Cartier, automatisations de base, pieds d'email conformes Loi 25/CASL (désabonnement, identité, mention OACIQ).\n4. **Production de la première séquence de 3 emails de nurturing** sur le segment prioritaire, calibrée via le Project Claude.\n5. **Calendrier éditorial annuel** : 12 mois avec angles suggérés (saisons immobilières, fiscalité, conseils acheteur/vendeur).\n6. **Séance de calibrage à 30 jours** : analyse taux d'ouverture, clics, ajustement Project.\n\n### Workflow opérationnel mensuel\n1. Consulter le calendrier éditorial du mois (thème principal défini d'avance).\n2. Coller dans Claude : « Rédige la newsletter de [MOIS] sur [THÈME]. Inclure ces éléments : [...]. Propose 3 objets à tester. » — 30 sec.\n3. Relire et personnaliser (10-15 min).\n4. Importer dans Brevo, gabarit visuel, vérifier rendu mobile (10-15 min).\n5. Programmer envoi. **Total : 30-45 min/newsletter.**\n\n### Pièges critiques évités par l'accompagnement\n- **Envoi sans tri CASL préalable** : risque d'amende jusqu'à 1 M$ + plaintes Loi 25. Sans cette étape, le projet ne peut pas démarrer.\n- **Segmentation absente** : un client récent ne devrait pas recevoir un email de réveil prospect ; les taux d'ouverture s'effondrent.\n- **Pieds d'email non conformes** : risque légal sur chaque envoi.\n- **Test sur toute la base au lieu d'un échantillon** : si une séquence échoue, vous brûlez votre base.\n\n### Critères de succès mesurables\n- **30 jours** : 1 newsletter envoyée, taux d'ouverture ≥ 25 %, 1 séquence de nurturing testée sur échantillon.\n- **60 jours** : séquence déployée sur segment plus large, ≥ 1 réponse qualifiée par 50 leads.\n- **90 jours** : routine établie, 1-3 transactions attribuables sur 12 mois (estimation prudente).\n\n### Investissement\n- **Accompagnement initial** : 1 800 - 3 000 $ (incluant tri CASL et stratégie de segmentation).\n- **Récurrent** : ~25 $/mois.\n- **Temps de votre côté** : 5-7 h sur 4-5 semaines.\n- **Opérationnel en** : 3-4 semaines.\n\n### Préalable bloquant\nAucun envoi tant que le tri CASL n'est pas validé et documenté. Cette étape conditionne l'ensemble du chantier.",
+      "sub_template_id": "newsletters-nurturing",
+      "sub_template_match_score": 7
+    }
+  ]
+}
