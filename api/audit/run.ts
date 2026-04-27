@@ -77,6 +77,13 @@ export const config = {
 
 interface RunPayload {
   auditId?: string;
+  // Optionnel : reprend le pipeline à partir de ce skill et réutilise
+  // les skill_X_output déjà persistés pour les skills antérieurs.
+  // Permet d'éviter de réexécuter (et facturer) les skills qui ont
+  // déjà réussi quand seul un skill plus tardif a planté.
+  // Valeurs : 1 (défaut, pipeline complet), 2, 3, 4, 5, 6 (seulement
+  // les diagrammes).
+  resumeFromSkill?: 1 | 2 | 3 | 4 | 5 | 6;
 }
 
 function openSseStream(res: VercelResponse): void {
@@ -152,13 +159,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(400).json({ error: 'auditId requis.' });
   }
   const auditId = body.auditId;
+  const resumeFromSkill = body.resumeFromSkill ?? 1;
+  if (![1, 2, 3, 4, 5, 6].includes(resumeFromSkill)) {
+    return res.status(400).json({ error: 'resumeFromSkill invalide.' });
+  }
 
   const supabase = getSupabaseAdmin();
 
-  // Charger l'audit.
+  // Charger l'audit (avec outputs persistés pour le resume).
   const { data: audit, error: fetchError } = await supabase
     .from('audits')
-    .select('id, status, intake_data')
+    .select(
+      'id, status, intake_data, pattern_ids, skill_1_output, skill_2_output, skill_3_output, skill_4_output, skill_5_output',
+    )
     .eq('id', auditId)
     .single();
 
@@ -217,7 +230,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       .eq('id', auditId);
     if (updRunning) throw new Error(`transition running: ${updRunning.message}`);
 
-    sendEvent(res, 'pipeline_started', { auditId });
+    sendEvent(res, 'pipeline_started', { auditId, resumeFromSkill });
 
     const intakeData = (audit.intake_data ?? {}) as Record<string, unknown>;
     // Le champ interne _currentScreen (Session 2A) n'intéresse pas les skills.
@@ -225,217 +238,227 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     delete cleanedIntake._currentScreen;
 
     // ─────────── Skill 1 ───────────
-    sendEvent(res, 'skill_1_started', { skillName: 'Analyse du contexte' });
-    const skill1 = await runSkill({
-      skillId: 1,
-      input: { intake_data: cleanedIntake },
-      inputSchema: skill1InputSchema,
-      outputSchema: skill1OutputSchema,
-    });
-    tokensTotals.total_input += skill1.tokensUsed.input;
-    tokensTotals.total_output += skill1.tokensUsed.output;
-    tokensTotals.by_skill.skill_1 = skill1.tokensUsed.total;
-    await supabase
-      .from('audits')
-      .update({ skill_1_output: skill1.output, current_skill: 2 })
-      .eq('id', auditId);
-    await logSkillRun(supabase, auditId, 1, skill1);
-    sendEvent(res, 'skill_1_completed', {
-      skillId: 1,
-      tokensUsed: skill1.tokensUsed.total,
-      durationMs: skill1.durationMs,
-    });
+    let skill1Output: typeof skill1OutputSchema._output;
+    if (resumeFromSkill <= 1) {
+      sendEvent(res, 'skill_1_started', { skillName: 'Analyse du contexte' });
+      const skill1 = await runSkill({
+        skillId: 1,
+        input: { intake_data: cleanedIntake },
+        inputSchema: skill1InputSchema,
+        outputSchema: skill1OutputSchema,
+      });
+      skill1Output = skill1.output;
+      tokensTotals.total_input += skill1.tokensUsed.input;
+      tokensTotals.total_output += skill1.tokensUsed.output;
+      tokensTotals.by_skill.skill_1 = skill1.tokensUsed.total;
+      await supabase
+        .from('audits')
+        .update({ skill_1_output: skill1.output, current_skill: 2 })
+        .eq('id', auditId);
+      await logSkillRun(supabase, auditId, 1, skill1);
+      sendEvent(res, 'skill_1_completed', {
+        skillId: 1,
+        tokensUsed: skill1.tokensUsed.total,
+        durationMs: skill1.durationMs,
+      });
+    } else {
+      if (!audit.skill_1_output) throw new Error('Resume impossible : skill_1_output absent.');
+      skill1Output = audit.skill_1_output as typeof skill1OutputSchema._output;
+      sendEvent(res, 'skill_1_completed', { skillId: 1, resumed: true, tokensUsed: 0, durationMs: 0 });
+    }
 
-    // ─────────── Matching sémantique ───────────
-    sendEvent(res, 'matching_started', { message: "Recherche d'opportunités" });
-    const queryText = buildMatchingQueryText({
-      industry: cleanedIntake.industry as string | undefined,
-      industry_other: cleanedIntake.industry_other as string | undefined,
-      time_consuming_tasks: cleanedIntake.time_consuming_tasks as
-        | string
-        | undefined,
-      automation_wish: cleanedIntake.automation_wish as string | undefined,
-    });
-    const topPatterns = await findTopKPatterns({
-      supabase,
-      queryText,
-      k: 12,
-    });
-    sendEvent(res, 'matching_completed', { patternsFound: topPatterns.length });
+    // ─────────── Matching sémantique + Skill 2 ───────────
+    let skill2Output: typeof skill2OutputSchema._output;
+    let candidatePatterns: Array<{ pattern_id: string; content: unknown; similarity_score: number }>;
+    if (resumeFromSkill <= 2) {
+      sendEvent(res, 'matching_started', { message: "Recherche d'opportunités" });
+      const queryText = buildMatchingQueryText({
+        industry: cleanedIntake.industry as string | undefined,
+        industry_other: cleanedIntake.industry_other as string | undefined,
+        time_consuming_tasks: cleanedIntake.time_consuming_tasks as string | undefined,
+        automation_wish: cleanedIntake.automation_wish as string | undefined,
+      });
+      const topPatterns = await findTopKPatterns({ supabase, queryText, k: 12 });
+      sendEvent(res, 'matching_completed', { patternsFound: topPatterns.length });
+      candidatePatterns = topPatterns.map((p) => ({
+        pattern_id: p.patternId,
+        content: p.content,
+        similarity_score: p.similarityScore,
+      }));
 
-    const candidatePatterns = topPatterns.map((p) => ({
-      pattern_id: p.patternId,
-      content: p.content,
-      similarity_score: p.similarityScore,
-    }));
+      sendEvent(res, 'skill_2_started', { skillName: 'Identification des opportunités' });
+      const skill2 = await runSkill({
+        skillId: 2,
+        input: { context: skill1Output, candidate_patterns: candidatePatterns },
+        inputSchema: skill2InputSchema,
+        outputSchema: skill2OutputSchema,
+      });
+      skill2Output = skill2.output;
+      tokensTotals.total_input += skill2.tokensUsed.input;
+      tokensTotals.total_output += skill2.tokensUsed.output;
+      tokensTotals.by_skill.skill_2 = skill2.tokensUsed.total;
+      await supabase
+        .from('audits')
+        .update({
+          skill_2_output: skill2.output,
+          current_skill: 3,
+          pattern_ids: skill2.output.selected_opportunities.map((o) => o.pattern_id),
+        })
+        .eq('id', auditId);
+      await logSkillRun(supabase, auditId, 2, skill2);
+      sendEvent(res, 'skill_2_completed', {
+        skillId: 2,
+        tokensUsed: skill2.tokensUsed.total,
+        durationMs: skill2.durationMs,
+      });
+    } else {
+      if (!audit.skill_2_output) throw new Error('Resume impossible : skill_2_output absent.');
+      if (!audit.pattern_ids || audit.pattern_ids.length === 0) {
+        throw new Error('Resume impossible : pattern_ids absent.');
+      }
+      skill2Output = audit.skill_2_output as typeof skill2OutputSchema._output;
+      // Recharger les patterns nécessaires depuis la DB (par ID).
+      const { data: rows, error: pErr } = await supabase
+        .from('patterns')
+        .select('id, content')
+        .in('id', audit.pattern_ids as string[]);
+      if (pErr || !rows) throw new Error(`Resume : refetch patterns échoué : ${pErr?.message}`);
+      candidatePatterns = rows.map((r) => ({
+        pattern_id: r.id,
+        content: r.content,
+        similarity_score: 0,
+      }));
+      sendEvent(res, 'skill_2_completed', { skillId: 2, resumed: true, tokensUsed: 0, durationMs: 0 });
+    }
 
-    // ─────────── Skill 2 ───────────
-    sendEvent(res, 'skill_2_started', {
-      skillName: 'Identification des opportunités',
-    });
-    const skill2 = await runSkill({
-      skillId: 2,
-      input: {
-        context: skill1.output,
-        candidate_patterns: candidatePatterns,
-      },
-      inputSchema: skill2InputSchema,
-      outputSchema: skill2OutputSchema,
-    });
-    tokensTotals.total_input += skill2.tokensUsed.input;
-    tokensTotals.total_output += skill2.tokensUsed.output;
-    tokensTotals.by_skill.skill_2 = skill2.tokensUsed.total;
-    await supabase
-      .from('audits')
-      .update({
-        skill_2_output: skill2.output,
-        current_skill: 3,
-        pattern_ids: skill2.output.selected_opportunities.map(
-          (o) => o.pattern_id,
-        ),
-      })
-      .eq('id', auditId);
-    await logSkillRun(supabase, auditId, 2, skill2);
-    sendEvent(res, 'skill_2_completed', {
-      skillId: 2,
-      tokensUsed: skill2.tokensUsed.total,
-      durationMs: skill2.durationMs,
-    });
-
-    // ─────────── Skills 3 & 4 en parallèle ───────────
-    sendEvent(res, 'skills_3_4_started', {
-      skillName: 'Évaluation risques et stack',
-    });
-
+    // ─────────── Skills 3 & 4 (parallèle si les deux à exécuter) ───────────
     const selectedPatternIds = new Set(
-      skill2.output.selected_opportunities.map((o) => o.pattern_id),
+      skill2Output.selected_opportunities.map((o) => o.pattern_id),
     );
     const usedPatterns = candidatePatterns.filter((p) =>
       selectedPatternIds.has(p.pattern_id),
     );
-
     const patternsRiskData: PatternRiskData[] = usedPatterns.map((p) => ({
       pattern_id: p.pattern_id,
       risks: (p.content as Record<string, unknown>)?.risks ?? null,
     }));
     const patternsPrereqData: PatternPrereqData[] = usedPatterns.map((p) => ({
       pattern_id: p.pattern_id,
-      prerequisites:
-        (p.content as Record<string, unknown>)?.prerequisites ?? null,
+      prerequisites: (p.content as Record<string, unknown>)?.prerequisites ?? null,
     }));
 
-    const [skill3, skill4] = await Promise.all([
-      runSkill({
+    sendEvent(res, 'skills_3_4_started', { skillName: 'Évaluation risques et stack' });
+
+    let skill3Output: typeof skill3OutputSchema._output;
+    let skill4Output: typeof skill4OutputSchema._output;
+
+    const runSkill3 = resumeFromSkill <= 3;
+    const runSkill4 = resumeFromSkill <= 4;
+
+    const skill3Promise = runSkill3
+      ? runSkill({
+          skillId: 3,
+          input: {
+            context: skill1Output,
+            selected_opportunities: skill2Output.selected_opportunities,
+            patterns_risk_data: patternsRiskData,
+          },
+          inputSchema: skill3InputSchema,
+          outputSchema: skill3OutputSchema,
+        })
+      : null;
+    const skill4Promise = runSkill4
+      ? runSkill({
+          skillId: 4,
+          input: {
+            context: skill1Output,
+            selected_opportunities: skill2Output.selected_opportunities,
+            patterns_prereq_data: patternsPrereqData,
+          },
+          inputSchema: skill4InputSchema,
+          outputSchema: skill4OutputSchema,
+        })
+      : null;
+    const [skill3Res, skill4Res] = await Promise.all([skill3Promise, skill4Promise]);
+
+    if (skill3Res) {
+      skill3Output = skill3Res.output;
+      tokensTotals.total_input += skill3Res.tokensUsed.input;
+      tokensTotals.total_output += skill3Res.tokensUsed.output;
+      tokensTotals.by_skill.skill_3 = skill3Res.tokensUsed.total;
+      await logSkillRun(supabase, auditId, 3, skill3Res);
+      sendEvent(res, 'skill_3_completed', {
         skillId: 3,
-        input: {
-          context: skill1.output,
-          selected_opportunities: skill2.output.selected_opportunities,
-          patterns_risk_data: patternsRiskData,
-        },
-        inputSchema: skill3InputSchema,
-        outputSchema: skill3OutputSchema,
-      }),
-      runSkill({
+        tokensUsed: skill3Res.tokensUsed.total,
+        durationMs: skill3Res.durationMs,
+      });
+    } else {
+      if (!audit.skill_3_output) throw new Error('Resume impossible : skill_3_output absent.');
+      skill3Output = audit.skill_3_output as typeof skill3OutputSchema._output;
+      sendEvent(res, 'skill_3_completed', { skillId: 3, resumed: true, tokensUsed: 0, durationMs: 0 });
+    }
+
+    if (skill4Res) {
+      skill4Output = skill4Res.output;
+      tokensTotals.total_input += skill4Res.tokensUsed.input;
+      tokensTotals.total_output += skill4Res.tokensUsed.output;
+      tokensTotals.by_skill.skill_4 = skill4Res.tokensUsed.total;
+      await logSkillRun(supabase, auditId, 4, skill4Res);
+      sendEvent(res, 'skill_4_completed', {
         skillId: 4,
-        input: {
-          context: skill1.output,
-          selected_opportunities: skill2.output.selected_opportunities,
-          patterns_prereq_data: patternsPrereqData,
-        },
-        inputSchema: skill4InputSchema,
-        outputSchema: skill4OutputSchema,
-      }),
-    ]);
+        tokensUsed: skill4Res.tokensUsed.total,
+        durationMs: skill4Res.durationMs,
+      });
+    } else {
+      if (!audit.skill_4_output) throw new Error('Resume impossible : skill_4_output absent.');
+      skill4Output = audit.skill_4_output as typeof skill4OutputSchema._output;
+      sendEvent(res, 'skill_4_completed', { skillId: 4, resumed: true, tokensUsed: 0, durationMs: 0 });
+    }
 
-    tokensTotals.total_input += skill3.tokensUsed.input + skill4.tokensUsed.input;
-    tokensTotals.total_output +=
-      skill3.tokensUsed.output + skill4.tokensUsed.output;
-    tokensTotals.by_skill.skill_3 = skill3.tokensUsed.total;
-    tokensTotals.by_skill.skill_4 = skill4.tokensUsed.total;
-
-    await supabase
-      .from('audits')
-      .update({
-        skill_3_output: skill3.output,
-        skill_4_output: skill4.output,
-        current_skill: 5,
-      })
-      .eq('id', auditId);
-    await logSkillRun(supabase, auditId, 3, skill3);
-    await logSkillRun(supabase, auditId, 4, skill4);
-    sendEvent(res, 'skill_3_completed', {
-      skillId: 3,
-      tokensUsed: skill3.tokensUsed.total,
-      durationMs: skill3.durationMs,
-    });
-    sendEvent(res, 'skill_4_completed', {
-      skillId: 4,
-      tokensUsed: skill4.tokensUsed.total,
-      durationMs: skill4.durationMs,
-    });
+    // Persister les outputs nouvellement produits (si applicable).
+    if (skill3Res || skill4Res) {
+      const patch: Record<string, unknown> = { current_skill: 5 };
+      if (skill3Res) patch.skill_3_output = skill3Res.output;
+      if (skill4Res) patch.skill_4_output = skill4Res.output;
+      await supabase.from('audits').update(patch).eq('id', auditId);
+    }
     sendEvent(res, 'skills_3_4_completed', {});
 
     // ─────────── Skill 5 ───────────
-    sendEvent(res, 'skill_5_started', {
-      skillName: 'Rédaction du rapport final',
-    });
-
-    // [DEBUG] traces autour du skill 5 — voir commit "trace skill 5".
-    console.log('[run] skill 5 about to start, context skills present:', {
-      s1: !!skill1,
-      s2: !!skill2,
-      s3: !!skill3,
-      s4: !!skill4,
-    });
-
-    const skill5 = await runSkill({
-      skillId: 5,
-      input: {
-        context: skill1.output,
-        selected_opportunities: skill2.output.selected_opportunities,
-        risks_analysis: skill3.output,
-        stack_audit: skill4.output,
-      },
-      inputSchema: skill5InputSchema,
-      outputSchema: skill5OutputSchema,
-    });
-
-    console.log('[run] skill 5 completed, output type:', typeof skill5.output);
-    console.log(
-      '[run] skill 5 output preview:',
-      JSON.stringify(skill5.output).slice(0, 300),
-    );
-
-    tokensTotals.total_input += skill5.tokensUsed.input;
-    tokensTotals.total_output += skill5.tokensUsed.output;
-    tokensTotals.by_skill.skill_5 = skill5.tokensUsed.total;
-
-    // Persiste skill_5_output sans encore basculer pending_review : la
-    // génération des diagrammes (Session 2E) doit s'exécuter avant.
-    try {
-      const skill5SavedAt = new Date().toISOString();
+    if (resumeFromSkill <= 5) {
+      sendEvent(res, 'skill_5_started', { skillName: 'Rédaction du rapport final' });
+      const skill5 = await runSkill({
+        skillId: 5,
+        input: {
+          context: skill1Output,
+          selected_opportunities: skill2Output.selected_opportunities,
+          risks_analysis: skill3Output,
+          stack_audit: skill4Output,
+        },
+        inputSchema: skill5InputSchema,
+        outputSchema: skill5OutputSchema,
+      });
+      tokensTotals.total_input += skill5.tokensUsed.input;
+      tokensTotals.total_output += skill5.tokensUsed.output;
+      tokensTotals.by_skill.skill_5 = skill5.tokensUsed.total;
       const { error: updateError } = await supabase
         .from('audits')
         .update({
           skill_5_output: skill5.output,
-          updated_at: skill5SavedAt,
+          updated_at: new Date().toISOString(),
         })
         .eq('id', auditId);
-      if (updateError) {
-        console.error('[run] failed to persist skill 5:', updateError);
-        throw updateError;
-      }
-      console.log('[run] skill 5 persisted successfully');
-    } catch (err) {
-      console.error('[run] skill 5 persistence exception:', err);
-      throw err;
+      if (updateError) throw updateError;
+      await logSkillRun(supabase, auditId, 5, skill5);
+      sendEvent(res, 'skill_5_completed', {
+        skillId: 5,
+        tokensUsed: skill5.tokensUsed.total,
+        durationMs: skill5.durationMs,
+      });
+    } else {
+      if (!audit.skill_5_output) throw new Error('Resume impossible : skill_5_output absent.');
+      sendEvent(res, 'skill_5_completed', { skillId: 5, resumed: true, tokensUsed: 0, durationMs: 0 });
     }
-    await logSkillRun(supabase, auditId, 5, skill5);
-    sendEvent(res, 'skill_5_completed', {
-      skillId: 5,
-      tokensUsed: skill5.tokensUsed.total,
-      durationMs: skill5.durationMs,
-    });
 
     // ─────────── Génération des diagrammes (Session 2E) ───────────
     // Best-effort : un échec total ne bloque pas le passage en
