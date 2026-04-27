@@ -637,7 +637,17 @@ function buildDiagramBlocks(
   diagramAssets?: Map<string, DiagramAsset>,
 ): Paragraph[] {
   if (!diagramAssets) return [];
-  const asset = diagramAssets.get(solutionId);
+  // Session 2H : la roadmap référence par opportunity_id (format
+  // ${pattern_id}--${angle}). Skill 6 indexe les diagrammes par
+  // pattern_id (legacy). On essaye d'abord opportunity_id ; si pas
+  // trouvé, on retombe sur le préfixe pattern_id extrait avant le
+  // séparateur `--`. Permet aux audits 2H d'afficher leur diagramme
+  // générique de pattern sans relancer Skill 6.
+  let asset = diagramAssets.get(solutionId);
+  if (!asset && solutionId.includes('--')) {
+    const patternIdPrefix = solutionId.split('--')[0];
+    asset = diagramAssets.get(patternIdPrefix);
+  }
 
   if (!asset) {
     // Cas où la metadata indique un échec ou que le download Storage
