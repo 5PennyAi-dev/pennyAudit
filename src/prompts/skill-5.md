@@ -343,10 +343,20 @@ Le contenu des sous-templates contient des marqueurs à substituer :
 
 4. PRODUCTION DE adapted_content
 
-Sérialiser le contenu adapté en Markdown structuré (titres, sous-titres,
-listes) reproduisant la structure du sous-template. Le DOCX builder
-consommera ce Markdown pour produire la section « Architecture de la
-solution » du rapport.
+Sérialiser un Markdown CONDENSÉ (≤ 2500 caractères PAR opportunité)
+qui reprend la STRUCTURE du sous-template (titres, sous-titres, listes)
+mais en formulations CONCISES adaptées au client. Tu NE REPRODUIS PAS
+le sous-template intégralement — tu le synthétises en gardant ce qui
+est concret et actionnable, en écartant les redites et les exemples
+secondaires. Cible : 4-7 sections courtes, chaque section ≤ 5 lignes.
+
+Marqueurs [VOTRE NOM] / [VOTRE BANNIÈRE] / [ADAPTER : ...] : remplace
+en place selon la règle 3.
+
+Si plusieurs opportunités matchent le même pattern 004, ne produis
+qu'une SEULE entrée architectures_de_la_solution par opportunité,
+chacune ≤ 2500 caractères. Le total cumulé ne doit jamais dépasser
+~6000 caractères.
 
 5. SI AUCUN implementation_template DANS LE PATTERN
 
