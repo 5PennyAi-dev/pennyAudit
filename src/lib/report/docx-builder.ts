@@ -40,6 +40,7 @@ import {
 
 import type {
   ActionableDeliverable,
+  ArchitectureDeLaSolution,
   ImpactEffortEntry,
   RoiEstimate,
   SelectedOpportunity,
@@ -757,6 +758,84 @@ function buildRoadmap(
   return blocks;
 }
 
+// Mini parseur Markdown → blocs DOCX. Couvre uniquement ce que Skill 5
+// produit dans adapted_content : titres ##/###, listes -/*, listes
+// numérotées 1./2., texte gras **...**, et paragraphes.
+function renderMarkdownLinesToBlocks(markdown: string): Paragraph[] {
+  const blocks: Paragraph[] = [];
+  const lines = markdown.split(/\r?\n/);
+  for (const raw of lines) {
+    const line = raw.trimEnd();
+    if (!line) continue;
+    let m: RegExpMatchArray | null;
+    if ((m = line.match(/^####\s+(.*)$/))) { blocks.push(P(m[1], { bold: true })); continue; }
+    if ((m = line.match(/^###\s+(.*)$/))) { blocks.push(H3(m[1])); continue; }
+    if ((m = line.match(/^##\s+(.*)$/))) { blocks.push(H3(m[1])); continue; }
+    if ((m = line.match(/^#\s+(.*)$/))) { blocks.push(H3(m[1])); continue; }
+    if ((m = line.match(/^\s*[-*]\s+(.*)$/))) { blocks.push(Bullet(stripBold(m[1]))); continue; }
+    if ((m = line.match(/^\s*\d+[.)]\s+(.*)$/))) { blocks.push(Numbered(stripBold(m[1]))); continue; }
+    blocks.push(renderRichParagraph(line));
+  }
+  return blocks;
+}
+
+// Rend un paragraphe en convertissant **texte** en TextRun bold.
+function renderRichParagraph(line: string): Paragraph {
+  const runs: TextRun[] = [];
+  const re = /\*\*([^*]+)\*\*/g;
+  let lastIdx = 0;
+  let match: RegExpExecArray | null;
+  while ((match = re.exec(line)) !== null) {
+    if (match.index > lastIdx) {
+      runs.push(new TextRun({ text: line.slice(lastIdx, match.index), color: TEXT }));
+    }
+    runs.push(new TextRun({ text: match[1], color: TEXT, bold: true }));
+    lastIdx = match.index + match[0].length;
+  }
+  if (lastIdx < line.length) {
+    runs.push(new TextRun({ text: line.slice(lastIdx), color: TEXT }));
+  }
+  if (runs.length === 0) runs.push(new TextRun({ text: line, color: TEXT }));
+  return PRich(runs);
+}
+
+function stripBold(s: string): string {
+  return s.replace(/\*\*([^*]+)\*\*/g, '$1');
+}
+
+function buildArchitecturesDeLaSolution(
+  archs: ArchitectureDeLaSolution[] | undefined,
+  titleMap: Map<string, string>,
+): Array<Paragraph | Table> {
+  if (!archs?.length) return [];
+  const blocks: Array<Paragraph | Table> = [
+    H1('Architecture de la solution'),
+    P(
+      "Pour chaque opportunité concernée, voici une feuille de route condensée " +
+        'adaptée à votre contexte. Les marqueurs entre crochets ([ADAPTER : …]) ' +
+        'indiquent les éléments à personnaliser avec votre équipe ou avec ' +
+        '5PennyAi pendant la phase de calibrage.',
+      { italics: true, color: MUTED, alignment: AlignmentType.LEFT },
+    ),
+  ];
+  for (const a of archs) {
+    blocks.push(H2(titleFor(a.opportunity_id, titleMap)));
+    blocks.push(
+      PRich(
+        [
+          new TextRun({ text: 'SOUS-TEMPLATE — ', color: ORANGE, bold: true, size: 16 }),
+          new TextRun({ text: a.sub_template_id, color: MUTED, size: 16 }),
+        ],
+        { alignment: AlignmentType.LEFT, spacingAfter: 120 },
+      ),
+    );
+    if (a.adapted_content?.trim()) {
+      blocks.push(...renderMarkdownLinesToBlocks(a.adapted_content));
+    }
+  }
+  return blocks;
+}
+
 function buildRoiEstimates(
   estimates: RoiEstimate[] | undefined,
   titleMap: Map<string, string>,
@@ -1212,6 +1291,7 @@ export async function buildAuditDocx(
     ...buildExpectedOutcome(skill5),
     ...buildImpactEffortMatrix(skill5.impact_effort_matrix, titleMap),
     ...buildRoadmap(skill5.roadmap, titleMap, diagramAssets),
+    ...buildArchitecturesDeLaSolution(skill5.architectures_de_la_solution, titleMap),
     ...buildRoiEstimates(skill5.roi_estimates, titleMap),
     ...buildConsolidatedSummary(skill5.consolidated_impact_summary),
     ...buildActionableDeliverables(skill5.actionable_deliverables),
