@@ -285,6 +285,18 @@ export const skill5InputSchema = z.object({
   selected_opportunities: skill2OutputSchema.shape.selected_opportunities,
   risks_analysis: skill3OutputSchema,
   stack_audit: skill4OutputSchema,
+  // Session 2G : pour chaque pattern sélectionné qui a des
+  // implementation_templates, on les passe ici. Skill 5 les utilise
+  // pour produire architectures_de_la_solution. Vide ([]) si aucun
+  // pattern sélectionné n'a de sous-templates.
+  patterns_implementation_templates: z
+    .array(
+      z.object({
+        pattern_id: z.string(),
+        implementation_templates: z.array(z.unknown()),
+      }),
+    )
+    .default([]),
 });
 
 export const skill5OutputSchema = z.object({

@@ -287,11 +287,18 @@ ANTI-PATTERNS À ÉVITER
 
 INJECTION DES IMPLEMENTATION TEMPLATES (nouveau session 2G)
 
-Pour chaque opportunité de la feuille de route, vérifier si le pattern
-source (présent dans selected_opportunities[].source_pattern_ids et
-candidate_patterns[].content) contient une section
-`implementation_templates`. Si oui, produire une entrée dans
-architectures_de_la_solution pour cette opportunité.
+Tu reçois dans `patterns_implementation_templates` un tableau d'entrées
+{ pattern_id, implementation_templates } pour chaque pattern source qui
+en contient. C'est TA MATIÈRE PREMIÈRE pour produire la section
+architectures_de_la_solution. Si ce tableau est vide, tu OMETS la
+section. Sinon, pour CHAQUE opportunité dont le pattern_id (ou un de
+ses source_pattern_ids) figure dans patterns_implementation_templates,
+tu DOIS produire une entrée dans architectures_de_la_solution.
+
+Ne dis JAMAIS dans reviewer_notes « le contenu détaillé des sous-
+templates n'est pas inclus » — il l'est, dans
+patterns_implementation_templates. Si tu ne le vois pas, c'est que le
+tableau est vide, et dans ce cas tu OMETS la section sans commentaire.
 
 1. SÉLECTION DU SOUS-TEMPLATE
 

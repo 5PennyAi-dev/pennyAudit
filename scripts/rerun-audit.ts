@@ -248,6 +248,17 @@ async function main() {
 
   // ─────── Skill 5 ───────
   if (resumeFromSkill <= 5) {
+    const patternsImplTemplates = used
+      .map((p) => {
+        const tmpls = (p.content as Record<string, unknown> | null)
+          ?.implementation_templates;
+        return Array.isArray(tmpls) && tmpls.length > 0
+          ? { pattern_id: p.pattern_id, implementation_templates: tmpls }
+          : null;
+      })
+      .filter((x): x is NonNullable<typeof x> => x !== null);
+    log(`  ↳ ${patternsImplTemplates.length} pattern(s) avec implementation_templates`);
+
     log('▶ Skill 5 (rapport final)...');
     const r = await runSkill({
       skillId: 5,
@@ -256,6 +267,7 @@ async function main() {
         selected_opportunities: skill2Output.selected_opportunities,
         risks_analysis: skill3Output,
         stack_audit: skill4Output,
+        patterns_implementation_templates: patternsImplTemplates,
       },
       inputSchema: skill5InputSchema,
       outputSchema: skill5OutputSchema,

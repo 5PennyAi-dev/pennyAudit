@@ -426,6 +426,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     // ─────────── Skill 5 ───────────
     if (resumeFromSkill <= 5) {
+      // Extrait les implementation_templates des patterns sélectionnés
+      // qui en ont. Sans ça, Skill 5 ne peut pas peupler
+      // architectures_de_la_solution faute de matière.
+      const patternsImplTemplates = usedPatterns
+        .map((p) => {
+          const tmpls = (p.content as Record<string, unknown> | null)
+            ?.implementation_templates;
+          return Array.isArray(tmpls) && tmpls.length > 0
+            ? { pattern_id: p.pattern_id, implementation_templates: tmpls }
+            : null;
+        })
+        .filter((x): x is NonNullable<typeof x> => x !== null);
+
       sendEvent(res, 'skill_5_started', { skillName: 'Rédaction du rapport final' });
       const skill5 = await runSkill({
         skillId: 5,
@@ -434,6 +447,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           selected_opportunities: skill2Output.selected_opportunities,
           risks_analysis: skill3Output,
           stack_audit: skill4Output,
+          patterns_implementation_templates: patternsImplTemplates,
         },
         inputSchema: skill5InputSchema,
         outputSchema: skill5OutputSchema,
