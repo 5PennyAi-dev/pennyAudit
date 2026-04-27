@@ -670,10 +670,15 @@ function buildDiagramBlocks(
 
   const imageType: 'png' | 'jpg' = asset.mimeType === 'image/jpeg' ? 'jpg' : 'png';
 
+  // La caption italique "Architecture de la solution — X" a été
+  // retirée : redondante avec la section H1 « Architecture de la
+  // solution » dédiée plus loin dans le rapport, et visuellement
+  // confondue avec un bullet d'opportunité dans la phase. Le titre
+  // est déjà inscrit en haut du diagramme par Gemini.
   return [
     new Paragraph({
       alignment: AlignmentType.CENTER,
-      spacing: { before: 100, after: 60 },
+      spacing: { before: 100, after: 200 },
       children: [
         new ImageRun({
           type: imageType,
@@ -682,18 +687,6 @@ function buildDiagramBlocks(
             width: DIAGRAM_WIDTH_PX,
             height: DIAGRAM_HEIGHT_PX,
           },
-        }),
-      ],
-    }),
-    new Paragraph({
-      alignment: AlignmentType.CENTER,
-      spacing: { after: 200 },
-      children: [
-        new TextRun({
-          text: asset.title,
-          italics: true,
-          color: MUTED,
-          size: 18,
         }),
       ],
     }),
