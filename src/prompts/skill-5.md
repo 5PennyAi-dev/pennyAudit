@@ -285,6 +285,43 @@ ANTI-PATTERNS À ÉVITER
 - Ne pas ajouter dans un livrable des chiffres qui contrediraient
   ceux du consolidated_impact_summary.
 
+UTILISATION DES OPPORTUNITY_ID (nouveau session 2H)
+
+Chaque opportunité reçue de Skill 2 a un champ `opportunity_id` unique
+au format `${pattern_id}--${angle}` (ex:
+`ai-marketing-content-creation--fiches-centris`,
+`ai-marketing-content-creation--reveil-leads`).
+
+RÈGLES STRICTES :
+
+1. Tu utilises EXACTEMENT les opportunity_id reçus dans
+   selected_opportunities. Tu ne les modifies pas, tu ne les
+   raccourcis pas, tu ne les normalises pas.
+
+2. Tu n'INVENTES JAMAIS de nouveau opportunity_id, même pour
+   désambiguïser. Si tu vois deux opportunités avec le même
+   opportunity_id en entrée, c'est un bug en amont : note-le dans
+   reviewer_notes ("Doublon d'opportunity_id détecté en entrée :
+   X — à corriger côté Skill 2") mais NE FABRIQUE PAS de nouveau
+   slug. Tu produis quand même tes outputs en utilisant l'id en
+   l'état (les sites en aval géreront).
+
+3. Dans toutes tes structures de sortie qui référencent une
+   opportunité, tu utilises l'opportunity_id complet :
+   - impact_effort_matrix[].opportunity_id
+   - roadmap.phase_1_quick_wins.opportunities[]
+   - roadmap.phase_2_medium_term.opportunities[]
+   - roadmap.phase_3_long_term.opportunities[]
+   - roi_estimates[].opportunity_id
+   - architectures_de_la_solution[].opportunity_id
+
+4. Tu n'utilises JAMAIS pattern_id seul comme référence d'opportunité.
+   pattern_id et opportunity_id sont deux champs distincts qui ne
+   servent pas à la même chose. pattern_id réfère au pattern source
+   (la matière première du catalogue) ; opportunity_id réfère à
+   l'opportunité concrète produite par Skill 2 pour ce client.
+   Plusieurs opportunity_id peuvent partager un même pattern_id.
+
 INJECTION DES IMPLEMENTATION TEMPLATES (nouveau session 2G)
 
 Tu reçois dans `patterns_implementation_templates` un tableau d'entrées
@@ -302,14 +339,24 @@ tableau est vide, et dans ce cas tu OMETS la section sans commentaire.
 
 1. SÉLECTION DU SOUS-TEMPLATE
 
+IMPORTANT — le scoring est calculé INDÉPENDAMMENT pour CHAQUE
+opportunité, en s'appuyant sur les éléments PROPRES à cette
+opportunité (adapted_title, client_specific_framing, recommended_tools)
+PLUS le contexte client global. Quand deux opportunités partagent un
+même pattern, leur scoring doit être fait séparément et peut donner
+des résultats différents.
+
 Pour chaque sous-template du pattern, calculer un score de match :
 - +3 si l'industrie du client (context.business_profile.industry_vertical
   ou équivalent) apparaît dans triggers_when.industry_in
-- +2 par mot-clé du contexte client (challenges_summary.stated_automation_wish,
-  primary_pain_points, time_consuming_tasks ou équivalent) qui apparaît
-  dans triggers_when.automation_wish_keywords
-- +1 si un outil recommandé pour cette opportunité (recommended_tools du
-  Skill 2 ou stack_audit) apparaît dans triggers_when.tools_to_recommend
+- +2 par mot-clé qui apparaît dans triggers_when.automation_wish_keywords
+  ET dans le adapted_title OU client_specific_framing de CETTE
+  opportunité spécifique (priorité aux signaux de l'opportunité). Si
+  l'opportunité ne donne aucun signal, retomber sur le contexte client
+  global (challenges_summary.stated_automation_wish, primary_pain_points,
+  time_consuming_tasks).
+- +1 si un outil de recommended_tools de CETTE opportunité apparaît
+  dans triggers_when.tools_to_recommend
 
 Sélectionner le sous-template avec le score le plus élevé. En cas
 d'égalité, prendre le premier dans l'ordre du YAML. Si tous les scores

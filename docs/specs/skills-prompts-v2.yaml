@@ -1231,21 +1231,27 @@ skills:
               type: object
               properties:
                 timeframe: string  # "0-3 mois"
-                opportunities: array
+                opportunities:
+                  type: array
+                  items: string  # opportunity_id (format ${pattern_id}--${angle}, session 2H)
                 key_milestones: array
                 estimated_budget_range_cad: string
             phase_2_medium_term:
               type: object
               properties:
                 timeframe: string  # "3-6 mois"
-                opportunities: array
+                opportunities:
+                  type: array
+                  items: string  # opportunity_id
                 key_milestones: array
                 estimated_budget_range_cad: string
             phase_3_long_term:
               type: object
               properties:
                 timeframe: string  # "6-12 mois"
-                opportunities: array
+                opportunities:
+                  type: array
+                  items: string  # opportunity_id
                 strategic_direction: string
         roi_estimates:
           type: array
