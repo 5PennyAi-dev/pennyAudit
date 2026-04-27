@@ -96,6 +96,16 @@ export const skill2OutputSchema = z.object({
   selected_opportunities: z
     .array(
       z.object({
+        // Identifiant unique de l'opportunité, format
+        // ${pattern_id}--${angle-en-kebab-case}. Quand plusieurs
+        // opportunités sont produites sur un même pattern, leurs
+        // opportunity_id doivent être distincts. Session 2H.
+        opportunity_id: z
+          .string()
+          .regex(
+            /^[a-z0-9-]+--[a-z0-9-]+$/,
+            'opportunity_id doit suivre le format pattern_id--angle (ex: ai-marketing-content-creation--fiches-centris)',
+          ),
         pattern_id: z.string(),
         adapted_title: z.string(),
         client_specific_framing: z.string(),

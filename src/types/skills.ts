@@ -197,6 +197,9 @@ export interface QuantitativeEstimate {
 }
 
 export interface SelectedOpportunity {
+  // Identifiant unique format ${pattern_id}--${angle-en-kebab-case}.
+  // Session 2H : permet de distinguer plusieurs opportunités sur un même pattern.
+  opportunity_id: string;
   pattern_id: string;
   adapted_title: string;
   client_specific_framing: string;
