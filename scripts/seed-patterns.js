@@ -254,27 +254,149 @@ async function generateEmbedding(text, maxRetries = 3) {
 }
 
 /**
- * Lit tous les fichiers YAML dans le dossier des patterns.
+ * Charge un pattern au format dossier (architecture C — éclaté).
+ *
+ * Convention :
+ *   - Le pattern de base est dans `_pattern.yaml`
+ *   - Chaque sous-template est un fichier YAML séparé avec
+ *     `type: implementation_template` à la racine
+ *   - L'ordre des sous-templates est déterminé par le tri
+ *     alphabétique du nom de fichier
+ *
+ * La fusion se fait en mémoire : le pattern retourné est
+ * indistinguable d'un pattern intégré (même schéma, même clés).
+ */
+async function loadExplodedPattern(dirPath, dirName) {
+  const patternPath = path.join(dirPath, '_pattern.yaml');
+
+  let patternRaw;
+  try {
+    patternRaw = await fs.readFile(patternPath, 'utf8');
+  } catch (err) {
+    console.warn(`⚠️  ${dirName}/ : _pattern.yaml manquant ou illisible — dossier ignoré`);
+    return null;
+  }
+
+  let pattern;
+  try {
+    pattern = yaml.load(patternRaw);
+  } catch (err) {
+    console.error(`❌ Erreur parsing YAML ${dirName}/_pattern.yaml :`, err.message);
+    return null;
+  }
+
+  // Lister les autres fichiers YAML (sous-templates), ordre alphabétique
+  const allFiles = await fs.readdir(dirPath);
+  const subFiles = allFiles
+    .filter((f) => (f.endsWith('.yaml') || f.endsWith('.yml')) && f !== '_pattern.yaml')
+    .sort();
+
+  const subTemplates = [];
+  const seenIds = new Set();
+
+  for (const subFile of subFiles) {
+    const subPath = path.join(dirPath, subFile);
+    let subRaw;
+    try {
+      subRaw = await fs.readFile(subPath, 'utf8');
+    } catch (err) {
+      console.warn(`⚠️  ${dirName}/${subFile} : lecture impossible — sous-template ignoré`);
+      continue;
+    }
+
+    let subData;
+    try {
+      subData = yaml.load(subRaw);
+    } catch (err) {
+      console.error(`❌ Erreur parsing YAML ${dirName}/${subFile} :`, err.message);
+      continue;
+    }
+
+    if (!subData || typeof subData !== 'object') {
+      console.warn(`⚠️  ${dirName}/${subFile} : YAML vide ou non-objet — sous-template ignoré`);
+      continue;
+    }
+
+    if (subData.type !== 'implementation_template') {
+      console.warn(
+        `⚠️  ${dirName}/${subFile} : champ 'type: implementation_template' absent ou invalide — sous-template ignoré`,
+      );
+      continue;
+    }
+
+    // Détection des doublons d'id (bug fréquent : copier-coller mal nettoyé)
+    if (subData.id && seenIds.has(subData.id)) {
+      console.error(
+        `❌ ${dirName}/${subFile} : id '${subData.id}' déjà utilisé par un autre sous-template du même dossier — sous-template ignoré`,
+      );
+      continue;
+    }
+    if (subData.id) seenIds.add(subData.id);
+
+    // Retire le marqueur de discrimination (interne au stockage disque)
+    delete subData.type;
+    subTemplates.push(subData);
+  }
+
+  // Injecte les sous-templates fusionnés dans le pattern de base.
+  // Note : si _pattern.yaml contenait déjà implementation_templates,
+  // on les remplace — la source de vérité est le système de fichiers.
+  pattern.implementation_templates = subTemplates;
+
+  console.log(
+    `📂 ${dirName}/ : pattern éclaté (1 base + ${subTemplates.length} sous-templates fusionnés)`,
+  );
+
+  return { ...pattern, _sourceFile: `${dirName}/` };
+}
+
+/**
+ * Lit tous les patterns du dossier `/patterns/`.
+ *
+ * Deux formats supportés (architecture C — hybride) :
+ *   - Fichier `<id>.yaml` à la racine → format intégré (approche A)
+ *   - Sous-dossier `<id>/` contenant `_pattern.yaml` + N sous-templates
+ *     → format éclaté (approche B). La fusion se fait en mémoire.
+ *
+ * Tout le reste (fichiers backup, .gitkeep, etc.) est ignoré
+ * silencieusement.
  */
 async function loadAllPatterns() {
-  const files = await fs.readdir(PATTERNS_DIR);
-  const yamlFiles = files.filter(f => f.endsWith('.yaml') || f.endsWith('.yml'));
+  const entries = await fs.readdir(PATTERNS_DIR, { withFileTypes: true });
 
-  console.log(`📁 ${yamlFiles.length} fichiers YAML trouvés dans ${PATTERNS_DIR}`);
+  console.log(`📁 ${entries.length} entrées dans ${PATTERNS_DIR}`);
 
   const patterns = [];
+  let countIntegrated = 0;
+  let countExploded = 0;
 
-  for (const file of yamlFiles) {
-    const filePath = path.join(PATTERNS_DIR, file);
-    const content = await fs.readFile(filePath, 'utf8');
+  for (const entry of entries) {
+    const entryPath = path.join(PATTERNS_DIR, entry.name);
 
-    try {
-      const parsed = yaml.load(content);
-      patterns.push({ ...parsed, _sourceFile: file });
-    } catch (err) {
-      console.error(`❌ Erreur parsing YAML ${file} :`, err.message);
+    if (entry.isFile() && (entry.name.endsWith('.yaml') || entry.name.endsWith('.yml'))) {
+      // Format intégré (approche A)
+      try {
+        const content = await fs.readFile(entryPath, 'utf8');
+        const parsed = yaml.load(content);
+        patterns.push({ ...parsed, _sourceFile: entry.name });
+        countIntegrated++;
+      } catch (err) {
+        console.error(`❌ Erreur parsing YAML ${entry.name} :`, err.message);
+      }
+    } else if (entry.isDirectory()) {
+      // Format éclaté (approche B)
+      const merged = await loadExplodedPattern(entryPath, entry.name);
+      if (merged) {
+        patterns.push(merged);
+        countExploded++;
+      }
     }
+    // Tout le reste (fichiers .backup, etc.) est ignoré silencieusement
   }
+
+  console.log(
+    `   → ${countIntegrated} pattern(s) intégré(s), ${countExploded} pattern(s) éclaté(s)`,
+  );
 
   return patterns;
 }
