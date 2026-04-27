@@ -674,3 +674,34 @@ marché sous-servie au Québec.
 
 *Document de contexte rédigé le 22 avril 2026*
 *Dernière mise à jour : à faire manuellement quand les patterns évoluent*
+
+---
+
+## 16. Architecture des patterns (depuis Session 2J — 27 avril 2026)
+
+La librairie `/patterns/` utilise désormais deux formats selon la
+complexité de chaque pattern (architecture C — hybride par
+sous-dossier) :
+
+- **Pattern à template unique (approche A)** : fichier YAML unique
+  avec `implementation_templates` intégrée.
+  Exemple : `patterns/pattern-001-receptionniste-ia-vocale.yaml`
+
+- **Pattern à plusieurs sous-templates (approche B)** : dossier
+  contenant `_pattern.yaml` + un fichier YAML par sous-template,
+  chacun déclarant `type: implementation_template` à la racine.
+  Exemple : `patterns/pattern-004-redaction-contenu-marketing/`
+
+Le seed gère les deux formats automatiquement (détection via
+`fs.statSync().isDirectory()`) et les fusionne en mémoire avant
+l'upsert. La table `patterns` (colonne `content` JSONB) stocke le
+pattern complet identiquement pour les deux formats. Le pipeline
+aval (Skill 5, DOCX builder) est totalement transparent au choix
+du format de stockage.
+
+Production future de patterns multi-templates (002, 014) : créer
+directement la structure dossier, ne pas générer un fichier
+monolithique.
+
+Documentation détaillée : `docs/GUIDE_IMPLEMENTATION_TEMPLATES.md`
+section 9.1.
