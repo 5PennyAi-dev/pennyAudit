@@ -333,15 +333,31 @@ export function slugify(input: string): string {
 }
 
 /**
- * Construit un map opportunity_id → titre résolu pour adoucir l'affichage.
- * Préfère adapted_title du Skill 2, retombe sur l'ID brut si absent.
+ * Construit un map id → titre. Session 2H : index principal sur
+ * opportunity_id (présent depuis Skill 2 v2H). Index secondaire sur
+ * pattern_id pour rétrocompat avec les audits historiques (sans
+ * opportunity_id) et pour absorber le cas où Skill 5 référencerait
+ * encore par pattern_id par erreur.
+ *
+ * Sur l'index pattern_id, la condition `!map.has(opp.pattern_id)`
+ * évite que la 2e occurrence d'un même pattern écrase la 1re. Pour
+ * les audits historiques avec 2 opps même pattern, la collision
+ * subsiste (legacy connu, non-régression — c'est le bug du diagnostic
+ * 2G qui restera visible sur les anciens rapports non régénérés).
  */
 function buildOpportunityTitleMap(
   opportunities: SelectedOpportunity[] | undefined,
 ): Map<string, string> {
   const map = new Map<string, string>();
   for (const opp of opportunities ?? []) {
-    if (opp.pattern_id && opp.adapted_title) {
+    if (!opp.adapted_title) continue;
+    // Index principal : opportunity_id (Skill 2 ≥ session 2H).
+    if (opp.opportunity_id) {
+      map.set(opp.opportunity_id, opp.adapted_title);
+    }
+    // Index secondaire : pattern_id, sans écraser les entrées déjà
+    // posées (rétrocompat).
+    if (opp.pattern_id && !map.has(opp.pattern_id)) {
       map.set(opp.pattern_id, opp.adapted_title);
     }
   }
@@ -349,7 +365,14 @@ function buildOpportunityTitleMap(
 }
 
 function titleFor(id: string, titleMap: Map<string, string>): string {
-  return titleMap.get(id) ?? id;
+  const title = titleMap.get(id);
+  if (!title) {
+    console.warn(
+      `[docx-builder] No title found for opportunity id: ${id}. Falling back to id as title.`,
+    );
+    return id;
+  }
+  return title;
 }
 
 function clientDisplayName(intake: IntakeFormData | null): string {
