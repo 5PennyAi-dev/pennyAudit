@@ -143,7 +143,8 @@ export const skill2OutputSchema = z.object({
           learning_curve: z.string(),
           estimated_setup_hours: z.string(),
         }),
-        source_pattern_ids: z.array(z.string()),
+        // Champ de traçabilité — défaut [] si Claude l'oublie.
+        source_pattern_ids: z.array(z.string()).default([]),
       }),
     )
     .min(3)
@@ -196,7 +197,9 @@ export const skill3OutputSchema = z.object({
         immediate_actions: z.array(z.string()),
         ongoing_practices: z.array(z.string()),
       }),
-      source_pattern_ids: z.array(z.string()),
+      // Champ de traçabilité — Claude l'oublie parfois, défaut [] pour
+      // ne pas faire planter la validation sur un champ non-critique.
+      source_pattern_ids: z.array(z.string()).default([]),
     }),
   ),
   loi_25_applicability: z.object({
