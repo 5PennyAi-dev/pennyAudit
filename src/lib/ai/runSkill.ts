@@ -65,11 +65,36 @@ export async function runSkill<TInput, TOutput>(
   // Validation de l'output — sécurité anti-hallucination de schéma.
   const parsedOutput = outputSchema.safeParse(claudeResult.parsedJson);
   if (!parsedOutput.success) {
+    // Dump systématique du payload Claude qui a échoué la validation,
+    // dans /tmp ou cwd, pour que la valeur fautive soit récupérable
+    // même quand le message Zod est tronqué (Invalid option sans
+    // mention de la valeur reçue).
+    try {
+      const fs = await import('fs/promises');
+      const dumpPath = `failed-skill-${skillId}-${Date.now()}.json`;
+      await fs.writeFile(
+        dumpPath,
+        JSON.stringify(claudeResult.parsedJson, null, 2),
+        'utf8',
+      );
+      console.error(`[runSkill] Payload fautif dumpé → ${dumpPath}`);
+    } catch {
+      // best-effort
+    }
+
+    const detail = parsedOutput.error.issues
+      .slice(0, 5)
+      .map((i) => {
+        // Zod v4 expose `received` sur les invalid_value/invalid_type
+        const received =
+          'received' in i && i.received !== undefined
+            ? ` (reçu : ${JSON.stringify(i.received)})`
+            : '';
+        return `${i.path.join('.')}: ${i.message}${received}`;
+      })
+      .join('; ');
     throw new Error(
-      `Skill ${skillId}: output Claude ne respecte pas le schéma — ${parsedOutput.error.issues
-        .slice(0, 5)
-        .map((i) => `${i.path.join('.')}: ${i.message}`)
-        .join('; ')}`,
+      `Skill ${skillId}: output Claude ne respecte pas le schéma — ${detail}`,
     );
   }
 
